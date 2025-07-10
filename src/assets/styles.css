@@ -1,0 +1,87 @@
+@charset "UTF-8";
+/* You can add global styles to this file, and also import other style files */
+@use 'primeicons/primeicons.css';
+@use '@/assets/tailwind.css';
+@use '@/assets/layout/layout.scss';
+@use '@/assets/demo/demo.scss';
+/* 全局滚动条样式优化 */
+/* Webkit 浏览器 (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--p-content-background, #f8f9fa);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--p-text-muted-color, #6c757d);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--p-primary-color, #007bff);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--p-primary-600, #0056b3);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--p-content-background, #f8f9fa);
+}
+
+/* Firefox 滚动条样式 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--p-text-muted-color, #6c757d) var(--p-content-background, #f8f9fa);
+}
+
+/* 暗色主题下的滚动条样式 */
+[data-theme="dark"] ::-webkit-scrollbar-track,
+.p-dark ::-webkit-scrollbar-track {
+  background: var(--p-surface-900, #1a1a1a);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb,
+.p-dark ::-webkit-scrollbar-thumb {
+  background: var(--p-surface-600, #4a4a4a);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
+.p-dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--p-primary-color, #007bff);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-corner,
+.p-dark ::-webkit-scrollbar-corner {
+  background: var(--p-surface-900, #1a1a1a);
+}
+
+[data-theme="dark"] *,
+.p-dark * {
+  scrollbar-color: var(--p-surface-600, #4a4a4a) var(--p-surface-900, #1a1a1a);
+}
+
+/* 细滚动条变体（用于小区域） */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
+
+/* 隐藏滚动条但保持滚动功能 */
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
