@@ -59,4 +59,11 @@ export interface UseLayoutReturn {
   getSurface: import('vue').ComputedRef<string | null>;
   setActiveMenuItem: (item: MenuItem) => void;
   toggleDarkMode: () => void;
+  // 响应式相关
+  isMobile: import('vue').ComputedRef<boolean>;
+  isTablet: import('vue').ComputedRef<boolean>;
+  isDesktop: import('vue').ComputedRef<boolean>;
+  showMobileSidebar: import('vue').Ref<boolean>;
+  closeMobileSidebar: () => void;
+  windowWidth: import('vue').Ref<number>;
 }
