@@ -2,7 +2,6 @@
 import { ConfigurableTable, PageContainer } from '@/components';
 import type { TableColumns } from '@/composables/useColumns';
 import type { IDictType } from '@/services/types/dict';
-import type { SearchParams } from '@/types/search';
 import { useClipboard } from '@vueuse/core';
 import TieredMenu from 'primevue/tieredmenu';
 import { useConfirm } from 'primevue/useconfirm';
@@ -19,29 +18,18 @@ const router = useRouter();
 const toast = useToast();
 const confirm = useConfirm();
 const { copy, isSupported } = useClipboard();
-const { tableColumns, filterConfigs, pageInfo, searchParams, tableData, isLoading,handlePageChange } = useDict();
-
-
-
-
+const { tableColumns, filterConfigs, pageInfo, searchParams, tableData, isLoading, handlePageChange, handleFilterChange, handleRefresh } = useDict();
 // 对话框控制
 const dictTypeDialog = ref(false);
+const dictTypeForm = useTemplateRef("dictTypeForm")
 
 // TieredMenu 相关
 const moreMenu = ref();
-const moreMenuItems = ref<any[]>([]);
-
-
-// 获取字典数据
+const moreMenuItems = ref<any[]>([])
 
 
 
 
-// 状态选项
-const statusOptions = ref([
-    { label: '启用', value: true },
-    { label: '停用', value: false }
-])
 // 确认删除字典类型
 const confirmDeleteType = (type: IDictType) => {
     confirm.require({
@@ -74,11 +62,6 @@ const viewDictItems = (type: IDictType) => {
 // 导入字典数据
 const importDict = () => {
     toast.add({ severity: 'info', summary: '提示', detail: '字典数据导入功能已触发', life: 3000 });
-};
-
-const handleFilterChange = (params: SearchParams) => {
-    searchParams.value = params;
-    pageInfo.value.current = 1; // 重置到第一页
 };
 
 // 表格列配置
@@ -172,12 +155,12 @@ const copyDictType = async (type: string) => {
     }
 };
 
+
+
 const openNewDictType = () => {
-    dictTypeDialog.value = true;
+    dictTypeForm.value?.openDrawer()
 }
 
-const handleRefresh = () => {
-}
 
 const formatterDictType = (value: string) => {
     return {
@@ -199,10 +182,10 @@ const formatterDictType = (value: string) => {
             </div>
         </template>
         <ConfigurableTable :value="tableData" :rows="pageInfo.size" :total-records="pageInfo.total"
-            :columns="tableColumns" data-key="id" :loading="isLoading"
-            :current="pageInfo.current" :search-params="searchParams" :filter-configs="filterConfigs"
-            @update:columns="handleColumnsChange" @column-change="handleColumnChange"
-            @filter-change="handleFilterChange" @refresh="handleRefresh" @page="handlePageChange">
+            :columns="tableColumns" data-key="id" :loading="isLoading" :current="pageInfo.current"
+            :search-params="searchParams" :filter-configs="filterConfigs" @update:columns="handleColumnsChange"
+            @column-change="handleColumnChange" @filter-change="handleFilterChange" @refresh="handleRefresh"
+            @page="handlePageChange">
             <!-- 字典名称列 -->
             <template #column-dictName="{ data }">
                 <Button :label="data.dictName" variant="link" @click="viewDictItems(data)" />
@@ -242,19 +225,18 @@ const formatterDictType = (value: string) => {
         <TieredMenu ref="moreMenu" :model="moreMenuItems" popup />
 
         <!-- 字典类型对话框 -->
-        <DictTypeForm v-model:visible="dictTypeDialog" :status-options="statusOptions" />
+        <DictTypeForm ref="dictTypeForm" @success="handleRefresh" />
     </PageContainer>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 /* 表头样式 */
 :deep(.p-datatable-header-cell) {
     --p-datatable-header-cell-padding: 1rem;
 }
 
 :deep(.p-datatable .p-datatable-thead > tr > th) {
-    background-color: #f8fafc;
-    color: #374151;
+    @apply bg-surface-100 dark:bg-surface-900 text-surface-700 dark:text-surface-300;
     font-weight: 600;
 }
 

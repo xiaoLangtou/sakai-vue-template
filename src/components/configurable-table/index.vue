@@ -449,7 +449,7 @@ defineExpose({
             <Paginator v-model:first="first" :rows="rows" :total-records="totalRecords"
                 :rows-per-page-options="rowsPerPageOptions" :template="paginatorTemplate"
                 :current-page-report-template="currentPageReportTemplate" :page-link-size="pageLinkSize"
-                :always-show="alwaysShowPaginator" class="mt-3" @page="handlePaginatorPage" />
+                       :always-show="alwaysShowPaginator" class="mt-3" @page="handlePaginatorPage" />
         </div>
 
         <!-- 列设置组件 -->

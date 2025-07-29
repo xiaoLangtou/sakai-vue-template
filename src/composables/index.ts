@@ -3,9 +3,7 @@ export { getColumnText, getFrozenColumns, reorderColumns, toggleColumnFrozen, us
 
 export type { TableBaseColumn, TableColumn, TableColumnGroup, TableColumns } from './useColumns';
 
-// 表单相关
-export { zodResolver } from './useForm';
-export type { z } from './useForm';
+
 
 // 表格事件相关
 export { useTableEvents } from './useTableEvents';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CustomDrawer, IconSelector, SmartFormField } from '@/components';
-import { zodResolver } from '@/composables/useForm';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
 import type { MenuFormData, MenuTreeNode } from '@/types/menu';
 import { Form } from '@primevue/forms';
 import Button from 'primevue/button';

@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
     placeholder: '请输入关键词搜索',
     loading: false,
     total: 0,
-    autoSearch: true,
+    autoSearch: false,
     debounceDelay: 300,
     showPaginationInfo: true,
     showValidationErrors: false
@@ -149,16 +149,6 @@ const handleFilterUpdate = (key: string, value: any) => {
     if (props.autoSearch) {
         debounce(handleSearch);
     }
-};
-
-/**
- * 处理筛选条件验证
- * @param key 筛选字段
- * @param valid 是否有效
- */
-const handleFilterValidate = (key: string, valid: boolean) => {
-    validationState.value[key] = valid;
-    isFormValid.value = Object.values(validationState.value).every((v) => v);
 };
 
 /**
@@ -336,7 +326,8 @@ defineExpose({
                 <div class="search-actions">
                     <Button v-if="filterConfigs.length > 0" :label="showAdvanced ? '收起筛选' : '高级筛选'"
                         :icon="showAdvanced ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="filter-toggle-btn"
-                        severity="secondary" outlined @click="toggleAdvanced" />
+                        :badge="activeFilterCount > 0 ? `${activeFilterCount}` : ''" badgeSeverity="contrast" severity="secondary" outlined
+                        @click="toggleAdvanced" />
                     <Button label="重置" icon="pi pi-refresh" class="reset-btn" severity="secondary" outlined
                         @click="handleReset" />
                     <slot name="actions"></slot>
@@ -352,16 +343,15 @@ defineExpose({
                             筛选条件
                         </h4>
                         <div class="panel-actions">
-                            <Button label="清空筛选" icon="pi pi-times" size="small" severity="secondary" text
-                                @click="handleClearFilters" />
+
                         </div>
                     </div>
 
                     <div class="filters-grid">
                         <div v-for="filter in filterConfigs" :key="filter.key" :class="getColumnClass(filter)">
-                            <FilterItem :config="filter" :value="localParams.filters[filter.key]"
+                            <FilterItem :config="filter" :value="localParams.filters[filter.key]" :immediate="immediate"
                                 :show-error="showValidationErrors" @update="handleFilterUpdate"
-                                @validate="handleFilterValidate" :ref="(el) => (filterRefs[filter.key] = el)" />
+                                :ref="(el) => (filterRefs[filter.key] = el)" />
                         </div>
                     </div>
 
@@ -372,7 +362,9 @@ defineExpose({
                             </span>
                         </div>
                         <div class="footer-actions">
-                            <Button label="应用筛选" icon="pi pi-check" @click="handleImmediateSearch"
+                            <Button label="清空筛选" icon="pi pi-times" size="small" severity="secondary"
+                                @click="handleClearFilters" />
+                            <Button label="应用筛选" icon="pi pi-check" size="small" @click="handleImmediateSearch"
                                 :disabled="!isFormValid" />
                         </div>
                     </div>

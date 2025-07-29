@@ -75,7 +75,7 @@ const toRoutes = (menus: MenuOptions[]) => {
 const setWebsiteTitle = (router: Router, to: RouteLocationNormalized) => {
     const route = router.getRoutes().find((item: RouteRecordRaw) => item.path === to.path);
     const appTitle = import.meta.env.VITE_GLOB_APP_TITLE;
-    useTitle(`${route?.meta?.title} - ${appTitle}`)
+    useTitle(route?.meta?.title ? `${route?.meta?.title} - ${appTitle}` : appTitle);
 }
 
 

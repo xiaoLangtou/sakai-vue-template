@@ -2,7 +2,7 @@
 import { SmartFormField } from '@/components';
 import CustomDrawer from '@/components/custom-drawer/index.vue';
 import OrgSelector from '@/components/org-selector/index.vue';
-import { zodResolver } from '@/composables/useForm';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
 import type { RoleFormData, RoleStatus, RoleType } from '@/types/role';
 import { Form } from '@primevue/forms';
 import { useToast } from 'primevue/usetoast';

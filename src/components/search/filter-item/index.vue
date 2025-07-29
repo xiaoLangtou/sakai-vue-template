@@ -14,6 +14,8 @@ interface Props {
     value: FilterValue;
     /** 是否显示错误 */
     showError?: boolean;
+    /** 是否立即触发 */
+    immediate?: boolean;
 }
 
 interface Emits {
@@ -146,15 +148,7 @@ const validateValue = (value: FilterValue): { valid: boolean; message: string } 
  * @param newValue 新值
  */
 const handleUpdate = (newValue: FilterValue) => {
-    // 验证新值
-    const validation = validateValue(newValue);
-    hasError.value = !validation.valid && props.showError;
-    errorMessage.value = validation.message;
-
-    // 发送验证结果
-    emit('validate', props.config.key, validation.valid);
-
-    // 发送更新事件
+    // 发送更新事件,是否立即触发
     emit('update', props.config.key, newValue);
 };
 
@@ -186,7 +180,8 @@ defineExpose({
         </div>
 
         <div class="filter-input-wrapper">
-            <component :is="componentMap[config.type]" v-bind="componentProps" :model-value="value" @update:model-value="handleUpdate" />
+            <component :is="componentMap[config.type]" v-bind="componentProps" :model-value="value"
+                @update:model-value="handleUpdate" />
             <div v-if="hasError" class="error-indicator">
                 <i class="pi pi-exclamation-triangle" />
             </div>

@@ -239,7 +239,8 @@ const lucideIconName = (icon: string) => {
 <style scoped>
 /* 基础菜单项样式 */
 .menu-item {
-    @apply flex items-center px-4 py-3 mx-0 my-0.5 rounded-lg cursor-pointer text-slate-500 text-sm font-medium transition-all duration-150;
+    font-size: 13px;
+    @apply flex items-center px-4 py-3 mx-0 my-0.5 rounded-lg cursor-pointer text-slate-500  font-medium transition-all duration-150;
 }
 
 .menu-item:hover {
@@ -247,19 +248,8 @@ const lucideIconName = (icon: string) => {
 }
 
 .menu-item.active {
-    @apply bg-primary-500 text-white;
-}
-
-.dark .menu-item {
-    @apply text-slate-400;
-}
-
-.dark .menu-item:hover {
-    @apply bg-slate-800 text-slate-200;
-}
-
-.dark .menu-item.active {
-    @apply bg-primary-500 text-white;
+    background-color: var(--p-primary-500);
+    @apply text-surface-200  dark:text-surface-900;
 }
 
 /* 图标样式 */

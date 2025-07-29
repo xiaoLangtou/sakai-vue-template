@@ -26,6 +26,7 @@ const staticRoutes: RouteRecordRaw[] = [
                 component: () => import('@/views/dashboard/index.vue')
             },
             
+
         ]
     },
     {

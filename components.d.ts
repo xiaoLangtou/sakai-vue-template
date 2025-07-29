@@ -77,7 +77,7 @@ declare module 'vue' {
     Select: typeof import('primevue/select')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
     Smartformfield: typeof import('./src/components/form/smartformfield.vue')['default']
-    SmartFormField: typeof import('./src/components/form/smart-form-field/index.vue')['default']
+    SmartFormField: typeof import('./src/components/smart-form-field/index.vue')['default']
     SplitButton: typeof import('primevue/splitbutton')['default']
     Statswidget: typeof import('./src/components/dashboard/statswidget.vue')['default']
     StatsWidget: typeof import('./src/components/dashboard/stats-widget/index.vue')['default']

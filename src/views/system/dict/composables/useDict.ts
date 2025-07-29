@@ -39,8 +39,8 @@ export const useDict = () => {
             minWidth: 80
         },
         {
-            key: 'itemCount',
-            field: 'itemCount',
+            key: 'dataCount',
+            field: 'dataCount',
             header: '字典项数量',
             minWidth: 80
         },
@@ -135,7 +135,7 @@ export const useDict = () => {
 
     const pageInfo = ref({
         current: 1,
-        size: 10, 
+        size: 10,
         total: 0
     })
 
@@ -167,6 +167,26 @@ export const useDict = () => {
         refetch();
     }
 
+    const handleFilterChange = (params: SearchParams) => {
+        searchParams.value = params;
+        pageInfo.value.current = 1; // 重置到第一页
+        refetch();
+    };
+
+    const handleRefresh = () => {
+        pageInfo.value.current = 1; // 重置到第一页
+        searchParams.value = {
+            keyword: '',
+            filters: {
+                dictCode: '',
+                dictType: '',
+                status: '',
+                systemFlag: ''
+            }
+        }
+        refetch();
+    }
+
     return {
         tableColumns,
         filterConfigs,
@@ -175,5 +195,7 @@ export const useDict = () => {
         tableData,
         isLoading,
         handlePageChange,
+        handleFilterChange,
+        handleRefresh
     }
 }
