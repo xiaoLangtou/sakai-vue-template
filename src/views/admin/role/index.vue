@@ -202,6 +202,8 @@ const tableColumns = ref<TableColumns<Role>>([
         key: 'code',
         field: 'code',
         header: '角色编码',
+         frozen: true,
+        alignFrozen: 'left',
         minWidth: 120
     },
     {

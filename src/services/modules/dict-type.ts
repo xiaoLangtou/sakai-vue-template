@@ -58,7 +58,7 @@ class DictTypeService {
      * @returns {Promise<ApiResponse>} 更新结果
      */
     updateDictType(data: IDictType) {
-        return http.put("/dict/update", data);
+        return http.post("/dict/update", data);
     }
 
 
@@ -67,7 +67,7 @@ class DictTypeService {
      * @param {string} id 字典类型ID
      * @returns {Promise<ApiResponse>} 删除结果
      */
-    removeDictType(id: string) {
+    removeDictType(id: string | number) {
         return http.delete(`/dict/remove/${id}`);
     }
 

@@ -226,7 +226,6 @@ const initData = () => {
 
     if (!dictType.value) {
         toast.add({ severity: 'error', summary: '错误', detail: '未找到字典类型', life: 3000 });
-        router.push('/system/fields');
         return;
     }
 

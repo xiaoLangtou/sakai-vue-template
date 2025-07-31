@@ -2,12 +2,13 @@
 import { ConfigurableTable, PageContainer } from '@/components';
 import type { TableColumns } from '@/composables/useColumns';
 import type { IDictType } from '@/services/types/dict';
-import { useClipboard } from '@vueuse/core';
-import TieredMenu from 'primevue/tieredmenu';
-import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import DictTypeForm from './component/dict-type-form.vue';
 import { useDict } from './composables/useDict';
+import { usePrimeConfirm } from '@/composables/usePrimeConfirm';
+import { dictTypeService } from '@/services/modules/dict-type';
+import globalToast from '@/services/core/toast';
+import { to } from '@/utils/result-handler';
 
 
 // 页面标题
@@ -16,45 +17,24 @@ const title = ref('字典管理');
 // 服务实例
 const router = useRouter();
 const toast = useToast();
-const confirm = useConfirm();
+const { confirmDelete } = usePrimeConfirm();
 const { copy, isSupported } = useClipboard();
 const { tableColumns, filterConfigs, pageInfo, searchParams, tableData, isLoading, handlePageChange, handleFilterChange, handleRefresh } = useDict();
-// 对话框控制
-const dictTypeDialog = ref(false);
+
 const dictTypeForm = useTemplateRef("dictTypeForm")
 
 // TieredMenu 相关
 const moreMenu = ref();
 const moreMenuItems = ref<any[]>([])
 
-
-
-
-// 确认删除字典类型
-const confirmDeleteType = (type: IDictType) => {
-    confirm.require({
-        message: `确定要删除字典类型 "${type.name}" 吗？`,
-        header: '确认删除',
-        icon: 'pi pi-exclamation-triangle',
-        acceptClass: 'p-button-danger',
-        accept: () => deleteDictType(type),
-        reject: () => { }
-    });
-};
-
-// 删除字典类型
-const deleteDictType = (type: IDictType) => {
-    // 模拟删除字典类型
-    dictTypes.value = dictTypes.value.filter((t) => t.id !== type.id);
-    toast.add({ severity: 'success', summary: '成功', detail: '字典类型已删除', life: 3000 });
-};
-
-
 // 查看字典项
 const viewDictItems = (type: IDictType) => {
     router.push(`/system/dict-items/${type.id}`);
 };
 
+const editDictType = (type: IDictType) => {
+    dictTypeForm.value?.openDrawer(type)
+};
 
 
 
@@ -92,16 +72,34 @@ const getMoreActions = (data: IDictType) => {
         {
             label: data.status ? '停用' : '启用',
             icon: data.status ? 'pi pi-times' : 'pi pi-check',
+            disabled: data.systemFlag === 'SYSTEM',
             // command: () => toggleTypeStatus(data)
         },
         {
             label: '删除',
             icon: 'pi pi-trash',
-            command: () => confirmDeleteType(data)
+            disabled: data.systemFlag === 'SYSTEM',
+            command: (dictType: IDictType) => {
+                confirmDelete({
+                    message: `确定要删除字典类型 "${dictType.dictName}(${dictType.dictCode})" 吗？`,
+                    header: '确认删除',
+                    accept: () => deleteDictType(dictType)
+                });
+            }
         }
     ];
 };
 
+const deleteDictType = async (dictType: IDictType) => {
+    if (!dictType.id) return globalToast.error('字典类型ID不能为空');
+
+    // 调用删除接口
+    const result = await to(dictTypeService.removeDictType(dictType.id));
+    if (result.ok) {
+        globalToast.success('删除成功');
+        handleRefresh();
+    }
+};
 // 每行菜单的 ref 对象
 const menuRefs = ref<Record<number, any>>({});
 
@@ -212,7 +210,7 @@ const formatterDictType = (value: string) => {
             <!-- 操作列 -->
             <template #column-actions="{ data }">
                 <div class="flex items-center justify-center">
-                    <Button icon="pi pi-pen-to-square" label="编辑" variant="text" @click="() => { }" />
+                    <Button icon="pi pi-pen-to-square" label="编辑" variant="text" @click="editDictType(data)" />
                     <Button icon="pi pi-list" label="字典项" variant="text" @click="viewDictItems(data)" />
                     <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
                         @click="(event) => openRowMenu(event, data.id)" />

@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
     const setUserInfo = (_userInfo: IUserInfo) => {
         userInfo.value = _userInfo;
     }
-    const loginAction = async (account: ILoginAccount) => {
+    const loginAction = async (account: ILoginAccount, homePath?: string | undefined) => {
         const result = await to<ILoginResponse>(loginService.login({
             username: account.username,
             password: md5(account.password),
@@ -45,12 +45,13 @@ export const useAuthStore = defineStore('auth', () => {
         const { accessToken, userInfo } = result.value;
         setToken(accessToken);
         StorageUtil.set('accessToken', accessToken);
+
         setUserInfo(userInfo);
 
         console.log(router)
 
         await router.replace({
-            name: 'dashboard',
+            name: homePath ?? 'dashboard',
         })
     }
 
@@ -63,6 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
                 const result = await to(loginService.logout());
                 if (!result.ok) return;
                 setToken('');
+                StorageUtil.remove('accessToken');
                 setUserInfo({} as IUserInfo);
                 await router.replace(LOGIN_URL);
             }

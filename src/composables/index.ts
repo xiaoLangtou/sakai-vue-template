@@ -14,6 +14,7 @@ export { useTablePersistence } from './useTablePersistence';
 export type { PersistenceProps } from './useTablePersistence';
 
 export { useTableStyles } from './useTableStyles';
+export { useLoginDialog } from './useLoginDialog';
 export type { TableSettings, TableStylesProps } from './useTableStyles';
 
 // 表格配置相关

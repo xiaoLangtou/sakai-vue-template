@@ -1,4 +1,3 @@
-import globalToast from "@/services/core/toast";
 import { useAuthStore } from "@/stores";
 import nProgress from "nprogress";
 import { nextTick } from "vue";
@@ -15,8 +14,8 @@ export default function setupPermissionGuard(router: Router) {
                 nProgress.done();
                 return;
             }
-            await nextTick();
-            globalToast.warn("请先登录");
+            // 如果没有登录且不是访问登录页，直接跳转到登录页
+            // 不显示toast，因为这是初始访问，不是token失效
             await nextTick();
             next({
                 name: 'Login',

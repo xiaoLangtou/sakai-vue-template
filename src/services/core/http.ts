@@ -1,8 +1,22 @@
+import router from '@/router/index.ts';
+import { StorageUtil } from '@/utils/storage.ts';
 import axios, { type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponse, RequestConfig } from '../types/types.ts';
 import { globalToast } from './toast.ts';
-import { StorageUtil } from '@/utils/storage.ts';
-import router from '@/router/index.ts';
+import { useLoginDialog } from '@/composables/useLoginDialog';
+import { nextTick } from 'vue';
+
+// 标识页面是否已经初始化完成
+let isPageInitialized = false;
+
+// 页面加载完成后设置标识
+if (typeof window !== 'undefined') {
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            isPageInitialized = true;
+        }, 1000); // 延迟1秒确保页面完全初始化
+    });
+}
 
 class HttpClient {
     private instance: AxiosInstance;
@@ -104,16 +118,43 @@ class HttpClient {
 
 
 
-    private handleUnauthorized() {
-        localStorage.removeItem('token');
-        globalToast.warn('登录已过期，请重新登录');
+    private async handleUnauthorized() {
+        // 清除本地存储的token
+        StorageUtil.remove('accessToken');
 
-        // 跳转到登录页
-        setTimeout(() => {
-           router.replace({
-            name: 'Login',
-           })
-        }, 1000);
+        await nextTick();
+        // 检查当前是否在登录页面
+        const currentRoute = router.currentRoute.value;
+        console.log('当前路由信息:', {
+            name: currentRoute.name,
+            path: currentRoute.path,
+            fullPath: currentRoute.fullPath,
+            isPageInitialized
+        });
+        
+        // 使用路径和名称双重判断，确保准确识别登录页面
+        const isLoginPage = currentRoute.name === 'Login' || 
+                           currentRoute.path === '/auth/login' || 
+                           currentRoute.fullPath.includes('/auth/login');
+        
+        // 如果页面还未初始化完成（页面刷新阶段），不显示弹窗，交由路由守卫处理
+        if (!isPageInitialized) {
+            console.log('页面初始化阶段，不显示登录弹窗，交由路由守卫处理');
+            return;
+        }
+        
+        if (isLoginPage) {
+            // 如果已经在登录页面，只显示提示
+            console.log('已在登录页面，只显示提示');
+            globalToast.warn('登录已过期，请重新登录');
+            return;
+        }
+        
+        // 如果不在登录页面且页面已初始化，显示登录弹窗
+        console.log('不在登录页面且页面已初始化，显示登录弹窗');
+        const { showLoginDialog } = useLoginDialog();
+        globalToast.warn('登录已过期，请重新登录');
+        showLoginDialog();
     }
 
     private handleNetworkErrorRedirect() {
@@ -121,9 +162,9 @@ class HttpClient {
 
         // 跳转到登录页
         setTimeout(() => {
-           router.replace({
-            name: 'Login',
-           })
+            router.replace({
+                name: 'Login',
+            })
         }, 1500);
     }
 

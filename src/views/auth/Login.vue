@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import FloatingConfigurator from '@/components/floating-configurator/index.vue';
-import type { ILoginAccount } from '@/services/types/login';
-import { loginService } from '@/services/modules/login';
-import type { ICaptcha } from '@/services/types/login';
-import { to } from '@/utils/result-handler';
 import { CAPTCHA_EXPIRE_TIME } from '@/global/constants';
+import { loginService } from '@/services/modules/login';
+import type { ICaptcha, ILoginAccount } from '@/services/types/login';
+import { to } from '@/utils/result-handler';
 
-import { onMounted, ref, onUnmounted } from 'vue';
 import globalToast from '@/services/core/toast';
 import { useAuthStore } from '@/stores/auth';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 const { loginAction } = useAuthStore();
 
@@ -145,17 +144,16 @@ const checked = ref(false);
                             <!-- 验证码图片 -->
                             <div class="flex-shrink-0">
                                 <div class="relative cursor-pointer" @click="getCaptcha">
-                                    <img v-if="captchaImage" :src="captchaImage" alt="验证码" class="h-10 border rounded" />
+                                    <img v-if="captchaImage" :src="captchaImage" alt="验证码"
+                                        class="h-10 border rounded" />
                                     <div v-else
                                         class="h-10 w-20 border rounded flex items-center justify-center text-xs text-muted-color">
                                         点击获取
                                     </div>
                                     <!-- 验证码过期蒙层 -->
-                                    <div
-                                        v-if="isCaptchaExpired"
+                                    <div v-if="isCaptchaExpired"
                                         class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded cursor-pointer"
-                                        @click="closeCaptchaExpiredModal"
-                                    >
+                                        @click="closeCaptchaExpiredModal">
                                         <div class="text-white text-xs text-center px-2">
                                             <i class="pi pi-exclamation-triangle text-orange-400 mb-1 block"></i>
                                             <div class="text-xs opacity-80">点击刷新</div>

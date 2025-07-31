@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { MenuItem } from '@/types/layout';
 import * as icons from "lucide-vue-next";
 import { ChevronRight } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFloatingMenu } from '../composables/useFloatingMenu';
-import type { MenuItem } from '@/types/layout';
 
 interface Props {
     item: MenuItem;
@@ -164,30 +164,17 @@ const lucideIconName = (icon: string) => {
     <div>
         <!-- 折叠状态 -->
         <div v-if="collapsed && hasChildren" class="relative">
-            <div class="collapsed-menu-item"
-                :class="{ 'active': isCurrentRoute }"
-                @click="handleClick">
-                <component v-if="isLucideIcon(item.meta.icon)"
-                    :is="lucideIconName(item.meta.icon)"
-                    :size="20" />
+            <div class="collapsed-menu-item" :class="{ 'active': isCurrentRoute }" @click="handleClick">
+                <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="20" />
                 <i v-else-if="item.meta.icon" :class="item.meta.icon" />
             </div>
 
             <Teleport to="body">
-                <div v-if="showFloating"
-                    ref="floatingMenu"
-                    class="floating-menu"
-                    @click.stop>
+                <div v-if="showFloating" ref="floatingMenu" class="floating-menu" @click.stop>
                     <div class="floating-menu-content">
-                        <AppMenuItem
-                        v-for="(child, i) in sortedChildren"
-                        :key="child.id"
-                        :item="child"
-                        :index="i"
-                        :collapsed="false"
-                        :level="level + 1"
-                        :is-mobile="isMobile"
-                        @menu-item-click="() => { emit('menu-item-click'); hideFloatingMenu(); }" />
+                        <AppMenuItem v-for="(child, i) in sortedChildren" :key="child.id" :item="child" :index="i"
+                            :collapsed="false" :level="level + 1" :is-mobile="isMobile"
+                            @menu-item-click="() => { emit('menu-item-click'); hideFloatingMenu(); }" />
                     </div>
                 </div>
             </Teleport>
@@ -195,40 +182,27 @@ const lucideIconName = (icon: string) => {
 
         <!-- 正常状态 -->
         <div v-if="!collapsed" class="relative">
-            <div class="menu-item"
-                :class="[
-                    { 'active': isCurrentRoute },
-                    `level-${level}`
-                ]"
-                @click="handleClick">
+            <div class="menu-item" :class="[
+                { 'active': isCurrentRoute },
+                `level-${level}`
+            ]" @click="handleClick">
 
                 <div class="menu-item-icon">
-                    <component v-if="isLucideIcon(item.meta.icon)"
-                        :is="lucideIconName(item.meta.icon)"
-                        :size="18" />
+                    <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="18" />
                     <i v-else-if="item.meta.icon" :class="item.meta.icon" />
                 </div>
 
                 <span class="menu-item-title">{{ item.meta.title }}</span>
 
-                <ChevronRight v-if="hasChildren"
-                    :size="16"
-                    class="menu-item-arrow"
+                <ChevronRight v-if="hasChildren" :size="16" class="menu-item-arrow"
                     :class="{ 'expanded': isExpanded }" />
             </div>
 
             <!-- 子菜单 -->
             <div v-if="hasChildren && isExpanded" class="submenu">
                 <div class="submenu-container">
-                    <AppMenuItem
-                        v-for="(child, i) in sortedChildren"
-                        :key="child.id"
-                        :item="child"
-                        :index="i"
-                        :collapsed="collapsed"
-                        :level="level + 1"
-                        :is-mobile="isMobile"
-                        class="submenu-item"
+                    <AppMenuItem v-for="(child, i) in sortedChildren" :key="child.id" :item="child" :index="i"
+                        :collapsed="collapsed" :level="level + 1" :is-mobile="isMobile" class="submenu-item"
                         @menu-item-click="emit('menu-item-click')" />
                 </div>
             </div>
@@ -239,28 +213,59 @@ const lucideIconName = (icon: string) => {
 <style scoped>
 /* 基础菜单项样式 */
 .menu-item {
-    font-size: 13px;
-    @apply flex items-center px-4 py-3 mx-0 my-0.5 rounded-lg cursor-pointer text-slate-500  font-medium transition-all duration-150;
+    font-size: 14px;
+    @apply flex items-center px-3 py-2.5 mx-0 my-0.5 rounded-xl cursor-pointer text-slate-600 dark:text-slate-400 font-medium;
+    position: relative;
+    backdrop-filter: blur(8px);
+    box-sizing: border-box;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .menu-item:hover {
-    @apply bg-slate-50 text-slate-700;
+    @apply bg-slate-100 bg-opacity-80 text-slate-800 shadow-sm;
+    /* 移除translateX避免抖动 */
 }
 
 .menu-item.active {
-    background-color: var(--p-primary-500);
-    @apply text-surface-200  dark:text-surface-900;
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg;
+    font-weight: 600;
 }
+
+.menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    @apply bg-primary-500 rounded-full;
+}
+
+
 
 /* 图标样式 */
 .menu-item-icon {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.menu-item-icon {
     width: 1.25rem;
     height: 1.25rem;
     margin-right: 0.75rem;
     flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-item:hover .menu-item-icon {
+    /* 移除scale避免抖动 */
+}
+
+.menu-item.active .menu-item-icon {
+    /* 移除scale避免抖动 */
+    filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
 }
 
 /* 标题样式 */
@@ -269,111 +274,158 @@ const lucideIconName = (icon: string) => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-weight: 500;
+    letter-spacing: 0.01em;
 }
 
 /* 箭头样式 */
 .menu-item-arrow {
     flex-shrink: 0;
-    transition: transform 0.15s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.7;
+}
+
+.menu-item:hover .menu-item-arrow {
+    opacity: 1;
 }
 
 .menu-item-arrow.expanded {
     transform: rotate(90deg);
+    opacity: 1;
 }
 
 /* 层级缩进 */
 .menu-item.level-1 {
-    padding-left: 1rem;
+    padding-left: 2.5rem;
+    font-size: 13px;
+
 }
 
 .menu-item.level-2 {
-    padding-left: 1rem;
+    padding-left: 3.5rem;
+    font-size: 12px;
+
 }
 
 .menu-item.level-3 {
-    padding-left: 1cap;
+    padding-left: 4.5rem;
+    font-size: 12px;
+
 }
+
 
 /* 子菜单 */
 .submenu {
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
+    margin-top: 0.125rem;
+    margin-bottom: 0.125rem;
     position: relative;
+    overflow: hidden;
 }
 
 .submenu-container {
     position: relative;
-    padding-left: 1.5rem;
-    margin-left: 0.5rem;
+    padding-left: 1rem;
+    margin-left: 0.75rem;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+    }
 }
 
 /* 垂直连线 */
 .submenu-container::before {
     content: '';
     position: absolute;
-    left: 1rem;
-    top: 0rem;
-    bottom: 0rem;
-    width: 1px;
-    background:rgba(148, 163, 184, 0.3);
-    border-radius: 0.5px;
+    left: 0.75rem;
+    top: -0.25rem;
+    bottom: 0.5rem;
+    width: 2px;
+    @apply bg-gradient-to-b from-primary-500/30 to-primary-500/10;
+    border-radius: 1px;
 }
 
-.dark .submenu-container::before {
-    background: rgba(148, 163, 184, 0.3);
-}
+
 
 
 
 /* 折叠状态菜单项 */
 .collapsed-menu-item {
-    @apply flex items-center justify-center w-10 h-10 mx-auto my-1 rounded-lg cursor-pointer text-slate-500 transition-all duration-150;
+    @apply flex items-center justify-center w-11 h-11 mx-auto my-1 rounded-xl cursor-pointer text-slate-500;
+    position: relative;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collapsed-menu-item:hover {
-    @apply bg-slate-50 text-slate-700;
+    @apply bg-slate-100 bg-opacity-80 text-slate-700 shadow-md;
+    /* 移除scale避免抖动 */
 }
 
 .collapsed-menu-item.active {
-    @apply bg-primary-500 text-white;
+    @apply bg-gradient-to-br from-primary-500 to-primary-600 text-primary-50 shadow-lg;
+    font-weight: 600;
 }
 
-.dark .collapsed-menu-item {
-    @apply text-slate-400;
+.collapsed-menu-item.active::after {
+    content: '';
+    position: absolute;
+    right: -0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    @apply bg-primary-400 rounded-full;
 }
 
-.dark .collapsed-menu-item:hover {
-    @apply bg-slate-800 text-slate-200;
-}
 
-.dark .collapsed-menu-item.active {
-    @apply bg-primary-500 text-white;
-}
 
 /* 悬浮菜单 */
 .floating-menu {
-    @apply fixed z-50 min-w-48 bg-white border border-slate-200 rounded-lg shadow-lg;
+    @apply fixed z-50 min-w-52 bg-white bg-opacity-95 backdrop-blur-md border border-slate-200 border-opacity-60 rounded-2xl shadow-2xl;
+    animation: fadeInScale 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark .floating-menu {
-    @apply bg-slate-800 border-slate-600 shadow-xl;
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .floating-menu-content {
-    padding: 0.5rem;
+    padding: 0.75rem;
 }
 
 /* 移动端优化 */
 @media (max-width: 768px) {
     .menu-item {
-        padding: 1rem;
-        font-size: 1rem;
+        padding: 0.875rem 1rem;
+        font-size: 15px;
+        @apply rounded-2xl;
     }
 
     .menu-item-icon {
-        width: 1.5rem;
-        height: 1.5rem;
-        margin-right: 1rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.875rem;
+    }
+
+    .collapsed-menu-item {
+        @apply w-12 h-12;
     }
 }
 </style>

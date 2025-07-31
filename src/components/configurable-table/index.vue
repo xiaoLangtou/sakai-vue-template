@@ -279,11 +279,66 @@ const exportData = () => {
     }
 };
 
+// 窗口大小变化处理
+const handleWindowResize = () => {
+    // 强制重新计算表格布局
+    if (dataTableRef.value) {
+        nextTick(() => {
+            try {
+                // // 方法1: 通过强制更新组件来触发固定列重新计算
+                // // 这是更优雅的方式，利用Vue的响应式系统
+                if (typeof dataTableRef.value.$forceUpdate === 'function') {
+                    dataTableRef.value.$forceUpdate();
+                }
+                const tableElement = dataTableRef.value.$el;
+                if (tableElement) {
+                    // 定义更新固定列位置的函数
+                    const updateFrozenCellsPosition = () => {
+                        // 查找所有固定列单元格，使用多种选择器确保覆盖所有情况
+                        const selectors = [
+                            '.p-datatable-thead th[data-p-frozen-column="true"]',
+                        ];
+
+                        selectors.forEach(selector => {
+                            const frozenCells = tableElement.querySelectorAll(selector);
+                            frozenCells.forEach((cell: any) => {
+                                const vueInstance = cell.__vueParentComponent;
+                                if (vueInstance?.ctx?.updateStickyPosition) {
+                                    vueInstance.ctx.updateStickyPosition();
+                                }
+                            });
+                        });
+                    };
+
+                    // 使用多重延迟确保DOM完全更新后再执行
+                    requestAnimationFrame(() => {
+                        updateFrozenCellsPosition();
+                    });
+                }
+            } catch (error) {
+                console.warn('Failed to update frozen columns:', error);
+            }
+        });
+    }
+};
+
+// 防抖处理窗口大小变化
+let resizeTimer: NodeJS.Timeout | null = null;
+const debouncedHandleResize = () => {
+    if (resizeTimer) {
+        clearTimeout(resizeTimer);
+    }
+    resizeTimer = setTimeout(handleWindowResize, 10);
+};
+
 // 生命周期
 onMounted(() => {
     if (props.persistState) {
         restoreState();
     }
+
+    // 添加窗口大小变化监听
+    window.addEventListener('resize', debouncedHandleResize);
 });
 
 // 组件卸载时清理
@@ -293,6 +348,15 @@ onBeforeUnmount(() => {
         clearTimeout(saveStateTimer);
         saveStateTimer = null;
     }
+
+    // 清理窗口resize定时器
+    if (resizeTimer) {
+        clearTimeout(resizeTimer);
+        resizeTimer = null;
+    }
+
+    // 移除窗口大小变化监听
+    window.removeEventListener('resize', debouncedHandleResize);
 
     // 清理缓存
     fieldPathCache.clear();
@@ -368,12 +432,12 @@ defineExpose({
 
         <!-- 表格容器 -->
         <div class="table-container">
-            <DataTable ref="dataTableRef"  :value="value" :data-key="dataKey"
-                :show-gridlines="showGridlines" :paginator="false" :scrollable="scrollable" :resizable-columns="true"
+            <DataTable ref="dataTableRef" :value="value" :data-key="dataKey" :show-gridlines="showGridlines"
+                :paginator="false" :scrollable="scrollable" :resizable-columns="true"
                 :scroll-height="virtualScroll ? '400px' : 'flex'" :column-resize-mode="'expand'"
                 :responsive-layout="responsiveLayout" :striped-rows="stripedRows" :loading="loading"
                 :class="computedTableClass" :style="computedTableStyle" :selection-mode="selectionMode"
-                :selection="selection" v-bind="{...virtualScrollConfig,...$attrs}" @row-click="handleRowClick"
+                :selection="selection" v-bind="{ ...virtualScrollConfig, ...$attrs }" @row-click="handleRowClick"
                 @row-dblclick="handleRowDblClick" @sort="(event: any) => handleSortEvent(event)"
                 @selection-change="handleSelectionChange">
                 <!-- 动态生成列 - 优化key策略 -->
@@ -449,7 +513,7 @@ defineExpose({
             <Paginator v-model:first="first" :rows="rows" :total-records="totalRecords"
                 :rows-per-page-options="rowsPerPageOptions" :template="paginatorTemplate"
                 :current-page-report-template="currentPageReportTemplate" :page-link-size="pageLinkSize"
-                       :always-show="alwaysShowPaginator" class="mt-3" @page="handlePaginatorPage" />
+                :always-show="alwaysShowPaginator" class="mt-3" @page="handlePaginatorPage" />
         </div>
 
         <!-- 列设置组件 -->
@@ -529,6 +593,12 @@ defineExpose({
     }
 }
 
+:deep(.p-datatable-frozen-column) {
+    &:not(:last-child) {
+       border-right: 0!important;
+    }
+}
+
 /* 深色主题支持 */
 @media (prefers-color-scheme: dark) {
     .empty-state {
@@ -538,39 +608,5 @@ defineExpose({
     .loading-text {
         color: var(--surface-400);
     }
-}
-
-
-
-
-/* 表头样式 */
-:deep(.p-datatable-header-cell) {
-    --p-datatable-header-cell-padding: 1rem;
-}
-
-:deep(.p-datatable .p-datatable-thead > tr > th) {
-    background-color: #f8fafc;
-    color: #374151;
-    font-weight: 600;
-}
-
-:deep(.p-datatable .p-datatable-thead > tr > th:hover) {
-    background-color: #f1f5f9;
-}
-
-/* 快速修复 - 添加到现有样式中 */
-.table-container {
-    contain: layout style paint;
-    transform: translateZ(0);
-}
-
-:deep(.p-datatable) {
-    contain: layout;
-    will-change: transform;
-}
-
-:deep(.p-datatable *) {
-    transition-duration: 0s !important;
-    animation-duration: 0s !important;
 }
 </style>

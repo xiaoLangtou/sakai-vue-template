@@ -3,7 +3,7 @@ import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginVue } from '@rsbuild/plugin-vue';
 import { pluginVueJsx } from '@rsbuild/plugin-vue-jsx';
 import AutoImport from 'unplugin-auto-import/rspack';
-import {PrimeVueResolver} from '@primevue/auto-import-resolver';
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 import Components from 'unplugin-vue-components/rspack';
 
 export const createPluginsTs = () => {
@@ -33,7 +33,8 @@ export const createPluginsTs = () => {
             }),
             pluginVue(),
             pluginVueJsx(),
-            pluginSass(),
+            pluginSass({
+            }),
         ],
     };
 };

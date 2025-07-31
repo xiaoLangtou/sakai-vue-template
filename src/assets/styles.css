@@ -1,9 +1,8 @@
+@charset "UTF-8";
 /* You can add global styles to this file, and also import other style files */
 @use 'primeicons/primeicons.css';
 @use '@/assets/tailwind.css';
 @use '@/assets/layout/layout.scss';
-
-
 /* 全局滚动条样式优化 */
 /* Webkit 浏览器 (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
@@ -39,8 +38,6 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(108, 117, 125, 0.3) var(--p-content-background, #f8f9fa);
 }
-
-
 
 /* 细滚动条变体（用于小区域） */
 .scrollbar-thin::-webkit-scrollbar {

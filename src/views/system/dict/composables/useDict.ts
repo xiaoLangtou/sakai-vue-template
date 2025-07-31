@@ -16,7 +16,7 @@ export const useDict = () => {
             header: '字典名称',
             frozen: true,
             alignFrozen: 'left',
-            minWidth: 80
+
         },
         {
             key: 'dictCode',
@@ -24,31 +24,31 @@ export const useDict = () => {
             header: '字典编码',
             frozen: true,
             alignFrozen: 'left',
-            minWidth: 80
+
         },
         {
             key: 'systemFlag',
             field: 'systemFlag',
             header: '字典类型',
-            minWidth: 120,
+
         },
         {
             key: 'status',
             field: 'status',
             header: '状态',
-            minWidth: 80
+
         },
         {
             key: 'dataCount',
             field: 'dataCount',
             header: '字典项数量',
-            minWidth: 80
+
         },
         {
             key: 'dictDesc',
             field: 'dictDesc',
             header: '字典描述',
-            minWidth: 140,
+
             width: 200,
             ellipsis: true,           // 启用文本省略号
             showTooltip: true,        // 显示tooltip
@@ -61,13 +61,13 @@ export const useDict = () => {
             key: 'createTime',
             field: 'createTime',
             header: '创建时间',
-            minWidth: 100
+
         },
         {
             key: 'createBy',
             field: 'createBy',
             header: '创建人',
-            minWidth: 100
+           
         },
         {
             key: 'actions',

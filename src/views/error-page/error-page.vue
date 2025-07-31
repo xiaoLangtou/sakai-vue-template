@@ -27,7 +27,7 @@
                 <!-- 操作按钮 -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                     <Button severity="primary" @click="goHome">返回首页</Button>
-                    <Button @click="contactSupport">联系支持 </Button>
+                    <Button severity="primary" @click="goBack">返回上一级 </Button>
                 </div>
             </div>
         </div>
@@ -92,8 +92,8 @@ const goHome = () => {
     router.push('/');
 };
 
-const contactSupport = () => {
+const goBack = () => {
     // 实现联系支持的逻辑
-    logger.info('Contact support');
+    router.back();
 };
 </script>

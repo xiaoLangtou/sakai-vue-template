@@ -182,6 +182,22 @@ export function useTableStyles(props: TableStylesProps) {
             style.verticalAlign = column.verticalAlign;
         }
 
+        // 处理固定列样式
+        if (column.frozen) {
+            style.position = 'sticky';
+            style.zIndex = '1';
+            style.backgroundColor = 'inherit';
+            style.boxShadow = 'none';
+            
+            if (column.alignFrozen === 'left') {
+                style.left = '0';
+                style.borderRight = '1px solid var(--surface-border)';
+            } else if (column.alignFrozen === 'right') {
+                style.right = '0';
+                style.borderLeft = '1px solid var(--surface-border)';
+            }
+        }
+
         return style;
     };
 
@@ -208,6 +224,22 @@ export function useTableStyles(props: TableStylesProps) {
             style.minWidth = typeof column.minWidth === 'number'
                 ? `${column.minWidth}px`
                 : column.minWidth;
+        }
+
+        // 处理固定列样式
+        if (column.frozen) {
+            style.position = 'sticky';
+            style.zIndex = '2';
+            style.backgroundColor = '#f8fafc';
+            style.boxShadow = 'none';
+            
+            if (column.alignFrozen === 'left') {
+                style.left = '0';
+                style.borderRight = '1px solid var(--surface-border)';
+            } else if (column.alignFrozen === 'right') {
+                style.right = '0';
+                style.borderLeft = '1px solid var(--surface-border)';
+            }
         }
 
         return style;

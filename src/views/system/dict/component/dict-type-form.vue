@@ -2,14 +2,12 @@
 import { SmartFormField } from '@/components';
 import CustomDrawer from '@/components/custom-drawer';
 import globalToast from '@/services/core/toast';
-import { dictDataService } from '@/services/modules/dict-data';
 import { dictTypeService } from '@/services/modules/dict-type';
 import type { IDictData, IDictType } from '@/services/types/dict';
 import { to } from '@/utils/result-handler';
-import { Form } from '@primevue/forms';
+import { Form, type FormPassThroughAttributes } from '@primevue/forms';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { z } from 'zod';
 
 // 定义事件
@@ -49,7 +47,7 @@ const dictTypeSchema = z.object({
             (val) => ['BUSINESS', 'SYSTEM'].includes(val),
             { message: '字典类型必须是业务字典或系统字典' }
         ),
-    dictDesc: z.string().optional()
+    dictDesc: z.string().optional(),
 });
 
 const drawerVisible = ref(false);
@@ -59,16 +57,28 @@ const formRef = ref<InstanceType<typeof Form> | null>(null);
 // 表单验证状态
 const invalid = ref(false);
 
-const openDrawer = (data: IDictType | Record<string, any> = {}) => {
+const openDrawer = async (data: IDictType | Record<string, any> = {}) => {
+    // 重置表单验证状态
+    invalid.value = false;
+
+    // 正确设置初始值，确保编辑模式下有完整的数据
     initialDictTypeValue.value = {
         id: data.id || undefined,
         dictName: data.dictName || "",
         dictCode: data.dictCode || "",
         dictDesc: data.dictDesc || "",
         systemFlag: data.systemFlag || "",
-        status: data.status || 1
+        status: data.status !== undefined ? data.status : 1
     };
+
     drawerVisible.value = true;
+
+    // 在下一个tick中重置表单状态，确保表单正确初始化
+    await nextTick()
+    if (formRef.value) {
+        // 使用PrimeVue Forms的setValues方法设置初始值
+        (formRef.value as FormPassThroughAttributes).setValues(initialDictTypeValue.value);
+    }
 };
 
 // 暴露方法供父组件调用
@@ -81,63 +91,62 @@ const handleFormValidation = (event: any) => {
     invalid.value = !event.valid;
 };
 
+
+
 // 关闭抽屉
 const closeDrawer = () => {
     if (formRef.value) {
         (formRef.value as any).reset();
     }
+    // 重置验证状态
+    invalid.value = false;
     drawerVisible.value = false;
 };
 
-// 表单提交处理
-const onFormSubmit = async ({ valid, values }: any) => {
-    if (valid) {
+/**
+ * 表单提交处理函数
+ * @param event - PrimeVue Form 提交事件，包含 valid 状态和 values 数据
+ */
+const onFormSubmit = async (event: { valid: boolean; values: any; errors: any }) => {
+    const { valid, values } = event;
+
+    if (!valid) {
+        globalToast.error("请检查表单字段", '验证失败');
+        return;
+    }
+
+    try {
         // 创建字典类型
-        const typeResult = await to(dictTypeService.addDictType(values))
-        if (!typeResult.ok) return globalToast.error(`${values.dictName}】字典创建失败`, "提交失败");
-
-        const dictType = typeResult.value;
-
-        // 如果有字典项，批量创建
-        if (dictItems.value.length > 0) {
-            try {
-                for (const item of dictItems.value) {
-                    item.dictTypeId = dictType.id;
-                    await to(dictDataService.addDictData(item));
-                }
-                globalToast.success(`【${values.dictName}】字典及 ${dictItems.value.length} 个字典项创建成功`, "提交成功");
-            } catch {
-                globalToast.error('字典项创建失败，但字典类型已创建', "部分失败");
-            }
-        } else {
-            globalToast.success(`【${values.dictName}】字典创建成功`, "提交成功");
+        console.log(initialDictTypeValue.value)
+        const typeResult = await to(initialDictTypeValue.value.id ? dictTypeService.updateDictType({ ...values, id: initialDictTypeValue.value.id }) : dictTypeService.addDictType(values));
+        if (!typeResult.ok) {
+            globalToast.error(`【${values.dictName}】字典创建失败`, "提交失败");
+            return;
         }
-
-        emit("success")
-        closeDrawer()
-    } else {
-        globalToast.error("请检查表单字段", '验证失败')
+        emit("success");
+        closeDrawer();
+    } catch (error) {
+        console.error('表单提交错误:', error);
+        globalToast.error('提交过程中发生错误', "提交失败");
     }
 };
 
-// 手动触发表单提交
+/**
+ * 手动触发表单提交
+ */
 const handleSubmit = () => {
     if (formRef.value) {
-        const form = formRef.value as any;
-        form.validate().then(reps=>{
-            console.log(reps);
-        });
+        (formRef.value as FormPassThroughAttributes).submit();
     }
+
 };
-
-
-
-
 // 重置表单
 const resetForm = () => {
     if (formRef.value) {
-        (formRef.value as any).reset();
+        (formRef.value as FormPassThroughAttributes).reset();
     }
+    // 重置验证状态
+    invalid.value = false;
     dictItems.value = [];
     newDictItem.value = {
         dictValue: '',
@@ -154,8 +163,8 @@ const resetForm = () => {
     <CustomDrawer v-model:visible="drawerVisible" header="新建字典" width-type="extra-large" :show-default-footer="false"
         class="!w-[800px]">
         <Form ref="formRef" :initial-values="initialDictTypeValue" :resolver="zodResolver(dictTypeSchema)"
-            :validate-on-value-update="false" :validate-on-blur="true" class="form-grid"
-            @keydown.enter.prevent @validate="handleFormValidation">
+            :validate-on-value-update="false" :validate-on-blur="false" :validate-on-mount="false" class="form-grid"
+            @keydown.enter.prevent @validate="handleFormValidation" @submit="onFormSubmit">
             <!-- 字典名称字段 -->
             <SmartFormField name="dictName" label="字典名称" required class="mb-4">
                 <template #default="{ value, onInput, invalid }">
@@ -216,24 +225,24 @@ const resetForm = () => {
     </CustomDrawer>
 </template>
 
-    <style scoped>
-    .drawer-form {
-        max-width: 100%;
-    }
+<style scoped>
+.drawer-form {
+    max-width: 100%;
+}
 
-    .form-grid {
-        display: flex;
-        flex-direction: column;
-        padding: 1rem;
-    }
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
 
-    .field {
-        margin-bottom: 1rem;
-    }
+.field {
+    margin-bottom: 1rem;
+}
 
-    .form-label {
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
 </style>
