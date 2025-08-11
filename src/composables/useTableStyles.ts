@@ -59,19 +59,6 @@ export function useTableStyles(props: TableStylesProps) {
                 break;
         }
 
-        // 根据设置添加样式类
-        if (currentTableSettings.value.stripedRows || props.stripedRows) {
-            classes.push('p-datatable-striped');
-        }
-
-        if (currentTableSettings.value.showBorder) {
-            classes.push('p-datatable-gridlines');
-        }
-
-        if (currentTableSettings.value.showRowDivider) {
-            classes.push('table-row-divider');
-        }
-
         return classes.join(' ');
     });
 
@@ -87,6 +74,16 @@ export function useTableStyles(props: TableStylesProps) {
         }
 
         return styles;
+    });
+
+    // 计算是否显示网格线
+    const showGridlines = computed(() => {
+        return currentTableSettings.value.showBorder;
+    });
+
+    // 计算是否显示斑马纹
+    const showStripedRows = computed(() => {
+        return currentTableSettings.value.stripedRows;
     });
 
     // 获取列的样式配置
@@ -188,7 +185,7 @@ export function useTableStyles(props: TableStylesProps) {
             style.zIndex = '1';
             style.backgroundColor = 'inherit';
             style.boxShadow = 'none';
-            
+
             if (column.alignFrozen === 'left') {
                 style.left = '0';
                 style.borderRight = '1px solid var(--surface-border)';
@@ -230,9 +227,8 @@ export function useTableStyles(props: TableStylesProps) {
         if (column.frozen) {
             style.position = 'sticky';
             style.zIndex = '2';
-            style.backgroundColor = '#f8fafc';
             style.boxShadow = 'none';
-            
+
             if (column.alignFrozen === 'left') {
                 style.left = '0';
                 style.borderRight = '1px solid var(--surface-border)';
@@ -285,6 +281,8 @@ export function useTableStyles(props: TableStylesProps) {
         currentTableSettings,
         computedTableClass,
         computedTableStyle,
+        showGridlines,
+        showStripedRows,
         getColumnStyle,
         getColumnBodyStyle,
         getHeaderStyle,
@@ -292,5 +290,6 @@ export function useTableStyles(props: TableStylesProps) {
         handleTableSettingChange,
         resetStyles,
         getCurrentTheme
+
     };
 }

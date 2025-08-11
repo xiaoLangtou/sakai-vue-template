@@ -37,39 +37,26 @@ const handleMenuItemClick = () => {
     ]">
         <!-- 顶部Logo区域 -->
         <div v-if="!isMobile"
-            :class="['sidebar-header', 'flex items-center', collapsed ? 'justify-center px-2' : 'justify-start px-6', 'min-h-[64px]', 'backdrop-blur-sm']">
+            :class="['sidebar-header', 'flex items-center', collapsed ? 'justify-center px-2' : 'justify-start px-6', 'min-h-[64px] w-full', 'backdrop-blur-sm']">
             <!-- Logo -->
             <Transition enter-active-class="transition-all duration-400 cubic-bezier(0.34, 1.56, 0.64, 1)"
                 leave-active-class="transition-all duration-250 cubic-bezier(0.25, 0.46, 0.45, 0.94)"
                 enter-from-class="opacity-0 scale-90 translate-x-4" enter-to-class="opacity-100 scale-100 translate-x-0"
                 leave-from-class="opacity-100 scale-100 translate-x-0"
                 leave-to-class="opacity-0 scale-95 translate-x-2">
-                <div v-if="!collapsed" class="flex items-center gap-4 min-w-0">
-                    <div class="relative">
-                        <div
-                            class="w-11 h-11 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                            <i class="pi pi-bolt text-white text-xl font-semibold"></i>
+                <div v-if="!collapsed" class="flex items-center gap-4 justify-center w-full">
+                    <div class="flex items-center justify-center gap-4">
+                        <img src="@/assets/images/logo.svg" alt="logo" class="w-12 h-12" />
+                        <div class="flex flex-col">
+                            <span
+                                class="text-xl font-bold text-surface-900 dark:text-surface-50 truncate tracking-tight">TVA</span>
+                            <span
+                                class="text-xs text-surface-500 dark:text-surface-400 truncate font-medium">管理后台</span>
                         </div>
-                        <div
-                            class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-surface-50 dark:border-surface-900">
-                        </div>
-                    </div>
-                    <div class="flex flex-col min-w-0">
-                        <span
-                            class="text-xl font-bold text-surface-900 dark:text-surface-50 truncate tracking-tight">SAKAI</span>
-                        <span class="text-xs text-surface-500 dark:text-surface-400 truncate font-medium">管理后台</span>
                     </div>
                 </div>
                 <div v-else class="flex items-center justify-center">
-                    <div class="relative">
-                        <div
-                            class="w-9 h-9 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-xl flex items-center justify-center shadow-primary-500/25 ring-1 ring-primary-400/20">
-                            <i class="pi pi-bolt text-white text-base font-semibold"></i>
-                        </div>
-                        <div
-                            class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-surface-50 dark:border-surface-900">
-                        </div>
-                    </div>
+                    <img src="@/assets/images/logo.svg" alt="logo" class="w-12 h-12" />
                 </div>
             </Transition>
         </div>
@@ -95,7 +82,12 @@ const handleMenuItemClick = () => {
                 </div>
             </div>
         </div>
+        
     </aside>
+
+    <!-- Sidebar -->
+
+    <!-- End Sidebar -->
 </template>
 
 <style scoped>
@@ -108,7 +100,7 @@ const handleMenuItemClick = () => {
 /* 桌面端侧边栏动画优化 */
 .desktop-sidebar {
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.25s ease;
+        box-shadow 0.25s ease;
     will-change: width;
 }
 
@@ -151,7 +143,7 @@ const handleMenuItemClick = () => {
 /* 移动端侧边栏动画 */
 .mobile-sidebar {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s ease;
+        opacity 0.3s ease;
 }
 
 /* 性能优化 - 启用硬件加速 */
@@ -163,6 +155,7 @@ const handleMenuItemClick = () => {
 
 /* 响应式动画优化 */
 @media (prefers-reduced-motion: reduce) {
+
     .sidebar,
     .sidebar-header,
     .desktop-sidebar,

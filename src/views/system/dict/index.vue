@@ -228,19 +228,7 @@ const formatterDictType = (value: string) => {
 </template>
 
 <style lang="scss" scoped>
-/* 表头样式 */
-:deep(.p-datatable-header-cell) {
-    --p-datatable-header-cell-padding: 1rem;
-}
 
-:deep(.p-datatable .p-datatable-thead > tr > th) {
-    @apply bg-surface-100 dark:bg-surface-900 text-surface-700 dark:text-surface-300;
-    font-weight: 600;
-}
-
-:deep(.p-datatable .p-datatable-thead > tr > th:hover) {
-    background-color: #f1f5f9;
-}
 
 .status-badge {
     display: inline-block;

@@ -1,235 +1,317 @@
-@use 'mixins' as *;
+.app-menu {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-.layout-sidebar {
-    position: fixed;
-    width: var(--layout-sidebar-width);
-    height: 100vh;
-    z-index: 999;
+.menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        gap 0.25s ease;
+    box-sizing: border-box;
+}
+
+/* 移动端样式 */
+.mobile-menu {
+    @apply bg-opacity-95 backdrop-blur-md border-none shadow-xl;
+    border-radius: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.25s ease;
+}
+
+
+
+.mobile-menu .menu-content {
+    padding: 1.5rem 1rem;
+    gap: 0.25rem;
+    transition: padding 0.3s ease;
+}
+
+/* 桌面端样式 */
+.desktop-menu {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+/* 折叠状态样式 */
+.collapsed-menu {
+    width: 4rem;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.collapsed-menu .menu-content {
+    padding: 0.75rem 0.5rem;
+    align-items: center;
+    gap: 0.25rem;
+    transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        align-items 0.25s ease;
+}
+
+
+/* 菜单项包装器 */
+.menu-item-wrapper {
+    position: relative;
+}
+
+/* 响应式适配 */
+@media (max-width: 640px) {
+    .mobile-menu {
+        @apply rounded-t-2xl;
+    }
+
+    .mobile-menu .menu-content {
+        padding: 2rem 1.25rem 1.5rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .desktop-menu .menu-content {
+        padding: 0.5rem;
+    }
+}
+
+/* 性能优化 */
+.app-menu,
+.menu-content,
+.menu-item-wrapper {
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+/* 响应式动画优化 */
+@media (prefers-reduced-motion: reduce) {
+
+    .app-menu,
+    .menu-content,
+    .menu-item-wrapper,
+    .mobile-menu,
+    .desktop-menu,
+    .collapsed-menu {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* 基础菜单项样式 */
+.menu-item {
+    font-size: 14px;
+    @apply flex items-center px-3 py-2.5 mx-0 my-0.5 rounded-xl cursor-pointer text-slate-600 dark:text-slate-400 font-medium;
+    position: relative;
+    backdrop-filter: blur(8px);
+    box-sizing: border-box;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-item:hover {
+    @apply bg-slate-100 bg-opacity-80 text-slate-800 shadow-sm;
+    /* 移除translateX避免抖动 */
+}
+
+.menu-item.active {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white;
+    font-weight: 600;
+}
+
+.menu-item.active::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    @apply bg-primary-500 rounded-full;
+}
+
+
+
+/* 图标样式 */
+.menu-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-item-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+
+
+/* 标题样式 */
+.menu-item-title {
+    flex: 1;
     overflow: hidden;
-    user-select: none;
-    top: 0;
-    left: 0;
-    transition:
-        transform var(--layout-section-transition-duration),
-        left var(--layout-section-transition-duration),
-        width var(--layout-section-transition-duration);
-    background-color: var(--surface-overlay);
-    border-radius: var(--content-border-radius);
-
-    &.collapsed {
-        width: 64px;
-        
-        .layout-menu {
-            .layout-menuitem {
-                .layout-menuitem-root-text {
-                    opacity: 0;
-                    visibility: hidden;
-                }
-                
-                .layout-submenu-toggler {
-                    opacity: 0;
-                    visibility: hidden;
-                }
-                
-                .layout-menuitem-icon {
-                    margin-right: 0;
-                }
-                
-                .layout-menuitem-text {
-                    opacity: 0;
-                    visibility: hidden;
-                    transition: opacity 0.3s ease, visibility 0.3s ease;
-                }
-                
-                .layout-submenu {
-                    display: none;
-                }
-            }
-        }
-    }
-
-    .layout-sidebar-anchor {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-    }
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+    letter-spacing: 0.01em;
 }
 
-.layout-menu {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    padding: 0.5rem;
-
-    .layout-root-menuitem {
-        > .layout-menuitem-root-text {
-            font-size: 0.857rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: var(--text-color-secondary);
-            margin: 0.75rem 0 0.5rem 0;
-            padding: 0 0.75rem;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        &:first-child {
-            > .layout-menuitem-root-text {
-                margin-top: 0;
-            }
-        }
-
-        > a {
-            display: none;
-        }
-    }
-
-    a {
-        user-select: none;
-
-        &.active-menuitem {
-            > .layout-submenu-toggler {
-                transform: rotate(-180deg);
-            }
-        }
-    }
-
-    li.active-menuitem {
-        > a {
-            .layout-submenu-toggler {
-                transform: rotate(-180deg);
-            }
-        }
-    }
-
-    ul {
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-
-        a {
-            display: flex;
-            align-items: center;
-            position: relative;
-            outline: 0 none;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 0.75rem 1rem;
-            border-radius: var(--content-border-radius);
-            transition:
-                all var(--element-transition-duration);
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            .layout-menuitem-icon {
-                margin-right: 0.75rem;
-                width: 1.25rem;
-                height: 1.25rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-                transition: margin-right 0.3s ease;
-                
-                i {
-                    font-size: 1.125rem;
-                }
-            }
-
-            .layout-submenu-toggler {
-                font-size: 75%;
-                margin-left: auto;
-                transition: transform var(--element-transition-duration), opacity 0.3s ease, visibility 0.3s ease;
-                width: 1rem;
-                height: 1rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-shrink: 0;
-            }
-
-            &.active-route {
-                font-weight: 700;
-                background-color: var(--primary-color);
-                color: var(--primary-color-text);
-            }
-
-            &:hover {
-                background-color: var(--surface-hover);
-            }
-
-            &:focus {
-                @include focused-inset();
-            }
-        }
-
-        ul {
-            overflow: hidden;
-            border-radius: var(--content-border-radius);
-
-            li {
-                a {
-                    margin-left: 1rem;
-                    padding-left: 2.5rem;
-                }
-
-                li {
-                    a {
-                        margin-left: 1rem;
-                        padding-left: 3.5rem;
-                    }
-
-                    li {
-                        a {
-                            margin-left: 1rem;
-                            padding-left: 4.5rem;
-                        }
-
-                        li {
-                            a {
-                                margin-left: 1rem;
-                                padding-left: 5.5rem;
-                            }
-
-                            li {
-                                a {
-                                    margin-left: 1rem;
-                                    padding-left: 6.5rem;
-                                }
-
-                                li {
-                                    a {
-                                        margin-left: 1rem;
-                                        padding-left: 7.5rem;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+/* 箭头样式 */
+.menu-item-arrow {
+    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.7;
 }
 
-.layout-submenu-enter-from,
-.layout-submenu-leave-to {
-    max-height: 0;
+.menu-item:hover .menu-item-arrow {
+    opacity: 1;
 }
 
-.layout-submenu-enter-to,
-.layout-submenu-leave-from {
-    max-height: 1000px;
+.menu-item-arrow.expanded {
+    transform: rotate(90deg);
+    opacity: 1;
 }
 
-.layout-submenu-leave-active {
+/* 层级缩进 */
+.menu-item.level-1 {
+    padding-left: 1rem;
+    font-size: 14px;
+
+}
+
+.menu-item.level-2 {
+    padding-left: 3.5rem;
+    font-size: 14px;
+
+}
+
+.menu-item.level-3 {
+    padding-left: 4.5rem;
+    font-size: 14px;
+
+}
+
+
+/* 子菜单 */
+.submenu {
+    margin-top: 0.125rem;
+    margin-bottom: 0.125rem;
+    position: relative;
     overflow: hidden;
-    transition: max-height 0.45s cubic-bezier(0, 1, 0, 1);
 }
 
-.layout-submenu-enter-active {
-    overflow: hidden;
-    transition: max-height 1s ease-in-out;
+.submenu-container {
+    position: relative;
+    padding-left: 1rem;
+    margin-left: 0.75rem;
+    animation: slideDown 0.2s ease-out;
+    @apply flex flex-col gap-1;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+        max-height: 0;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+    }
+}
+
+/* 垂直连线 */
+.submenu-container::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: -0.25rem;
+    bottom: 0.5rem;
+    width: 2px;
+    @apply bg-gradient-to-b from-primary-500/30 to-primary-500/10;
+    border-radius: 1px;
+}
+
+
+
+
+
+/* 折叠状态菜单项 */
+.collapsed-menu-item {
+    @apply flex items-center justify-center w-11 h-11 mx-auto my-1 rounded-xl cursor-pointer text-slate-500;
+    position: relative;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.collapsed-menu-item:hover {
+    @apply bg-slate-100 bg-opacity-80 text-slate-700 shadow-md;
+    /* 移除scale避免抖动 */
+}
+
+.collapsed-menu-item.active {
+    @apply bg-gradient-to-br from-primary-500 to-primary-600 text-primary-50 shadow-lg;
+    font-weight: 600;
+}
+
+.collapsed-menu-item.active::after {
+    content: '';
+    position: absolute;
+    right: -0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    @apply bg-primary-400 rounded-full;
+}
+
+
+
+/* 悬浮菜单 */
+.floating-menu {
+    @apply fixed z-50 min-w-52 bg-white bg-opacity-95 backdrop-blur-md border border-slate-200 border-opacity-60 rounded-[6px] shadow-2xl;
+    animation: fadeInScale 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .menu-item.level-1 {
+        padding-left: 1rem;
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.floating-menu-content {
+    padding: 0.75rem;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    .menu-item {
+        padding: 0.875rem 1rem;
+        font-size: 15px;
+        @apply rounded-2xl;
+    }
+
+    .menu-item-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.875rem;
+    }
+
+    .collapsed-menu-item {
+        @apply w-12 h-12;
+    }
 }

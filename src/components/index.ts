@@ -11,6 +11,7 @@ export { default as SmartFormField } from '@/components/smart-form-field/index.v
 // 通用组件
 export { default as ConfigurableTable } from './configurable-table/index.vue';
 export { default as CustomDrawer } from './custom-drawer/index';
+export { default as GlobalSearch } from './global-search/index.vue';
 
 export { default as FloatingConfigurator } from './floating-configurator/index.vue';
 export { default as IconSelector } from './icon-selector/index.vue';

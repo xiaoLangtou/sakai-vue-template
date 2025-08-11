@@ -103,7 +103,7 @@ interface Emits<T = any> {
 
 const props = withDefaults(defineProps<Props>(), {
     dataKey: 'id',
-    showGridlines: true,
+    showGridlines: false,
     paginator: true,
     current: 1,
     rows: 10,
@@ -115,7 +115,7 @@ const props = withDefaults(defineProps<Props>(), {
     pageLinkSize: 5,
     alwaysShowPaginator: true,
     responsiveLayout: 'scroll',
-    stripedRows: true,
+    stripedRows: false,
     loading: false,
     showColumnSettings: true,
     columnSettingsPosition: 'header',
@@ -126,7 +126,7 @@ const props = withDefaults(defineProps<Props>(), {
     persistState: false,
     tableSettings: () => ({
         showRowDivider: true,
-        stripedRows: true,
+        stripedRows: false,
         showShadow: false,
         showBorder: true,
         virtualScroll: false,
@@ -149,6 +149,8 @@ const {
     computedTableStyle,
     selectedStyle,
     currentTableSettings,
+    showGridlines,
+    showStripedRows,
     handleStyleChange,
     handleTableSettingChange,
     getColumnStyle,
@@ -194,19 +196,48 @@ const handlePaginatorPage = (event: any) => {
 // 计算属性
 const hasData = computed(() => props.value && props.value.length > 0);
 
-const virtualScrollConfig = computed(() => {
-    if (!props.virtualScroll && !currentTableSettings.value.virtualScroll) {
-        return {};
+// 表格基础配置
+const tableBaseConfig = computed(() => {
+    const baseConfig = {
+        // 显示网格线
+        showGridlines: showGridlines.value,
+        // 显示斑马纹
+        stripedRows: showStripedRows.value,
+        // 滚动高度
+        scrollHeight: props.virtualScroll ? '400px' : 'flex',
+        // 是否可滚动
+        scrollable: props.scrollable,
+        // 列是否可调整宽度
+        resizableColumns: true,
+        // 列调整宽度模式
+        columnResizeMode: 'expand',
+        // 响应式布局
+        responsiveLayout: props.responsiveLayout,
+        // 加载状态
+        loading: props.loading,
+        // 选择模式
+        selectionMode: props.selectionMode,
+        // 选中的行
+        selection: props.selection,
+        // virtualScrollerOptions
+        virtualScrollerOptions: {},
+        // 分页器
+        paginator: false,
     }
 
-    return {
-        virtualScrollerOptions: {
+
+    if (props.virtualScroll && currentTableSettings.value.virtualScroll) {
+        baseConfig.virtualScrollerOptions = {
             itemSize: props.virtualScrollItemSize || currentTableSettings.value.virtualScrollItemSize || 46,
             showLoader: true,
             loading: props.loading
         }
-    };
-});
+    }
+
+
+
+    return baseConfig;
+})
 
 // 优化的工具函数 - 使用缓存避免重复计算
 const fieldPathCache = new Map<string, string[]>();
@@ -391,12 +422,7 @@ defineExpose({
         styles: computedTableStyle.value,
         selectedStyle: selectedStyle.value,
         settings: {
-            showRowDivider: currentTableSettings.value.showRowDivider ?? true,
-            stripedRows: currentTableSettings.value.stripedRows ?? true,
-            showShadow: currentTableSettings.value.showShadow ?? false,
-            showBorder: currentTableSettings.value.showBorder ?? true,
-            virtualScroll: currentTableSettings.value.virtualScroll ?? false,
-            virtualScrollItemSize: currentTableSettings.value.virtualScrollItemSize ?? 46
+            ...tableBaseConfig.value
         }
     }),
     refresh: handleRefresh,
@@ -406,6 +432,8 @@ defineExpose({
         }
     }
 });
+
+
 </script>
 
 <template>
@@ -432,12 +460,10 @@ defineExpose({
 
         <!-- 表格容器 -->
         <div class="table-container">
-            <DataTable ref="dataTableRef" :value="value" :data-key="dataKey" :show-gridlines="showGridlines"
-                :paginator="false" :scrollable="scrollable" :resizable-columns="true"
-                :scroll-height="virtualScroll ? '400px' : 'flex'" :column-resize-mode="'expand'"
-                :responsive-layout="responsiveLayout" :striped-rows="stripedRows" :loading="loading"
-                :class="computedTableClass" :style="computedTableStyle" :selection-mode="selectionMode"
-                :selection="selection" v-bind="{ ...virtualScrollConfig, ...$attrs }" @row-click="handleRowClick"
+
+
+            <DataTable ref="dataTableRef" :value="value" :data-key="dataKey" :class="computedTableClass"
+                :style="computedTableStyle" v-bind="{ ...$attrs, ...tableBaseConfig }" @row-click="handleRowClick"
                 @row-dblclick="handleRowDblClick" @sort="(event: any) => handleSortEvent(event)"
                 @selection-change="handleSelectionChange">
                 <!-- 动态生成列 - 优化key策略 -->
@@ -595,7 +621,7 @@ defineExpose({
 
 :deep(.p-datatable-frozen-column) {
     &:not(:last-child) {
-       border-right: 0!important;
+        border-right: 0 !important;
     }
 }
 

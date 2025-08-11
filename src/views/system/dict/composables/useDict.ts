@@ -22,8 +22,6 @@ export const useDict = () => {
             key: 'dictCode',
             field: 'dictCode',
             header: '字典编码',
-            frozen: true,
-            alignFrozen: 'left',
 
         },
         {
@@ -67,13 +65,13 @@ export const useDict = () => {
             key: 'createBy',
             field: 'createBy',
             header: '创建人',
-           
+
         },
         {
             key: 'actions',
             header: '操作',
             style: {
-                width: '300px'
+                width: '260px'
             },
             headerStyle: {
                 display: 'flex',

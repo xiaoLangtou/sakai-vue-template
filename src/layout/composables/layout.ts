@@ -1,5 +1,5 @@
 import type { LayoutConfig, LayoutState, MenuItem, UseLayoutReturn } from '@/types/layout';
-import { computed, reactive, ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue';
 
 const layoutConfig = reactive<LayoutConfig>({
     preset: 'Aura',
@@ -48,7 +48,7 @@ export function useLayout(): UseLayoutReturn {
     onMounted(() => {
         window.addEventListener('resize', handleResize);
         handleResize(); // 初始化
-        
+
         // 确保主题在应用启动时正确应用
         nextTick(() => {
             // 触发主题更新事件，确保配置器能够应用当前的主题设置
@@ -67,14 +67,28 @@ export function useLayout(): UseLayoutReturn {
         layoutState.activeMenuItem = item.value || item;
     };
 
-    const toggleDarkMode = (): void => {
+    const toggleDarkMode = (event?: MouseEvent): void => {
+        // 检查浏览器是否支持 View Transition API
         if (!document.startViewTransition) {
             executeDarkModeToggle();
-
             return;
         }
 
+        const x = event?.clientX ?? window.innerWidth / 2;
+        const y = event?.clientY ?? window.innerHeight / 2;
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+
+        // 设置CSS变量
+        document.documentElement.style.setProperty('--x', x + 'px')
+        document.documentElement.style.setProperty('--y', y + 'px')
+        document.documentElement.style.setProperty('--r', endRadius + 'px')
         document.startViewTransition(() => executeDarkModeToggle());
+
+
     };
 
     const executeDarkModeToggle = (): void => {

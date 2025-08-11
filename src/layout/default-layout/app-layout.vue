@@ -39,21 +39,11 @@ provide('layout', {
         'desktop-layout': isDesktop
     }">
         <!-- 桌面端和平板端侧边栏 -->
-        <AppSidebar
-            v-if="!isMobile"
-            :collapsed="isCollapsed"
-            @toggle-sidebar="toggleSidebar"
-        />
+        <AppSidebar v-if="!isMobile" :collapsed="isCollapsed" @toggle-sidebar="toggleSidebar" />
 
         <!-- 移动端抽屉式侧边栏 -->
-        <Drawer
-            v-if="isMobile"
-            v-model:visible="showMobileSidebar"
-            position="left"
-            :style="{ width: '280px' }"
-            class="mobile-sidebar-drawer"
-            @hide="closeMobileSidebar"
-        >
+        <Drawer v-if="isMobile" v-model:visible="showMobileSidebar" position="left" :style="{ width: '280px' }"
+            class="mobile-sidebar-drawer" @hide="closeMobileSidebar">
             <template #header>
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -63,29 +53,25 @@ provide('layout', {
                 </div>
             </template>
             <div class="mobile-sidebar-content">
-                <AppSidebar
-                    :collapsed="false"
-                    :is-mobile="true"
-                    @menu-item-click="closeMobileSidebar"
-                />
+                <AppSidebar :collapsed="false" :is-mobile="true" @menu-item-click="closeMobileSidebar" />
             </div>
         </Drawer>
 
         <!-- 右侧主体区域 -->
-        <div class="main-content" :class="{
+        <div class="main-content relative" :class="{
             'mobile-main': isMobile,
             'tablet-main': isTablet,
             'desktop-main': isDesktop
         }">
             <!-- 顶部头部栏 -->
-            <AppHeader
-                :collapsed="isCollapsed"
-                :is-mobile="isMobile"
-                @toggle-sidebar="toggleSidebar"
-            />
+            <AppHeader :collapsed="isCollapsed" :is-mobile="isMobile" @toggle-sidebar="toggleSidebar" />
+            <div
+                class="absolute top-[64px] left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10">
+            </div>
 
             <!-- 主要内容区域 -->
-            <div class="layout-main-container">
+            <div class="layout-main-container relative">
+
                 <div class="content-wrapper">
                     <router-view></router-view>
                 </div>
@@ -176,13 +162,9 @@ provide('layout', {
     }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1024px) {}
 
-}
-
-@media (min-width: 1536px) {
-
-}
+@media (min-width: 1536px) {}
 
 /* 性能优化 */
 .app-layout {

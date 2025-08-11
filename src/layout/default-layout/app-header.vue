@@ -52,13 +52,10 @@ defineEmits(['toggle-sidebar']);
 
 <style lang="scss" scoped>
 .app-header {
-    @apply bg-surface-50 dark:bg-surface-900;
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 64px;
-
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: sticky;
     top: 0;

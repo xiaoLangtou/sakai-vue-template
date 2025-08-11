@@ -33,23 +33,25 @@ onMounted(() => {
 <template>
     <div class="app-layout-topbar">
         <!-- 固定顶部区域：Logo和工具栏 -->
-        <div class="topbar-header fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <div
+            class="topbar-header fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
             <!-- Logo区域 -->
             <div class="flex items-center gap-4">
-                <img src="/favicon.ico" alt="Logo" class="h-8" />
-                <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Sakai</h1>
+                <img src="@/assets/images/logo.svg" alt="logo" class="w-12 h-12" />
             </div>
-
+            <AppMegaMenu />
             <!-- 工具栏区域 -->
             <AppTopbar />
-        </div>
-        <!-- 固定菜单栏区域 -->
-        <div class="topbar-menu fixed left-0 right-0 z-40 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700" :style="{ top: headerHeight + 'px' }">
-            <AppMegaMenu />
+
+            <div
+                :class="`absolute top-[50px] left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
+            </div>
+
         </div>
 
+
         <!-- 可滚动的主内容区域 -->
-        <div class="layout-main-container" :style="{ marginTop: headerHeight + menuHeight + 'px' }">
+        <div class="layout-main-container" :style="{ marginTop: headerHeight + 'px' }">
             <div class="content-wrapper p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
                 <router-view />
             </div>
@@ -121,6 +123,7 @@ html {
 
 /* 确保固定元素在移动设备上正常工作 */
 @supports (-webkit-touch-callout: none) {
+
     .topbar-header,
     .topbar-menu {
         position: -webkit-sticky;

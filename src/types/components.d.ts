@@ -24,6 +24,7 @@ declare module 'vue' {
     Fieldset: typeof import('primevue/fieldset')['default']
     FilterItem: typeof import('./../components/search/filter-item/index.vue')['default']
     FloatingConfigurator: typeof import('./../components/floating-configurator/index.vue')['default']
+    GlobalSearch: typeof import('./../components/global-search/index.vue')['default']
     IconField: typeof import('primevue/iconfield')['default']
     IconSelector: typeof import('./../components/icon-selector/index.vue')['default']
     InputGroup: typeof import('primevue/inputgroup')['default']

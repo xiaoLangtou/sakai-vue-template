@@ -10,4 +10,4 @@
 @use './_responsive';
 @use './_utils';
 @use './_typography';
-@use "./theme-animation"
+@use "./theme-animation";
