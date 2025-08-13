@@ -3,11 +3,14 @@ import { computed, nextTick, onMounted, onUnmounted, reactive, ref } from 'vue';
 
 const layoutConfig = reactive<LayoutConfig>({
     preset: 'Aura',
-    primary: 'noir',
+    primary: 'emerald',
     surface: null,
     darkTheme: false,
     menuMode: 'static',
-    layoutMode: 'sidebar'
+    layoutMode: 'sidebar',
+    showTab: true,
+    tabStyle: "Fashion",
+    isShowIcon: true
 });
 
 const layoutState = reactive<LayoutState>({
@@ -23,9 +26,11 @@ const layoutState = reactive<LayoutState>({
 export function useLayout(): UseLayoutReturn {
     // 响应式断点状态
     const windowWidth = ref(window.innerWidth);
-    const isMobile = computed(() => windowWidth.value < 768);
-    const isTablet = computed(() => windowWidth.value >= 768 && windowWidth.value < 1024);
-    const isDesktop = computed(() => windowWidth.value >= 1024);
+
+    // 响应式断点
+    const isMobile = computed(() => windowWidth.value < 768)
+    const isTablet = computed(() => windowWidth.value >= 768 && windowWidth.value < 1600)
+    const isDesktop = computed(() => windowWidth.value >= 1600)
 
     // 移动端侧边栏显示状态
     const showMobileSidebar = ref(false);
@@ -34,14 +39,14 @@ export function useLayout(): UseLayoutReturn {
     const handleResize = () => {
         windowWidth.value = window.innerWidth;
 
-        // 当从移动端切换到桌面端时，关闭移动端侧边栏
-        if (isDesktop.value && showMobileSidebar.value) {
-            showMobileSidebar.value = false;
-        }
-
-        // 桌面端自动展开侧边栏
-        if (isDesktop.value && layoutState.staticMenuDesktopInactive) {
-            layoutState.staticMenuDesktopInactive = false;
+        // 当切换到桌面端时，关闭移动端侧边栏并自动展开侧边栏
+        if (isDesktop.value) {
+            if (showMobileSidebar.value) {
+                showMobileSidebar.value = false;
+            }
+            if (layoutState.staticMenuDesktopInactive) {
+                layoutState.staticMenuDesktopInactive = false;
+            }
         }
     };
 
@@ -97,18 +102,12 @@ export function useLayout(): UseLayoutReturn {
     };
 
     const toggleMenu = (): void => {
-        if (isMobile.value) {
-            // 移动端：切换抽屉式侧边栏
+
+        if (isMobile.value || isTablet.value) {
+
             showMobileSidebar.value = !showMobileSidebar.value;
-        } else if (isTablet.value) {
-            // 平板端：切换覆盖模式
-            if (layoutConfig.menuMode === 'overlay') {
-                layoutState.overlayMenuActive = !layoutState.overlayMenuActive;
-            } else {
-                layoutState.staticMenuMobileActive = !layoutState.staticMenuMobileActive;
-            }
         } else {
-            // 桌面端：切换折叠状态
+
             layoutState.staticMenuDesktopInactive = !layoutState.staticMenuDesktopInactive;
         }
     };
@@ -119,18 +118,15 @@ export function useLayout(): UseLayoutReturn {
     };
 
     const isSidebarActive = computed(() => {
-        if (isMobile.value) {
+        if (isMobile.value || isTablet.value) {
             return showMobileSidebar.value;
         }
-        return layoutState.overlayMenuActive || layoutState.staticMenuMobileActive;
+        return !layoutState.staticMenuDesktopInactive;
     });
 
     const isCollapsed = computed(() => {
-        if (isMobile.value) {
+        if (isMobile.value || isTablet.value) {
             return !showMobileSidebar.value;
-        }
-        if (isTablet.value) {
-            return !layoutState.overlayMenuActive && !layoutState.staticMenuMobileActive;
         }
         return layoutState.staticMenuDesktopInactive;
     });
@@ -144,6 +140,23 @@ export function useLayout(): UseLayoutReturn {
     const getPrimary = computed(() => layoutConfig.primary);
 
     const getSurface = computed(() => layoutConfig.surface);
+
+    const isShowTab = ref(layoutConfig.showTab);
+    const tabStyle = ref(layoutConfig.tabStyle);
+    const isShowIcon = ref(layoutConfig.isShowIcon);
+
+    watch(() => isShowTab.value, (newVal) => {
+        layoutConfig.showTab = newVal;
+        console.log('isShowTab', newVal);
+    })
+
+    watch(() => tabStyle.value, (newVal) => {
+        layoutConfig.tabStyle = newVal;
+    })
+
+    watch(() => isShowIcon.value, (newVal) => {
+        layoutConfig.isShowIcon = newVal;
+    })
 
     return {
         layoutConfig,
@@ -163,6 +176,10 @@ export function useLayout(): UseLayoutReturn {
         isDesktop,
         showMobileSidebar,
         closeMobileSidebar,
-        windowWidth
+        windowWidth,
+        // 新增标签相关
+        isShowTab,
+        tabStyle,
+        isShowIcon
     };
 }

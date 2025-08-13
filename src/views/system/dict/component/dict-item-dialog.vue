@@ -82,12 +82,6 @@ const statusOptions = ref([
     { label: '停用', value: false }
 ]);
 
-// 默认值选项
-const defaultOptions = ref([
-    { label: '是', value: true },
-    { label: '否', value: false }
-]);
-
 // Form 组件引用
 const formRef = ref<any>(null);
 
@@ -260,23 +254,6 @@ watch(() => props.visible, (newVisible) => {
                         optionValue="value"
                         @update:modelValue="(val) => onInput({ target: { value: val } })"
                         placeholder="选择状态"
-                        class="w-full"
-                        :class="{ 'p-invalid': invalid }"
-                    />
-                </template>
-            </SmartFormField>
-
-            <!-- 是否默认字段 -->
-            <SmartFormField name="isDefault" label="是否默认" class="mb-4">
-                <template #default="{ value, onInput, invalid }">
-                    <Select
-                        id="isDefault"
-                        :modelValue="value"
-                        :options="defaultOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        @update:modelValue="(val) => onInput({ target: { value: val } })"
-                        placeholder="选择是否默认"
                         class="w-full"
                         :class="{ 'p-invalid': invalid }"
                     />

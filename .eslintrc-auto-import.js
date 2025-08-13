@@ -120,6 +120,7 @@ export default {
     "storeToRefs": true,
     "syncRef": true,
     "syncRefs": true,
+    "tab": true,
     "templateRef": true,
     "throttledRef": true,
     "throttledWatch": true,

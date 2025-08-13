@@ -1,10 +1,11 @@
 <script setup>
+import { AppTabs } from '@/components/app-tabs';
+import Drawer from 'primevue/drawer';
 import { provide } from 'vue';
 import { useLayout } from '../composables/layout';
 import AppFooter from './app-footer.vue';
 import AppHeader from './app-header.vue';
 import AppSidebar from './app-sidebar.vue';
-import Drawer from 'primevue/drawer';
 
 const {
     layoutConfig,
@@ -14,8 +15,19 @@ const {
     isTablet,
     isDesktop,
     showMobileSidebar,
-    closeMobileSidebar
+    closeMobileSidebar,
 } = useLayout();
+
+// 统一的切换处理函数
+const handleToggleSidebar = () => {
+    if (isMobile.value || isTablet.value) {
+        // 移动端和平板端：切换抽屉侧边栏
+        showMobileSidebar.value = !showMobileSidebar.value;
+    } else {
+        // 桌面端：切换侧边栏折叠状态
+        toggleSidebar();
+    }
+};
 
 // 提供给子组件使用
 provide('layout', {
@@ -39,11 +51,12 @@ provide('layout', {
         'desktop-layout': isDesktop
     }">
         <!-- 桌面端和平板端侧边栏 -->
-        <AppSidebar v-if="!isMobile" :collapsed="isCollapsed" @toggle-sidebar="toggleSidebar" />
+        <AppSidebar :collapsed="isCollapsed" :is-mobile="isMobile" @toggle-sidebar="toggleSidebar" />
 
-        <!-- 移动端抽屉式侧边栏 -->
-        <Drawer v-if="isMobile" v-model:visible="showMobileSidebar" position="left" :style="{ width: '280px' }"
-            class="mobile-sidebar-drawer" @hide="closeMobileSidebar">
+        <!-- 移动端和平板端抽屉式侧边栏 -->
+        <Drawer v-if="isMobile || isTablet" v-model:visible="showMobileSidebar" position="left"
+            :style="{ width: '280px', '--p-drawer-content-padding': '0px' }" class="mobile-sidebar-drawer"
+            @hide="closeMobileSidebar">
             <template #header>
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -64,9 +77,13 @@ provide('layout', {
             'desktop-main': isDesktop
         }">
             <!-- 顶部头部栏 -->
-            <AppHeader :collapsed="isCollapsed" :is-mobile="isMobile" @toggle-sidebar="toggleSidebar" />
+            <AppHeader :collapsed="isCollapsed" :is-mobile="isMobile" @toggle-sidebar="handleToggleSidebar" />
+
+            <!-- 标签页组件 -->
+            <AppTabs v-if="layoutConfig.showTab" class="tabs-container" :tabStyle="layoutConfig.tabStyle" :show-icon="layoutConfig.isShowIcon" />
+
             <div
-                class="absolute top-[64px] left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10">
+                :class="`absolute ${layoutConfig.showTab ? `top-[${layoutConfig.tabStyle == 'Fashion' ? '112px' : '110px'}]` : 'top-[60px]'}  left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
             </div>
 
             <!-- 主要内容区域 -->
@@ -113,12 +130,15 @@ provide('layout', {
 
 /* 移动端布局 */
 .mobile-layout {
-    flex-direction: column;
+    flex-direction: row;
+    /* 保持水平布局 */
 }
 
 .mobile-layout .mobile-main {
     width: 100%;
     margin-left: 0;
+    flex: 1;
+    /* 占满剩余空间 */
 }
 
 /* 平板端布局 */
@@ -156,15 +176,33 @@ provide('layout', {
     }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 768px) and (max-width: 1599px) {
     .content-wrapper {
         padding: 0.75rem;
+        margin-left: 0;
     }
 }
 
-@media (min-width: 1024px) {}
+@media (min-width: 1600px) {
+    .content-wrapper {
+        padding: 1rem;
+    }
+}
 
-@media (min-width: 1536px) {}
+/* 标签页容器样式 */
+.tabs-container {
+    position: sticky;
+    top: 64px;
+    z-index: 2;
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+    .tabs-container {
+        background: var(--surface-900);
+        border-bottom-color: var(--surface-700);
+    }
+}
 
 /* 性能优化 */
 .app-layout {

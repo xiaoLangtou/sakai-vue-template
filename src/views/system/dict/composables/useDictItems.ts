@@ -1,79 +1,62 @@
 import type { TableColumns } from "@/composables";
+import { dictDataService } from "@/services/modules/dict-data";
 import { dictTypeService } from "@/services/modules/dict-type";
-import type { IDictType, IDictTypeQuery } from "@/services/types/dict";
+
+import type { IDictData, IDictDataQuery, IDictType } from "@/services/types/dict";
 import type { IPageResult } from "@/services/types/types";
 import type { FilterConfig, SearchParams } from "@/types/search";
 import { to } from "@/utils/result-handler";
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 import { useQuery } from "@tanstack/vue-query";
 
 
 
-export const useDict = () => {
-    const tableColumns = ref<TableColumns<IDictType>>([
+
+export const useDictItems = (dictTypeId: number) => {
+    // 表格列配置
+    const tableColumns = ref<TableColumns<IDictData>>([
         {
-            key: 'dictName',
-            field: 'dictName',
-            header: '字典名称',
+            key: 'label',
+            field: 'label',
+            header: '字典标签',
             frozen: true,
             alignFrozen: 'left',
-
+            minWidth: 120
         },
         {
-            key: 'dictCode',
-            field: 'dictCode',
-            header: '字典编码',
-
+            key: 'value',
+            field: 'value',
+            header: '字典值'
         },
         {
-            key: 'systemFlag',
-            field: 'systemFlag',
-            header: '字典类型',
-
+            key: 'sort',
+            field: 'sort',
+            header: '排序'
         },
         {
             key: 'status',
             field: 'status',
-            header: '状态',
-
+            header: '状态'
         },
         {
-            key: 'dataCount',
-            field: 'dataCount',
-            header: '字典项数量',
-
+            key: 'isDefault',
+            field: 'isDefault',
+            header: '默认值'
         },
         {
-            key: 'dictDesc',
-            field: 'dictDesc',
-            header: '字典描述',
-
-            width: 200,
-            ellipsis: true,           // 启用文本省略号
-            showTooltip: true,        // 显示tooltip
-            tooltipOptions: {
-                position: 'bottom',     // tooltip位置
-                showDelay: 500         // 显示延迟
-            }
+            key: 'remark',
+            field: 'remark',
+            header: '备注'
         },
         {
             key: 'createTime',
             field: 'createTime',
-            header: '创建时间',
-
-        },
-        {
-            key: 'createBy',
-            field: 'createBy',
-            header: '创建人',
-
+            header: '创建时间'
         },
         {
             key: 'actions',
             header: '操作',
             style: {
-                width: '260px'
+                width: '300px'
             },
             headerStyle: {
                 display: 'flex',
@@ -84,54 +67,34 @@ export const useDict = () => {
         }
     ]);
 
-    const filterConfigs = ref<FilterConfig[]>([
+
+    // 搜索和过滤配置
+    const filterConfigs: FilterConfig[] = [
         {
-            key: "dictCode",
-            label: "字典编码",
-            type: "input"
-        },
-        {
-            key: "systemFlag",
-            label: "字典类型",
-            type: "select",
+            key: 'status',
+            label: '状态',
+            type: 'select',
             options: [
-                {
-                    label: "业务字典",
-                    value: "BUSINESS"
-                },
-                {
-                    label: "系统字典",
-                    value: "SYSTEM"
-                }
+                { label: '全部', value: '' },
+                { label: '启用', value: 'active' },
+                { label: '禁用', value: 'inactive' }
             ]
         },
         {
-            key: "status",
-            label: "状态",
-            type: "select",
+            key: 'isDefault',
+            label: '默认值',
+            type: 'select',
             options: [
-                {
-                    label: "启用",
-                    value: "1"
-                },
-                {
-                    label: "禁用",
-                    value: "0"
-                }
+                { label: '全部', value: '' },
+                { label: '是', value: 'true' },
+                { label: '否', value: 'false' }
             ]
         }
-    ])
+    ];
 
-
-    const searchParams = ref<SearchParams<IDictTypeQuery>>({
-        keyword: '',
-        filters: {
-            dictCode: '',
-            dictType: '',
-            status: '',
-            systemFlag: ''
-        }
-    })
+    const searchParams = ref<SearchParams<IDictDataQuery>>({
+        keyword: ''
+    });
 
     const pageInfo = ref({
         current: 1,
@@ -140,9 +103,10 @@ export const useDict = () => {
     })
 
     const { data: tableData, isLoading, refetch } = useQuery({
-        queryKey: ['dictTypes', pageInfo.value.current],
+        queryKey: ['dictItems', pageInfo.value.current],
         queryFn: async () => {
-            const result = await to<IPageResult<IDictType>>(dictTypeService.getDictList({
+            const result = await to<IPageResult<IDictData>>(dictDataService.getDictDataList({
+                typeId: dictTypeId,
                 current: pageInfo.value.current,
                 size: pageInfo.value.size,
                 dictName: searchParams.value.keyword,
@@ -160,7 +124,23 @@ export const useDict = () => {
         }
     })
 
+    const { data: dictDetail } = useQuery({
+        queryKey: [`dictDetail|${dictTypeId}`],
+        queryFn: async () => {
+            const result = await to<IDictType>(dictTypeService.getDictTypeDetail(dictTypeId as unknown as string))
 
+            if (!result.ok) return {}
+            console.log(result.value)
+            return result.value;
+        }
+    })
+
+
+
+
+    function handleColumnsChange(columns: TableColumns<IDictData>): void {
+        tableColumns.value = columns;
+    }
     const handlePageChange = (page: any) => {
         pageInfo.value.current = page.page + 1; // PrimeVue 分页从 0 开始
         pageInfo.value.size = page.rows;
@@ -193,9 +173,10 @@ export const useDict = () => {
         searchParams,
         pageInfo,
         tableData,
+        dictDetail,
         isLoading,
         handlePageChange,
         handleFilterChange,
-        handleRefresh
+        handleRefresh, handleColumnsChange
     }
 }

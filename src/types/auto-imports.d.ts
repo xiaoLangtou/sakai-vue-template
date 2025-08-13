@@ -12,6 +12,7 @@ declare global {
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const button: typeof import('primevue/button')['button']
+  const card: typeof import('primevue/card')['card']
   const column: typeof import('primevue/column')['column']
   const computed: typeof import('vue')['computed']
   const computedAsync: typeof import('@vueuse/core')['computedAsync']

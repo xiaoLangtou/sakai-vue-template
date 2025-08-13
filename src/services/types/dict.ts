@@ -44,7 +44,6 @@ export interface IDictData {
 export interface IDictDataQuery {
     dictValue?: string;
     dictLabel?: string;
-    dictTypeId?: number;
     status?: number;
 
     [key: string]: any;

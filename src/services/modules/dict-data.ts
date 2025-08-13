@@ -1,7 +1,7 @@
 
 import { http } from "@/services/core/http";
 import type { IDictData, IDictDataQuery } from "../types/dict";
-import type { IQueryPage } from "../types/types";
+import type { IPageResult, IQueryPage } from "../types/types";
 
 class DictDataService {
     private static instance: DictDataService;
@@ -17,8 +17,8 @@ class DictDataService {
      * @param {string} id 字典类型ID
      * @returns {Promise<IDictData[]>} 字典数据列表
      */
-    getDictDataList(query: IDictDataQuery & IQueryPage) {
-        return http.get<IDictData[]>(`/dict/data/list`, {
+    getDictDataList(query: IDictDataQuery & IQueryPage & { typeId: number; }) {
+        return http.get<IPageResult<IDictData>>(`/dict/data/list`, {
             params: {
                 ...query
             }

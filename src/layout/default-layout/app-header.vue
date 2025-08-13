@@ -14,7 +14,11 @@ defineProps({
     }
 });
 
-defineEmits(['toggle-sidebar']);
+const emit = defineEmits(['toggle-sidebar', 'toggle-mobile-sidebar']);
+
+const handleToggle = () => {
+    emit('toggle-sidebar');
+}
 </script>
 
 <template>
@@ -24,13 +28,12 @@ defineEmits(['toggle-sidebar']);
     }">
         <div class="header-left">
             <!-- 移动端菜单按钮 -->
-            <Button v-if="isMobile" @click="$emit('toggle-sidebar')" icon="pi pi-bars" severity="secondary" text rounded
-                class="mobile-menu-toggle" aria-label="切换菜单" />
+            <Button v-if="isMobile" icon="pi pi-bars" severity="secondary" text rounded class="mobile-menu-toggle"
+                aria-label="切换菜单" @click="handleToggle" />
 
             <!-- 桌面端折叠按钮 -->
-            <Button v-if="!isMobile" @click="$emit('toggle-sidebar')" icon="pi pi-bars" severity="secondary" text
-                rounded :aria-label="collapsed ? '展开侧边栏' : '折叠侧边栏'" />
-
+            <Button v-if="!isMobile" icon="pi pi-bars" severity="secondary" text rounded
+                :aria-label="collapsed ? '展开侧边栏' : '折叠侧边栏'" @click="$emit('toggle-sidebar')" />
             <!-- 移动端Logo -->
             <div v-if="isMobile" class="mobile-logo">
                 <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
@@ -167,12 +170,124 @@ defineEmits(['toggle-sidebar']);
 @media (min-width: 768px) and (max-width: 1023px) {
     .app-header {
         padding: 0 20px;
+        margin-left: 60px;
     }
 }
 
 @media (min-width: 1024px) {
     .desktop-header {
         padding: 0 24px;
+    }
+}
+
+/* MegaMenu 自定义样式 */
+:deep(.custom-megamenu) {
+    .p-megamenu-root-list {
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .p-megamenu-item {
+        .p-megamenu-item-content {
+            border-radius: 8px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: var(--surface-100);
+                transform: translateY(-1px);
+            }
+        }
+    }
+
+    .custom-menu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+            color: var(--primary-color);
+        }
+    }
+
+    .p-megamenu-panel {
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        border: 1px solid var(--surface-border);
+        padding: 16px;
+        margin-top: 8px;
+    }
+}
+
+.custom-submenu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    min-width: 600px;
+}
+
+.submenu-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.submenu-group {
+    .group-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-color-secondary);
+        margin: 0 0 8px 0;
+        padding-bottom: 4px;
+        border-bottom: 1px solid var(--surface-border);
+    }
+
+    .group-items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .group-item {
+        .item-link {
+            display: block;
+            padding: 6px 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: var(--surface-100);
+                color: var(--primary-color);
+                transform: translateX(4px);
+            }
+        }
+    }
+}
+
+/* 暗色模式适配 */
+:global(.dark) {
+    :deep(.custom-megamenu) {
+        .p-megamenu-item-content:hover {
+            background-color: var(--surface-800);
+        }
+
+        .p-megamenu-panel {
+            background-color: var(--surface-900);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    .submenu-group .group-item .item-link:hover {
+        background-color: var(--surface-800);
     }
 }
 

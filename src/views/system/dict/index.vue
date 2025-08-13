@@ -219,8 +219,7 @@ const formatterDictType = (value: string) => {
                 </div>
             </template>
         </ConfigurableTable>
-        <!-- 更多操作菜单 -->
-        <TieredMenu ref="moreMenu" :model="moreMenuItems" popup />
+        
 
         <!-- 字典类型对话框 -->
         <DictTypeForm ref="dictTypeForm" @success="handleRefresh" />

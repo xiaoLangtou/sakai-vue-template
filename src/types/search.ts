@@ -9,7 +9,7 @@ export interface SearchParams<T = Record<string, any>> {
     /** 关键词 */
     keyword: string;
     /** 筛选条件 */
-    filters: T;
+    filters?: T;
 
     [key: string]: any;
 

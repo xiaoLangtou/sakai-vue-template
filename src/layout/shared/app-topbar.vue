@@ -17,6 +17,8 @@ const { toggleDarkMode, isDarkTheme } = useLayout();
 
 // 用户资料抽屉状态管理
 const profileDrawerVisible = ref(false);
+// 系统配置抽屉状态管理
+const configDrawerVisible = ref(false);
 const mobileMenuPanel = ref();
 
 /**
@@ -24,6 +26,13 @@ const mobileMenuPanel = ref();
  */
 const openProfileDrawer = () => {
     profileDrawerVisible.value = true;
+};
+
+/**
+ * 打开系统配置抽屉
+ */
+const openConfigDrawer = () => {
+    configDrawerVisible.value = true;
 };
 
 /**
@@ -68,10 +77,10 @@ const toggleMobileMenu = (event) => {
                             <span>Profile</span>
                         </button>
                         <div class="mobile-menu-divider"></div>
-                        <div class="mobile-menu-item">
+                        <button type="button" class="mobile-menu-item" @click="openConfigDrawer">
                             <i class="pi pi-palette"></i>
                             <span>主题配置</span>
-                        </div>
+                        </button>
                     </div>
                 </OverlayPanel>
             </template>
@@ -82,14 +91,9 @@ const toggleMobileMenu = (event) => {
                     <button type="button" class="layout-topbar-action" @click="toggleDarkMode">
                         <i :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"></i>
                     </button>
-                    <div class="relative">
-                        <button
-                            v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
-                            type="button" class="layout-topbar-action layout-topbar-action-highlight">
-                            <i class="pi pi-palette"></i>
-                        </button>
-                        <AppConfigurator />
-                    </div>
+                    <button type="button" class="layout-topbar-action layout-topbar-action-highlight" @click="openConfigDrawer">
+                        <i class="pi pi-palette"></i>
+                    </button>
                 </div>
 
                 <button class="layout-topbar-menu-button layout-topbar-action"
@@ -122,6 +126,9 @@ const toggleMobileMenu = (event) => {
         :style="{ width: isMobile ? '100vw' : '50rem' }">
         <UserProfile />
     </Drawer>
+
+    <!-- 系统配置抽屉 -->
+    <AppConfigurator v-model:visible="configDrawerVisible" />
 </template>
 
 <style scoped>

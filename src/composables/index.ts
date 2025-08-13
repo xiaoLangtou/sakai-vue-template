@@ -22,3 +22,7 @@ export { useTableConfiguration } from './useTableConfiguration';
 
 // 页面加载相关
 export { usePageLoading } from './usePageLoading';
+
+
+// 图标相关
+export { useLucideIcon } from './useLucideIcon';

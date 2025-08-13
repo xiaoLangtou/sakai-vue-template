@@ -33,7 +33,9 @@ const handleMenuItemClick = () => {
         isMobile && 'w-full',
         'flex flex-col',
         !isMobile && 'shadow-2xl shadow-surface-900/10 dark:shadow-surface-950/30 lg:shadow-xl lg:shadow-surface-900/5 dark:lg:shadow-surface-950/20',
-        'bg-white dark:bg-surface-900'
+        'bg-white dark:bg-surface-900',
+        // 响应式显示控制：移动端模式下显示，桌面端模式下显示，平板端隐藏（使用抽屉）
+        isMobile ? 'flex' : 'hidden 2xl:flex'
     ]">
         <!-- 顶部Logo区域 -->
         <div v-if="!isMobile"
@@ -76,18 +78,14 @@ const handleMenuItemClick = () => {
             <!-- 滚动区域 -->
             <div
                 class="h-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-surface-300 dark:scrollbar-thumb-surface-600 scrollbar-track-transparent">
-                <div :class="isMobile ? 'p-0' : 'pt-6 px-3 pb-2'">
+                <div :class="isMobile ? 'p-0 h-full' : 'pt-6 px-3 pb-2 h-full'">
                     <AppMenu :collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
                         @menu-item-click="handleMenuItemClick" />
                 </div>
             </div>
         </div>
-        
+
     </aside>
-
-    <!-- Sidebar -->
-
-    <!-- End Sidebar -->
 </template>
 
 <style scoped>
@@ -151,6 +149,19 @@ const handleMenuItemClick = () => {
 .sidebar-header {
     backface-visibility: hidden;
     transform: translateZ(0);
+}
+
+/* 响应式布局控制 - 只对非移动端模式生效 */
+@media (max-width: 1599px) {
+    .sidebar:not(.mobile-sidebar) {
+        display: none !important;
+    }
+}
+
+@media (min-width: 1600px) {
+    .sidebar:not(.mobile-sidebar) {
+        display: flex !important;
+    }
 }
 
 /* 响应式动画优化 */

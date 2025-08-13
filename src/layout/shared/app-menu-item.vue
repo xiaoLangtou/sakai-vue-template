@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFloatingMenu } from '../composables/useFloatingMenu';
+import { useLucideIcon } from '@/composables';
 
 interface Props {
     item: MenuItem;
@@ -149,15 +150,7 @@ const positionFloatingMenu = (triggerElement: Element, menuContainer: HTMLElemen
     menuContainer.style.zIndex = '1000';
 };
 
-const isLucideIcon = (icon: string) => {
-    return icon.startsWith("Lucide-");
-}
-
-const lucideIconName = (icon: string) => {
-    const iconName = icon.replace("Lucide-", "") ?? "";
-    if (!iconName) return null;
-    return (icons as any)[iconName] || null;
-}
+ const { isLucideIcon, lucideIconName } = useLucideIcon();
 
 const { isOutside } = useMouseInElement(floatingMenu);
 

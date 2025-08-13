@@ -1,12 +1,28 @@
 <script lang="ts" setup>
+import CustomDrawer from '@/components/custom-drawer';
 import { useLayout } from '@/layout/composables/layout';
 import { $t, updatePreset, updateSurfacePalette } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import Lara from '@primeuix/themes/lara';
 import Nora from '@primeuix/themes/nora';
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import AppConfigCard from './app-config-card.vue';
 
-const { layoutConfig, isDarkTheme } = useLayout();
+// 定义组件属性
+interface Props {
+    visible?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    visible: false
+});
+
+// 定义组件事件
+const emit = defineEmits<{
+    'update:visible': [value: boolean];
+}>();
+
+const { layoutConfig, isShowTab, tabStyle, isShowIcon } = useLayout();
 
 const presets = {
     Aura,
@@ -16,14 +32,42 @@ const presets = {
 const preset = ref(layoutConfig.preset);
 const presetOptions = ref(Object.keys(presets));
 
-const menuMode = ref(layoutConfig.menuMode);
 
-
-const layoutMode = ref(layoutConfig.layoutMode);
+const layoutMode = ref<'sidebar' | 'topbar'>((layoutConfig.layoutMode as 'sidebar' | 'topbar') || 'sidebar');
 const layoutModeOptions = ref([
     { label: 'Static', value: 'sidebar' },
     { label: 'Horizontal', value: 'topbar' },
 ]);
+
+
+
+// 工具函数
+function capitalizeFirst(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function getColorByName(colorName: string): string {
+    const colorMap: Record<string, string> = {
+        noir: '#000000',
+        emerald: '#10b981',
+        green: '#22c55e',
+        lime: '#84cc16',
+        orange: '#f97316',
+        amber: '#f59e0b',
+        yellow: '#eab308',
+        teal: '#14b8a6',
+        cyan: '#06b6d4',
+        sky: '#0ea5e9',
+        blue: '#3b82f6',
+        indigo: '#6366f1',
+        violet: '#8b5cf6',
+        purple: '#a855f7',
+        fuchsia: '#d946ef',
+        pink: '#ec4899',
+        rose: '#f43f5e'
+    };
+    return colorMap[colorName] || '#6b7280';
+}
 
 const primaryColors = ref([
     { name: 'noir', palette: {} },
@@ -170,14 +214,14 @@ function getPresetExt() {
     }
 }
 
-function updateColors(type, color) {
+function updateColors(type: 'primary' | 'surface', color: any) {
     if (type === 'primary') {
         layoutConfig.primary = color.name;
     } else if (type === 'surface') {
         layoutConfig.surface = color.name;
     }
 
-    applyTheme(type as 'primary' | 'surface', color);
+    applyTheme(type, color);
 }
 
 function applyTheme(type: 'primary' | 'surface', color: any) {
@@ -190,7 +234,7 @@ function applyTheme(type: 'primary' | 'surface', color: any) {
 
 function onPresetChange() {
     layoutConfig.preset = preset.value;
-    const presetValue = presets[preset.value];
+    const presetValue = presets[preset.value as keyof typeof presets];
     const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.surface)?.palette;
 
     $t().preset(presetValue).preset(getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
@@ -202,7 +246,7 @@ function onLayoutModeChange() {
 
 // 初始化主题
 function initializeTheme() {
-    const presetValue = presets[layoutConfig.preset];
+    const presetValue = presets[layoutConfig.preset as keyof typeof presets];
     const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.surface)?.palette;
 
     $t().preset(presetValue).preset(getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
@@ -267,38 +311,284 @@ watch(
 );
 </script>
 
+
 <template>
-    <div
-        class="config-panel hidden absolute top-[3.25rem] right-0 w-64 p-4 bg-surface-0 dark:bg-surface-900 border border-surface rounded-border origin-top shadow-[0px_3px_5px_rgba(0,0,0,0.02),0px_0px_2px_rgba(0,0,0,0.05),0px_1px_4px_rgba(0,0,0,0.08)]">
-        <div class="flex flex-col gap-4">
-            <div>
-                <span class="text-sm text-muted-color font-semibold">Primary</span>
-                <div class="pt-2 flex gap-2 flex-wrap justify-between">
-                    <button v-for="primaryColor of primaryColors" :key="primaryColor.name" type="button"
-                        :title="primaryColor.name" @click="updateColors('primary', primaryColor)"
-                        :class="['border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-none outline-offset-1', { 'outline-primary': layoutConfig.primary === primaryColor.name }]"
-                        :style="{ backgroundColor: `${primaryColor.name === 'noir' ? 'var(--text-color)' : primaryColor.palette['500']}` }"></button>
+    <CustomDrawer :visible="props.visible" header="系统配置" position="right" style="width: 420px;"
+        :show-default-footer="false" @update:visible="emit('update:visible', $event)">
+        <div class="theme-customizer">
+            <!-- Theme Style Section -->
+            <AppConfigCard title="主题风格">
+                <div class="flex items-center justify-center">
+                    <SelectButton v-model="preset" :options="presetOptions" :allow-empty="false"
+                        @change="onPresetChange" />
                 </div>
-            </div>
-            <div>
-                <span class="text-sm text-muted-color font-semibold">Surface</span>
-                <div class="pt-2 flex gap-2 flex-wrap justify-between">
-                    <button v-for="surface of surfaces" :key="surface.name" type="button" :title="surface.name"
-                        @click="updateColors('surface', surface)" :class="[
-                            'border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-none outline-offset-1',
-                            { 'outline-primary': layoutConfig.surface ? layoutConfig.surface === surface.name : isDarkTheme ? surface.name === 'zinc' : surface.name === 'slate' }
-                        ]" :style="{ backgroundColor: `${surface.palette['500']}` }"></button>
+            </AppConfigCard>
+
+
+            <AppConfigCard title="主题颜色">
+                <div class="color-grid">
+                    <div v-for="color in primaryColors" :key="color.name" class="color-option group"
+                        :class="{ 'color-option--selected': layoutConfig.primary === color.name }"
+                        @click="updateColors('primary', color)">
+                        <div class="color-swatch"
+                            :style="{ backgroundColor: color.palette[500] || getColorByName(color.name) }">
+                            <i v-if="layoutConfig.primary === color.name" class="pi pi-check check-icon"></i>
+                        </div>
+                        <span class="color-label">{{ capitalizeFirst(color.name) }}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="flex flex-col gap-2">
-                <span class="text-sm text-muted-color font-semibold">Presets</span>
-                <SelectButton v-model="preset" @change="onPresetChange" :options="presetOptions" :allowEmpty="false" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <span class="text-sm text-muted-color font-semibold">Layout Mode</span>
-                <SelectButton v-model="layoutMode" @change="onLayoutModeChange" :options="layoutModeOptions"
-                    :allowEmpty="false" optionLabel="label" optionValue="value" />
-            </div>
+            </AppConfigCard>
+
+            <!-- Surface Color Section -->
+            <AppConfigCard title="前景色">
+                <div class="color-grid">
+                    <div v-for="surface in surfaces" :key="surface.name" class="color-option group"
+                        :class="{ 'color-option--selected': layoutConfig.surface === surface.name }"
+                        @click="updateColors('surface', surface)">
+                        <div class="color-swatch" :style="{ backgroundColor: surface.palette[500] || '#6b7280' }">
+                            <i v-if="layoutConfig.surface === surface.name" class="pi pi-check check-icon"></i>
+                        </div>
+                        <span class="color-label">{{ capitalizeFirst(surface.name) }}</span>
+                    </div>
+                </div>
+            </AppConfigCard>
+
+            <!-- Layout Mode Section -->
+            <AppConfigCard title="布局模式">
+                <div class="layout-mode-options">
+                    <div v-for="option in layoutModeOptions" :key="option.value" class="layout-mode-option group"
+                        :class="{ 'layout-mode-option--selected': layoutMode === option.value }"
+                        @click="layoutMode = option.value as 'sidebar' | 'topbar'; onLayoutModeChange()">
+                        <div class="layout-preview">
+                            <div v-if="option.value === 'sidebar'" class="preview-sidebar-layout">
+                                <div class="sidebar-nav">
+                                    <div class="nav-item active"></div>
+                                    <div class="nav-item"></div>
+                                    <div class="nav-item"></div>
+                                </div>
+                                <div class="main-area">
+                                    <div class="area-header"></div>
+                                    <div class="area-content"></div>
+                                </div>
+                            </div>
+                            <div v-else class="preview-topbar-layout">
+                                <div class="topbar-nav">
+                                    <div class="nav-item active"></div>
+                                    <div class="nav-item"></div>
+                                    <div class="nav-item"></div>
+                                </div>
+                                <div class="main-area">
+                                    <div class="area-content full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layout-label">
+                            <span class="layout-name">{{ option.label }}</span>
+                        </div>
+                    </div>
+                </div>
+            </AppConfigCard>
+            <AppConfigCard title="标签栏">
+                <!-- 是否显示 -->
+                <div class="flex  flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold">是否显示</span>
+                        <ToggleSwitch v-model="isShowTab" />
+                    </div>
+                    <!-- 标签页的样式 -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold">标签页的样式</span>
+                        <SelectButton v-model="tabStyle" option-label="label" option-value="value" :options="[{
+                            label: '时尚',
+                            value: 'Fashion'
+                        }, {
+                            label: '卡片',
+                            value: 'Card'
+                        }, {
+                            label: '方形',
+                            value: 'Square'
+                        }]" :allow-empty="false" />
+                    </div>
+                    <!-- 是否显示图标 -->
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold">是否显示图标</span>
+                        <ToggleSwitch v-model="isShowIcon" />
+                    </div>
+                </div>
+            </AppConfigCard>
         </div>
-    </div>
+    </CustomDrawer>
 </template>
+
+
+
+<style lang="scss" scoped>
+// 主题定制器容器
+.theme-customizer {
+    @apply space-y-6;
+}
+
+// 定制器头部
+.customizer-header {
+    @apply flex items-center justify-between mb-6;
+}
+
+.customizer-subtitle {
+    @apply text-sm text-gray-600 dark:text-gray-400 m-0;
+}
+
+.refresh-btn {
+    @apply w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors duration-200 border-0 cursor-pointer;
+
+    i {
+        @apply text-gray-600 dark:text-gray-400 text-sm;
+    }
+
+    &:hover i {
+        @apply text-gray-800 dark:text-gray-200;
+    }
+}
+
+// 颜色网格
+.color-grid {
+    @apply grid grid-cols-4 gap-3;
+}
+
+.color-option {
+    @apply flex items-center gap-2 cursor-pointer border border-gray-200 dark:border-gray-700 pt-2 pb-2 pl-2 text-center;
+
+    &.color-option--selected {
+        @apply border-primary-500;
+    }
+}
+
+.color-swatch {
+    @apply w-5 h-5 rounded-full flex items-center justify-center relative overflow-hidden;
+
+    &::before {
+        content: '';
+        @apply absolute inset-0 bg-black bg-opacity-0;
+    }
+
+    &:hover::before {
+        @apply bg-opacity-10;
+    }
+}
+
+.check-icon {
+    @apply text-white text-sm font-bold;
+}
+
+.color-label {
+    @apply text-xs text-gray-600 dark:text-gray-400;
+}
+
+.color-option--selected .color-label {
+    @apply text-primary-600 dark:text-primary-400 font-semibold;
+}
+
+// 布局模式选项
+.layout-mode-options {
+    @apply grid grid-cols-2 gap-4;
+}
+
+.layout-mode-option {
+    @apply cursor-pointer;
+
+    &.layout-mode-option--selected .layout-preview {
+        @apply border-primary-500 bg-primary-50 dark:bg-primary-900/20;
+        box-shadow: 0 0 0 2px rgba(var(--primary-500), 0.2);
+    }
+
+    &.layout-mode-option--selected .layout-name {
+        @apply text-primary-600 dark:text-primary-400 font-semibold;
+    }
+}
+
+.layout-preview {
+    @apply w-full h-28 bg-gray-100 dark:bg-gray-800 rounded-lg p-3 border-2 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-600 mb-2;
+}
+
+.preview-sidebar-layout {
+    @apply flex h-full gap-2;
+}
+
+.sidebar-nav {
+    @apply w-6 bg-gray-300 dark:bg-gray-600 rounded flex flex-col gap-1 p-1;
+}
+
+.nav-item {
+    @apply h-1.5 bg-gray-400 dark:bg-gray-500 rounded-sm;
+
+    &.active {
+        @apply bg-primary-500;
+    }
+}
+
+.main-area {
+    @apply flex-1 flex flex-col gap-1;
+}
+
+.area-header {
+    @apply h-2 bg-gray-300 dark:bg-gray-600 rounded;
+}
+
+.area-content {
+    @apply flex-1 bg-gray-200 dark:bg-gray-700 rounded;
+
+    &.full {
+        @apply w-full;
+    }
+}
+
+.preview-topbar-layout {
+    @apply flex flex-col h-full gap-2;
+}
+
+.topbar-nav {
+    @apply h-3 bg-gray-300 dark:bg-gray-600 rounded flex gap-1 p-1;
+
+    .nav-item {
+        @apply w-4 h-full bg-gray-400 dark:bg-gray-500 rounded-sm;
+
+        &.active {
+            @apply bg-primary-500;
+        }
+    }
+}
+
+.layout-label {
+    @apply text-center;
+}
+
+.layout-name {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-200;
+}
+
+// 响应式设计
+@media (max-width: 480px) {
+    .theme-customizer {
+        @apply p-4 space-y-4;
+    }
+
+    .color-grid {
+        @apply grid-cols-3 gap-2;
+    }
+
+    .color-swatch {
+        @apply w-10 h-10;
+    }
+
+    .color-label {
+        @apply text-xs;
+    }
+
+    .layout-mode-options {
+        @apply grid-cols-1 gap-3;
+    }
+
+    .layout-preview {
+        @apply h-16;
+    }
+}
+</style>
