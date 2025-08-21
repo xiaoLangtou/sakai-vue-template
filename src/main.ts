@@ -13,16 +13,16 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 
 
 import '@/assets/styles.scss';
-import { createPinia } from 'pinia';
+import store from '@/stores';
 
 /**
- * 创建 Pinia 实例
+ * 使用配置好的 Pinia 实例（包含持久化插件）
  */
-export const pinia = createPinia();
+export const pinia = store;
 
 const app = createApp(App);
 
-app.use(pinia);
+app.use(store);
 
 // 注册路由
 app.use(router);

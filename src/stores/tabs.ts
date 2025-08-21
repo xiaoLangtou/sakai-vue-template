@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
 
 /**
@@ -242,29 +242,7 @@ export const useTabsStore = defineStore('tabs', () => {
     updateTab(key, { error });
   };
 
-  /**
-   * 初始化首页标签
-   */
-  const initHomeTab = (): void => {
-    const homeTab: TabItem = {
-      key: 'home',
-      title: '首页',
-      path: '/',
-      icon: 'pi pi-home',
-      closable: false,
-      isHome: true,
-      loading: false,
-      error: false
-    };
 
-    if (!tabs.value.some(tab => tab.isHome)) {
-      tabs.value.unshift(homeTab);
-    }
-
-    if (!activeTabKey.value) {
-      activeTabKey.value = homeTab.key;
-    }
-  };
 
   /**
    * 重置标签页状态
@@ -301,4 +279,9 @@ export const useTabsStore = defineStore('tabs', () => {
     setTabError,
     resetTabs
   };
+}, {
+  persist: {
+    key: 'tabs',
+    storage: localStorage
+  }
 });

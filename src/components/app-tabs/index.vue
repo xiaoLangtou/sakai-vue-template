@@ -2,9 +2,8 @@
 import { useLucideIcon } from '@/composables';
 import type { TabItem } from '@/stores/tabs';
 import { useTabsStore } from '@/stores/tabs';
-import { SlidersVertical, X } from "lucide-vue-next";
+import { ChevronDown, X } from "lucide-vue-next";
 import ContextMenu from 'primevue/contextmenu';
-import Menu from 'primevue/menu';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
@@ -51,7 +50,6 @@ const contextMenuTab = ref<TabItem | null>(null);
 const tabsWrapper = ref<HTMLElement | null>(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
-const styleMenuRef = ref<InstanceType<typeof Menu>>();
 
 // 计算属性
 const tabs = computed(() => tabsStore.activeTabs);
@@ -68,9 +66,18 @@ const contextMenuItems = computed(() => {
 
     const menuItems = [
         {
-            label: '刷新',
+            label: '重新加载',
             icon: 'pi pi-refresh',
             command: () => handleContextMenuAction('refresh')
+        },
+        {
+            label: '新窗口打开',
+            icon: 'pi pi-external-link',
+            command: () => handleContextMenuAction('refresh')
+        },
+
+        {
+            separator: true
         },
         {
             label: '关闭当前标签页',
@@ -214,7 +221,7 @@ const handleContextMenuAction = (action: string): void => {
             break;
         case 'closeAll':
             confirm.require({
-                message: '确定要关闭所有标签页吗？（首页除外）',
+                message: '确定要关闭所有标签页吗？',
                 header: '确认操作',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
@@ -255,15 +262,6 @@ const checkScrollStatus = (): void => {
     canScrollLeft.value = scrollLeft > 0;
     canScrollRight.value = scrollLeft < scrollWidth - clientWidth;
 };
-
-/**
- * 显示样式选择菜单
- * @param event - 鼠标事件
- */
-const showStyleMenu = (event: Event): void => {
-    styleMenuRef.value?.toggle(event);
-};
-
 
 
 /**
@@ -309,7 +307,8 @@ onUnmounted(() => {
 });
 
 
-const setTabStyle = (name: string, key: string) => {
+const setTabStyle = (name: string | undefined, key: string) => {
+    if (!name) return "";
     return {
         "Card": `app-tab-item overflow-hidden ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`,
         "Square": `app-tab-item overflow-hidden ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`,
@@ -330,6 +329,53 @@ watch(
         }, 100);
     }
 );
+
+
+const op = useTemplateRef("op");
+
+// 搜索功能
+const searchKeyword = ref('');
+
+/**
+ * 过滤后的标签页列表
+ */
+const filteredTabs = computed(() => {
+    if (!searchKeyword.value.trim()) {
+        return tabs.value;
+    }
+
+    const keyword = searchKeyword.value.toLowerCase().trim();
+    return tabs.value.filter(tab =>
+        tab.title.toLowerCase().includes(keyword) ||
+        (tab.path && tab.path.toLowerCase().includes(keyword))
+    );
+});
+
+/**
+ * 切换Popover显示状态
+ * @param event - 事件对象
+ */
+const toggle = (event: Event) => {
+    // 每次切换时清空搜索关键词
+    clearSearch();
+    op.value?.toggle(event);
+};
+
+/**
+ * 清空搜索关键词
+ */
+const clearSearch = () => {
+    searchKeyword.value = '';
+};
+
+/**
+ * 处理搜索输入
+ * @param event - 输入事件
+ */
+const handleSearchInput = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    searchKeyword.value = target.value;
+};
 </script>
 
 <template>
@@ -385,16 +431,85 @@ watch(
                     </TabList>
                 </Tabs>
             </div>
-            <div class="w-[30px] h-[30px] flex items-center justify-center  bg-white dark:bg-transparent cursor-pointer rounded-[8px]"
-                @click="showStyleMenu">
-                <SlidersVertical :size="16" />
+            <div v-if="tabs.length > 1"
+                class="w-[30px] h-[30px] flex items-center justify-center  bg-white dark:bg-transparent cursor-pointer rounded-[8px]"
+                @click="toggle">
+                <chevron-down :size="16" />
             </div>
         </div>
 
         <!-- 右键菜单 -->
         <ContextMenu v-if="props.enableContextMenu" ref="contextMenuRef" :model="contextMenuItems" />
 
-        <!-- 样式选择菜单 -->
-        <!-- <Menu ref="styleMenuRef" :model="styleMenuItems" :popup="true" /> -->
+
+        <Popover ref="op">
+            <div class="flex flex-col w-[280px] p-2">
+                <!-- 搜索框 -->
+                <div class="relative">
+                    <IconField>
+                        <InputIcon class="pi pi-search" />
+                        <InputText v-model="searchKeyword" placeholder="搜索标签页" class="w-full text-sm pr-8"
+                            @input="handleSearchInput" />
+                        <InputIcon v-if="searchKeyword" class="pi pi-times cursor-pointer" @click="clearSearch" />
+                    </IconField>
+                    <!-- 清空搜索按钮 -->
+                </div>
+
+                <Divider />
+
+                <!-- 标签页列表 -->
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            打开的标签页
+                        </span>
+                        <span class="text-xs text-gray-500 dark:text-gray-500">
+                            {{ filteredTabs.length }}/{{ tabs.length }}
+                        </span>
+                    </div>
+
+                    <!-- 搜索结果为空时的提示 -->
+                    <div v-if="searchKeyword && filteredTabs.length === 0"
+                        class="text-center py-4 text-gray-500 dark:text-gray-400">
+                        <i class="pi pi-search text-2xl mb-2 block"></i>
+                        <p class="text-sm">未找到匹配的标签页</p>
+                    </div>
+
+                    <!-- 标签页列表容器 -->
+                    <div class="max-h-[240px] overflow-y-auto">
+                        <div v-for="(tab, index) in filteredTabs" :key="`${tab.title}-${index}`"
+                            class="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                            :class="{
+                                'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700': tab.key === activeTabKey
+                            }" @click="handleTabChange(tab.key)">
+                            <!-- 图标 -->
+                            <component :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)" :size="16"
+                                class="text-gray-600 dark:text-gray-400 flex-shrink-0" />
+                            <i v-else-if="tab.icon"
+                                :class="[tab.icon, 'text-sm text-gray-600 dark:text-gray-400 flex-shrink-0']" />
+
+                            <!-- 标题和路径 -->
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm text-gray-700 dark:text-gray-300 truncate" :class="{
+                                    'font-medium text-blue-600 dark:text-blue-400': tab.key === activeTabKey
+                                }">
+                                    {{ tab.title }}
+                                </div>
+                                <div v-if="tab.path" class="text-xs text-gray-500 dark:text-gray-500 truncate">
+                                    {{ tab.path }}
+                                </div>
+                            </div>
+
+                            <!-- 关闭按钮 -->
+                            <X v-if="tab.closable && tabs.length > 1" :size="14"
+                                class="text-gray-400 hover:text-red-500 transition-colors duration-200 flex-shrink-0 opacity-0 group-hover:opacity-100"
+                                :class="{ 'opacity-100': tab.key === activeTabKey }"
+                                @click.stop="handleTabClose(tab, $event)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Popover>
+
     </div>
 </template>

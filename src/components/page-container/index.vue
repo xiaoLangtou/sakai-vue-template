@@ -8,7 +8,6 @@
         <div class="card h-full flex-1">
             <slot></slot>
         </div>
-        <div class="mb-4"></div>
     </div>
 </template>
 
@@ -20,6 +19,6 @@ defineOptions({
 
 <style lang="scss" scoped>
 .base-container {
-    @apply flex flex-col w-full box-border  min-h-full;
+    @apply flex flex-col w-full box-border  min-h-full gap-2;
 }
 </style>

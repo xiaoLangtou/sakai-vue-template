@@ -23,4 +23,5 @@ store.use(createPersistedState({
 // 导出所有 store
 export { useAuthStore } from './auth';
 export { usePageLoadingStore } from './loading';
+export { useTabsStore } from './tabs';
 export default store

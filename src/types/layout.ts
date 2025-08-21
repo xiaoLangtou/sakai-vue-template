@@ -50,31 +50,4 @@ export interface MenuItem {
     [key: string]: any;
 }
 
-/**
- * 布局 Composable 返回类型
- */
-export interface UseLayoutReturn {
-    layoutConfig: LayoutConfig;
-    layoutState: LayoutState;
-    toggleMenu: () => void;
-    isSidebarActive: import('vue').ComputedRef<boolean>;
-    isCollapsed: import('vue').ComputedRef<boolean>;
-    toggleSidebar: () => void;
-    isDarkTheme: import('vue').ComputedRef<boolean>;
-    getPrimary: import('vue').ComputedRef<string>;
-    getSurface: import('vue').ComputedRef<string | null>;
-    setActiveMenuItem: (item: MenuItem) => void;
-    toggleDarkMode: () => void;
-    // 响应式相关
-    isMobile: import('vue').ComputedRef<boolean>;
-    isTablet: import('vue').ComputedRef<boolean>;
-    isDesktop: import('vue').ComputedRef<boolean>;
-    showMobileSidebar: import('vue').Ref<boolean>;
-    closeMobileSidebar: () => void;
-    windowWidth: import('vue').Ref<number>;
-
-    // 新增标签相关
-    isShowTab: import('vue').Ref<boolean>;
-    tabStyle: import('vue').Ref<string>;
-    isShowIcon: import('vue').Ref<boolean>;
-}
+// UseLayoutReturn 接口已移除，现在使用 Pinia store (useLayoutStore)

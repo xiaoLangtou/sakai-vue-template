@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import CustomDrawer from '@/components/custom-drawer';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayoutStore } from '@/stores/layout';
+import { storeToRefs } from 'pinia';
 import { $t, updatePreset, updateSurfacePalette } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import Lara from '@primeuix/themes/lara';
@@ -22,18 +23,19 @@ const emit = defineEmits<{
     'update:visible': [value: boolean];
 }>();
 
-const { layoutConfig, isShowTab, tabStyle, isShowIcon } = useLayout();
+const layoutStore = useLayoutStore();
+const { layoutConfig, isShowTab, tabStyle, isShowIcon } = storeToRefs(layoutStore);
 
 const presets = {
     Aura,
     Lara,
     Nora
 };
-const preset = ref(layoutConfig.preset);
+const preset = ref(layoutConfig.value.preset);
 const presetOptions = ref(Object.keys(presets));
 
 
-const layoutMode = ref<'sidebar' | 'topbar'>((layoutConfig.layoutMode as 'sidebar' | 'topbar') || 'sidebar');
+const layoutMode = ref<'sidebar' | 'topbar'>((layoutConfig.value.layoutMode as 'sidebar' | 'topbar') || 'sidebar');
 const layoutModeOptions = ref([
     { label: 'Static', value: 'sidebar' },
     { label: 'Horizontal', value: 'topbar' },

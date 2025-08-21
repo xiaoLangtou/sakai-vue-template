@@ -2,21 +2,26 @@
 import { AppTabs } from '@/components/app-tabs';
 import Drawer from 'primevue/drawer';
 import { provide } from 'vue';
-import { useLayout } from '../composables/layout';
+import { useLayoutStore } from '@/stores/layout';
+import { storeToRefs } from 'pinia';
 import AppFooter from './app-footer.vue';
 import AppHeader from './app-header.vue';
 import AppSidebar from './app-sidebar.vue';
 
+const layoutStore = useLayoutStore();
 const {
     layoutConfig,
+    isMobile
+} = storeToRefs(layoutStore);
+
+const {
     isCollapsed,
     toggleSidebar,
-    isMobile,
     isTablet,
     isDesktop,
     showMobileSidebar,
-    closeMobileSidebar,
-} = useLayout();
+    closeMobileSidebar
+} = layoutStore;
 
 // 统一的切换处理函数
 const handleToggleSidebar = () => {
@@ -83,7 +88,7 @@ provide('layout', {
             <AppTabs v-if="layoutConfig.showTab" class="tabs-container" :tabStyle="layoutConfig.tabStyle" :show-icon="layoutConfig.isShowIcon" />
 
             <div
-                :class="`absolute ${layoutConfig.showTab ? `top-[${layoutConfig.tabStyle == 'Fashion' ? '112px' : '110px'}]` : 'top-[60px]'}  left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
+                :class="`absolute ${layoutConfig.showTab ? `${layoutConfig.tabStyle == 'Fashion' ? 'top-[112px]' : 'top-[109px]'}` : 'top-[60px]'}  left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
             </div>
 
             <!-- 主要内容区域 -->

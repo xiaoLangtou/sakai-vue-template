@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppTabs: typeof import('./../components/app-tabs/index.vue')['default']
+    Avatar: typeof import('primevue/avatar')['default']
     Badge: typeof import('primevue/badge')['default']
     Breadcrumb: typeof import('primevue/breadcrumb')['default']
     Button: typeof import('primevue/button')['default']
@@ -18,7 +19,6 @@ declare module 'vue' {
     Column: typeof import('primevue/column')['default']
     ConfigurableTable: typeof import('./../components/configurable-table/index.vue')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
-    ContextMenu: typeof import('primevue/contextmenu')['default']
     CustomDrawer: typeof import('./../components/custom-drawer/index.vue')['default']
     DataTable: typeof import('primevue/datatable')['default']
     Dialog: typeof import('primevue/dialog')['default']
@@ -58,6 +58,7 @@ declare module 'vue' {
     Tabs: typeof import('primevue/tabs')['default']
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
+    TieredMenu: typeof import('primevue/tieredmenu')['default']
     Toast: typeof import('primevue/toast')['default']
     ToggleSwitch: typeof import('primevue/toggleswitch')['default']
     TreeTable: typeof import('primevue/treetable')['default']

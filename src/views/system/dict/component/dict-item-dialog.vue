@@ -183,115 +183,64 @@ watch(() => props.visible, (newVisible) => {
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" :style="{ width: '500px' }"
-        :header="props.editItem?.id ? '编辑字典项' : '新建字典项'"
+    <Dialog v-model:visible="dialogVisible" :style="{ width: '500px' }" :header="props.editItem?.id ? '编辑字典项' : '新建字典项'"
         :modal="true" class="p-fluid dialog-form">
 
-        <Form ref="formRef"
-            :initialValues="getInitialValues()"
-            :resolver="zodResolver(dictItemSchema)"
-            :validateOnValueUpdate="false"
-            :validateOnBlur="true"
-            @submit="onFormSubmit"
-            @validate="handleFormValidation"
-            class="form-grid">
+        <Form ref="formRef" :initialValues="getInitialValues()" :resolver="zodResolver(dictItemSchema)"
+            :validateOnValueUpdate="false" :validateOnBlur="true" @submit="onFormSubmit"
+            @validate="handleFormValidation" class="form-grid">
 
             <!-- 字典标签字段 -->
             <SmartFormField name="label" label="字典标签" required class="mb-4">
                 <template #default="{ value, onInput, onBlur, invalid }">
-                    <InputText
-                        id="label"
-                        :modelValue="value"
-                        @update:modelValue="(val) => onInput({ target: { value: val } })"
-                        @blur="onBlur"
-                        placeholder="请输入字典标签"
-                        autofocus
-                        class="w-full"
-                        :class="{ 'p-invalid': invalid }"
-                    />
+                    <InputText id="label" :modelValue="value"
+                        @update:modelValue="(val) => onInput({ target: { value: val } })" @blur="onBlur"
+                        placeholder="请输入字典标签" autofocus class="w-full" :class="{ 'p-invalid': invalid }" />
                 </template>
             </SmartFormField>
 
             <!-- 字典值字段 -->
             <SmartFormField name="value" label="字典值" required class="mb-4">
                 <template #default="{ value, onInput, onBlur, invalid }">
-                    <InputText
-                        id="value"
-                        :modelValue="value"
-                        @update:modelValue="(val) => onInput({ target: { value: val } })"
-                        @blur="onBlur"
-                        placeholder="请输入字典值"
-                        class="w-full"
-                        :class="{ 'p-invalid': invalid }"
-                    />
+                    <InputText id="value" :modelValue="value"
+                        @update:modelValue="(val) => onInput({ target: { value: val } })" @blur="onBlur"
+                        placeholder="请输入字典值" class="w-full" :class="{ 'p-invalid': invalid }" />
                 </template>
             </SmartFormField>
 
             <!-- 排序字段 -->
             <SmartFormField name="sort" label="排序" class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <InputNumber
-                        id="sort"
-                        :modelValue="value"
-                        @update:modelValue="(val) => onInput({ target: { value: val } })"
-                        :min="0"
-                        :max="999"
-                        class="w-full"
-                        placeholder="请输入排序值"
-                        :class="{ 'p-invalid': invalid }"
-                    />
+                    <InputNumber id="sort" :modelValue="value"
+                        @update:modelValue="(val) => onInput({ target: { value: val } })" :min="0" :max="999"
+                        class="w-full" placeholder="请输入排序值" :class="{ 'p-invalid': invalid }" />
                 </template>
             </SmartFormField>
 
             <!-- 状态字段 -->
             <SmartFormField name="status" label="状态" class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <Select
-                        id="status"
-                        :modelValue="value"
-                        :options="statusOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        @update:modelValue="(val) => onInput({ target: { value: val } })"
-                        placeholder="选择状态"
-                        class="w-full"
-                        :class="{ 'p-invalid': invalid }"
-                    />
+                    <Select id="status" :modelValue="value" :options="statusOptions" optionLabel="label"
+                        optionValue="value" @update:modelValue="(val) => onInput({ target: { value: val } })"
+                        placeholder="选择状态" class="w-full" :class="{ 'p-invalid': invalid }" />
                 </template>
             </SmartFormField>
 
             <!-- 描述字段 -->
             <SmartFormField name="remark" label="描述" class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <Textarea
-                        id="remark"
-                        :modelValue="value"
-                        @update:modelValue="(val) => onInput({ target: { value: val } })"
-                        rows="3"
-                        :autoResize="true"
-                        class="w-full"
-                        placeholder="请输入字典项描述"
-                        :class="{ 'p-invalid': invalid }"
-                    />
+                    <Textarea id="remark" :modelValue="value"
+                        @update:modelValue="(val) => onInput({ target: { value: val } })" rows="3" :autoResize="true"
+                        class="w-full" placeholder="请输入字典项描述" :class="{ 'p-invalid': invalid }" />
                 </template>
             </SmartFormField>
 
             <!-- 按钮组 -->
             <div class="flex justify-end gap-2">
-                <Button
-                    type="button"
-                    label="重置"
-                    icon="pi pi-refresh"
-                    severity="secondary"
-                    outlined
-                    @click="resetForm"
-                />
-                <Button
-                    type="submit"
-                    :label="props.editItem?.id ? '保存' : '创建'"
-                    icon="pi pi-check"
-                    :disabled="invalid"
-                />
+                <Button type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined
+                    @click="resetForm" />
+                <Button type="submit" :label="props.editItem?.id ? '保存' : '创建'" icon="pi pi-check"
+                    :disabled="invalid" />
             </div>
         </Form>
     </Dialog>

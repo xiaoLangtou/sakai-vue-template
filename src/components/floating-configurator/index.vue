@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import AppConfigurator from '@/layout/shared/app-configurator.vue';
-import { useLayout } from '@/layout/composables/layout';
+import { useLayoutStore } from '@/stores/layout';
+import { storeToRefs } from 'pinia';
 
-const { toggleDarkMode, isDarkTheme } = useLayout();
+const layoutStore = useLayoutStore();
+const { isDarkTheme } = storeToRefs(layoutStore);
+const { toggleDarkMode } = layoutStore;
 </script>
 
 <template>

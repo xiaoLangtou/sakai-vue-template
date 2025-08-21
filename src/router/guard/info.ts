@@ -1,8 +1,8 @@
 import { loginService } from "@/services/modules/login";
 import { useAuthStore } from "@/stores";
+import { to as _to } from "@/utils/result-handler";
 import nProgress from "nprogress";
 import type { LocationQueryRaw, Router } from "vue-router";
-import { to as _to } from "@/utils/result-handler";
 
 export default function setupInfoGuard(router: Router) {
     router.beforeEach(async (to, from, next) => {

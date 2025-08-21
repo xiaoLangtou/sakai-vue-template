@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+
 import AppMenu from '../shared/app-menu.vue';
+import AppUserMenu from '../shared/app-user-menu.vue';
 
 defineProps({
     collapsed: {
@@ -12,11 +14,15 @@ defineProps({
     }
 });
 
+
+
 const emit = defineEmits(['menu-item-click']);
 
 const handleMenuItemClick = () => {
     emit('menu-item-click');
 };
+
+
 </script>
 
 <template>
@@ -84,11 +90,18 @@ const handleMenuItemClick = () => {
                 </div>
             </div>
         </div>
+        <!-- 底部用户信息区域 -->
+        <div class="sidebar-footer p-2 box-border">
+            <app-user-menu />
+        </div>
+
 
     </aside>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+
+
 /* 侧边栏折叠动画优化 */
 .sidebar {
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);

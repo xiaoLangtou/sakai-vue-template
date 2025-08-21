@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { useLayout } from '@/layout/composables/layout';
-import AppConfigurator from './app-configurator.vue';
+import { useLayoutStore } from '@/stores/layout';
+import { storeToRefs } from 'pinia';
 import Drawer from 'primevue/drawer';
 import { UserProfile } from '@/components';
 import OverlayPanel from 'primevue/overlaypanel';
@@ -13,12 +13,12 @@ defineProps({
     }
 });
 
-const { toggleDarkMode, isDarkTheme } = useLayout();
+const layoutStore = useLayoutStore();
+const { isDarkTheme } = storeToRefs(layoutStore);
+const { toggleDarkMode, openConfigDrawer } = layoutStore;
 
 // 用户资料抽屉状态管理
 const profileDrawerVisible = ref(false);
-// 系统配置抽屉状态管理
-const configDrawerVisible = ref(false);
 const mobileMenuPanel = ref();
 
 /**
@@ -28,12 +28,7 @@ const openProfileDrawer = () => {
     profileDrawerVisible.value = true;
 };
 
-/**
- * 打开系统配置抽屉
- */
-const openConfigDrawer = () => {
-    configDrawerVisible.value = true;
-};
+
 
 /**
  * 切换移动端菜单面板
@@ -127,8 +122,7 @@ const toggleMobileMenu = (event) => {
         <UserProfile />
     </Drawer>
 
-    <!-- 系统配置抽屉 -->
-    <AppConfigurator v-model:visible="configDrawerVisible" />
+
 </template>
 
 <style scoped>

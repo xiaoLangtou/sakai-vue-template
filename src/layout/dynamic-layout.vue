@@ -1,10 +1,15 @@
 <script setup>
 import { computed } from 'vue';
-import { useLayout } from './composables/layout';
+import { useLayoutStore } from '@/stores/layout';
+import { storeToRefs } from 'pinia';
 import DefaultLayout from './default-layout/app-layout.vue';
 import TopbarLayout from './topbar-layout/app-layout.vue';
+import AppConfigurator from './shared/app-configurator.vue';
 
-const { layoutConfig } = useLayout();
+const layoutStore = useLayoutStore();
+const { layoutConfig, layoutState } = storeToRefs(layoutStore);
+
+
 
 const currentLayout = computed(() => {
     switch (layoutConfig.layoutMode) {
@@ -18,4 +23,6 @@ const currentLayout = computed(() => {
 
 <template>
     <component :is="currentLayout" />
+     <!-- 系统配置抽屉 -->
+    <AppConfigurator v-model:visible="layoutState.configSidebarVisible" />
 </template>

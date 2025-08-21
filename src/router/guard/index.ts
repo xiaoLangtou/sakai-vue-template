@@ -6,12 +6,13 @@
  * @FilePath: src/router/guard/index.ts
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
-import type { Router } from 'vue-router';
 import NProgress from 'nprogress';
-import setupPermissionGuard from './permission';
+import type { Router } from 'vue-router';
 import setupInfoGuard from './info';
-import setupMenuGuard from './menu';
 import { setupLoadingGuard } from './loading';
+import setupMenuGuard from './menu';
+import setupPermissionGuard from './permission';
+import setupTabsGuard from './tabs';
 
 NProgress.configure({
     showSpinner: false,
@@ -29,6 +30,7 @@ export default function setupPageGuard(router: Router) {
     setupPermissionGuard(router);
     setupInfoGuard(router);
     setupMenuGuard(router);
+    setupTabsGuard(router);
     setupLoadingGuard(router);
     removeLoading();
     NProgress.done();

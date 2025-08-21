@@ -3,13 +3,14 @@
     --p-tabs-tablist-background: var(--surface-ground);
     --p-tabs-tablist-border-width: 0;
 
-    .p-tablist-tab-list{
+    .p-tablist-tab-list {
         padding: 0 16px;
     }
 
     &.app-tabs__Square {
         --p-tabs-tab-active-background: var(--primary-color);
         --p-tabs-tab-active-color: var(--p-primary-contrast-color);
+
         .app-tab-item {
             position: relative;
 
@@ -52,6 +53,8 @@
             border: 1px solid var(--surface-border);
             border-bottom: none;
             transition: all 0.2s ease;
+            padding-top: 12px;
+            padding-bottom: 12px;
 
             &.p-tab-active {
                 background: var(--surface-card);
@@ -70,7 +73,8 @@
 
     &.app-tabs__Fashion {
         --p-tabs-tab-padding: 0;
-        border-bottom: 4px solid var(--surface-card);;
+        border-bottom: 4px solid var(--surface-card);
+        ;
 
         .p-tablist-tab-list {
             flex-grow: 1;
@@ -82,7 +86,7 @@
 
         .tab-frame {
             flex-grow: 1;
-            max-width: 200px;
+            max-width: 160px;
             margin-right: -17px;
 
             &:before {
@@ -237,6 +241,10 @@
             }
 
         }
+    }
+
+    .p-tablist-nav-button {
+        z-index: 4;
     }
 
 }
