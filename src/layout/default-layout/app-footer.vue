@@ -8,7 +8,8 @@ defineProps({
 </script>
 
 <template>
-    <footer class="layout-footer" :class="{
+    <footer
+class="layout-footer" :class="{
         'mobile-footer': isMobile,
         'desktop-footer': !isMobile
     }">

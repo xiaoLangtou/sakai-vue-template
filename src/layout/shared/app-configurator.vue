@@ -127,7 +127,8 @@ const surfaces = ref([
 ]);
 
 function getPresetExt() {
-    const color = primaryColors.value.find((c) => c.name === layoutConfig.primary);
+    console.log(layoutConfig)
+    const color = primaryColors.value.find((c) => c.name === layoutConfig.value.primary);
 
     if (color && color.name === 'noir') {
         return {
@@ -218,9 +219,9 @@ function getPresetExt() {
 
 function updateColors(type: 'primary' | 'surface', color: any) {
     if (type === 'primary') {
-        layoutConfig.primary = color.name;
+        layoutConfig.value.primary = color.name;
     } else if (type === 'surface') {
-        layoutConfig.surface = color.name;
+        layoutConfig.value.surface = color.name;
     }
 
     applyTheme(type, color);
@@ -235,21 +236,21 @@ function applyTheme(type: 'primary' | 'surface', color: any) {
 }
 
 function onPresetChange() {
-    layoutConfig.preset = preset.value;
+    layoutConfig.value.preset = preset.value;
     const presetValue = presets[preset.value as keyof typeof presets];
-    const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.surface)?.palette;
+    const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.value.surface)?.palette;
 
     $t().preset(presetValue).preset(getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
 }
 
 function onLayoutModeChange() {
-    layoutConfig.layoutMode = layoutMode.value;
+    layoutConfig.value.layoutMode = layoutMode.value;
 }
 
 // 初始化主题
 function initializeTheme() {
-    const presetValue = presets[layoutConfig.preset as keyof typeof presets];
-    const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.surface)?.palette;
+    const presetValue = presets[layoutConfig.value.preset as keyof typeof presets];
+    const surfacePalette = surfaces.value.find((s) => s.name === layoutConfig.value.surface)?.palette;
 
     $t().preset(presetValue).preset(getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
 }
@@ -265,12 +266,12 @@ onMounted(() => {
     layoutConfigChangeHandler = (event: Event) => {
         const customEvent = event as CustomEvent;
         const { primary, surface } = customEvent.detail;
-        if (primary && primary !== layoutConfig.primary) {
-            layoutConfig.primary = primary;
+        if (primary && primary !== layoutConfig.value.primary) {
+            layoutConfig.value.primary = primary;
             updatePreset(getPresetExt());
         }
-        if (surface && surface !== layoutConfig.surface) {
-            layoutConfig.surface = surface;
+        if (surface && surface !== layoutConfig.value.surface) {
+            layoutConfig.value.surface = surface;
             const surfacePalette = surfaces.value.find((s) => s.name === surface)?.palette;
             if (surfacePalette) {
                 updateSurfacePalette(surfacePalette);
@@ -291,7 +292,7 @@ onUnmounted(() => {
 
 // 监听主题色变化，确保立即应用
 watch(
-    () => layoutConfig.primary,
+    () => layoutConfig.value.primary,
     () => {
         updatePreset(getPresetExt());
     },
@@ -300,7 +301,7 @@ watch(
 
 // 监听表面颜色变化
 watch(
-    () => layoutConfig.surface,
+    () => layoutConfig.value.surface,
     (newSurface) => {
         if (newSurface) {
             const surfacePalette = surfaces.value.find((s) => s.name === newSurface)?.palette;
@@ -315,13 +316,15 @@ watch(
 
 
 <template>
-    <CustomDrawer :visible="props.visible" header="系统配置" position="right" style="width: 420px;"
+    <CustomDrawer
+:visible="props.visible" header="系统配置" position="right" style="width: 420px;"
         :show-default-footer="false" @update:visible="emit('update:visible', $event)">
         <div class="theme-customizer">
             <!-- Theme Style Section -->
             <AppConfigCard title="主题风格">
                 <div class="flex items-center justify-center">
-                    <SelectButton v-model="preset" :options="presetOptions" :allow-empty="false"
+                    <SelectButton
+v-model="preset" :options="presetOptions" :allow-empty="false"
                         @change="onPresetChange" />
                 </div>
             </AppConfigCard>
@@ -329,12 +332,14 @@ watch(
 
             <AppConfigCard title="主题颜色">
                 <div class="color-grid">
-                    <div v-for="color in primaryColors" :key="color.name" class="color-option group"
-                        :class="{ 'color-option--selected': layoutConfig.primary === color.name }"
+                    <div
+v-for="color in primaryColors" :key="color.name" class="color-option group"
+                        :class="{ 'color-option--selected': layoutConfig.value.primary === color.name }"
                         @click="updateColors('primary', color)">
-                        <div class="color-swatch"
+                        <div
+class="color-swatch"
                             :style="{ backgroundColor: color.palette[500] || getColorByName(color.name) }">
-                            <i v-if="layoutConfig.primary === color.name" class="pi pi-check check-icon"></i>
+                            <i v-if="layoutConfig.value.primary === color.name" class="pi pi-check check-icon"></i>
                         </div>
                         <span class="color-label">{{ capitalizeFirst(color.name) }}</span>
                     </div>
@@ -344,11 +349,12 @@ watch(
             <!-- Surface Color Section -->
             <AppConfigCard title="前景色">
                 <div class="color-grid">
-                    <div v-for="surface in surfaces" :key="surface.name" class="color-option group"
-                        :class="{ 'color-option--selected': layoutConfig.surface === surface.name }"
+                    <div
+v-for="surface in surfaces" :key="surface.name" class="color-option group"
+                        :class="{ 'color-option--selected': layoutConfig.value.surface === surface.name }"
                         @click="updateColors('surface', surface)">
                         <div class="color-swatch" :style="{ backgroundColor: surface.palette[500] || '#6b7280' }">
-                            <i v-if="layoutConfig.surface === surface.name" class="pi pi-check check-icon"></i>
+                            <i v-if="layoutConfig.value.surface === surface.name" class="pi pi-check check-icon"></i>
                         </div>
                         <span class="color-label">{{ capitalizeFirst(surface.name) }}</span>
                     </div>
@@ -358,7 +364,8 @@ watch(
             <!-- Layout Mode Section -->
             <AppConfigCard title="布局模式">
                 <div class="layout-mode-options">
-                    <div v-for="option in layoutModeOptions" :key="option.value" class="layout-mode-option group"
+                    <div
+v-for="option in layoutModeOptions" :key="option.value" class="layout-mode-option group"
                         :class="{ 'layout-mode-option--selected': layoutMode === option.value }"
                         @click="layoutMode = option.value as 'sidebar' | 'topbar'; onLayoutModeChange()">
                         <div class="layout-preview">
@@ -400,7 +407,8 @@ watch(
                     <!-- 标签页的样式 -->
                     <div class="flex items-center justify-between">
                         <span class="font-bold">标签页的样式</span>
-                        <SelectButton v-model="tabStyle" option-label="label" option-value="value" :options="[{
+                        <SelectButton
+v-model="tabStyle" option-label="label" option-value="value" :options="[{
                             label: '时尚',
                             value: 'Fashion'
                         }, {

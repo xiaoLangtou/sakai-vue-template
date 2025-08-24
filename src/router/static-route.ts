@@ -16,7 +16,7 @@ const staticRoutes: RouteRecordRaw[] = [
         component: DynamicLayout,
         redirect: '/dashboard',
         meta: {
-            title: '首页',
+            title: '仪表盘',
             icon: 'pi pi-home'
         },
         children: [
@@ -25,15 +25,6 @@ const staticRoutes: RouteRecordRaw[] = [
                 name: 'dashboard',
                 component: () => import('@/views/dashboard/index.vue')
             },
-            {
-                path: '/test/global-search',
-                name: 'global-search-demo',
-                component: () => import('@/views/test/global-search-demo.vue'),
-                meta: {
-                    title: '全局搜索演示',
-                    icon: 'pi pi-search'
-                }
-            }
         ]
     },
     {

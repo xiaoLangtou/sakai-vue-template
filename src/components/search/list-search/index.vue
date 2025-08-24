@@ -313,22 +313,27 @@ defineExpose({
                     <div class="search-input-wrapper">
                         <IconField class="w-full">
                             <InputIcon class="pi pi-search" />
-                            <InputText v-model="localParams.keyword" :placeholder="placeholder" class="w-full"
+                            <InputText
+v-model="localParams.keyword" :placeholder="placeholder" class="w-full"
                                 @input="handleKeywordChange" @keyup.enter="handleImmediateSearch" />
-                            <InputIcon class="pi pi-times cursor-pointer" v-show="localParams.keyword"
+                            <InputIcon
+v-show="localParams.keyword" class="pi pi-times cursor-pointer"
                                 @click="clearKeyword" />
                         </IconField>
                     </div>
-                    <Button label="搜索" icon="pi pi-search" class="search-btn" :loading="loading"
+                    <Button
+label="搜索" icon="pi pi-search" class="search-btn" :loading="loading"
                         @click="handleImmediateSearch" />
                 </div>
 
                 <div class="search-actions">
-                    <Button v-if="filterConfigs.length > 0" :label="showAdvanced ? '收起筛选' : '高级筛选'"
+                    <Button
+v-if="filterConfigs.length > 0" :label="showAdvanced ? '收起筛选' : '高级筛选'"
                         :icon="showAdvanced ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="filter-toggle-btn"
-                        :badge="activeFilterCount > 0 ? `${activeFilterCount}` : ''" badgeSeverity="contrast" severity="secondary" outlined
+                        :badge="activeFilterCount > 0 ? `${activeFilterCount}` : ''" badge-severity="contrast" severity="secondary" outlined
                         @click="toggleAdvanced" />
-                    <Button label="重置" icon="pi pi-refresh" class="reset-btn" severity="secondary" outlined
+                    <Button
+label="重置" icon="pi pi-refresh" class="reset-btn" severity="secondary" outlined
                         @click="handleReset" />
                     <slot name="actions"></slot>
                 </div>
@@ -349,9 +354,10 @@ defineExpose({
 
                     <div class="filters-grid">
                         <div v-for="filter in filterConfigs" :key="filter.key" :class="getColumnClass(filter)">
-                            <FilterItem :config="filter" :value="localParams.filters[filter.key]" :immediate="immediate"
-                                :show-error="showValidationErrors" @update="handleFilterUpdate"
-                                :ref="(el) => (filterRefs[filter.key] = el)" />
+                            <FilterItem
+:ref="(el) => (filterRefs[filter.key] = el)" :config="filter" :value="localParams.filters[filter.key]"
+                                :immediate="immediate" :show-error="showValidationErrors"
+                                @update="handleFilterUpdate" />
                         </div>
                     </div>
 
@@ -362,10 +368,12 @@ defineExpose({
                             </span>
                         </div>
                         <div class="footer-actions">
-                            <Button label="清空筛选" icon="pi pi-times" size="small" severity="secondary"
+                            <Button
+label="清空筛选" icon="pi pi-times" size="small" severity="secondary"
                                 @click="handleClearFilters" />
-                            <Button label="应用筛选" icon="pi pi-check" size="small" @click="handleImmediateSearch"
-                                :disabled="!isFormValid" />
+                            <Button
+label="应用筛选" icon="pi pi-check" size="small" :disabled="!isFormValid"
+                                @click="handleImmediateSearch" />
                         </div>
                     </div>
                 </div>

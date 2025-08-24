@@ -81,7 +81,8 @@ const getConditionsSummary = (): string => {
             <div class="status-content">
                 <div class="status-tags">
                     <span>当前筛选条件：</span>
-                    <Tag v-if="params.keyword" :value="`${params.keyword}`" severity="info"
+                    <Tag
+v-if="params.keyword" :value="`${params.keyword}`" severity="info"
                         class="condition-tag keyword-tag" removable @remove="$emit('remove-filter', 'keyword')">
                         <template #default>
                             <i class="pi pi-search" />
@@ -89,7 +90,8 @@ const getConditionsSummary = (): string => {
                         </template>
                     </Tag>
 
-                    <Tag v-for="(value, key) in activeFilters" :key="key" :value="formatFilterValue(key, value)"
+                    <Tag
+v-for="(value, key) in activeFilters" :key="key" :value="formatFilterValue(key, value)"
                         severity="secondary" class="condition-tag filter-tag" removable
                         @remove="$emit('remove-filter', key)" />
                 </div>

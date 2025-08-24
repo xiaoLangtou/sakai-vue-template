@@ -7,7 +7,7 @@ import { computed, nextTick, ref } from 'vue';
  */
 export const useLayoutStore = defineStore('layout', () => {
   // ==================== 状态定义 ====================
-  
+
   /** 布局配置 */
   const layoutConfig = ref<LayoutConfig>({
     preset: 'Aura',
@@ -39,7 +39,7 @@ export const useLayoutStore = defineStore('layout', () => {
   const showMobileSidebar = ref(false);
 
   // ==================== 计算属性 ====================
-  
+
   /** 是否为移动端 */
   const isMobile = computed(() => windowWidth.value < 768);
 
@@ -99,7 +99,7 @@ export const useLayoutStore = defineStore('layout', () => {
   });
 
   // ==================== 方法定义 ====================
-  
+
   /**
    * 监听窗口大小变化
    */
@@ -128,9 +128,9 @@ export const useLayoutStore = defineStore('layout', () => {
     nextTick(() => {
       // 触发主题更新事件，确保配置器能够应用当前的主题设置
       const event = new CustomEvent('layout-config-changed', {
-        detail: { 
-          primary: layoutConfig.value.primary, 
-          surface: layoutConfig.value.surface 
+        detail: {
+          primary: layoutConfig.value.primary,
+          surface: layoutConfig.value.surface
         }
       });
       window.dispatchEvent(event);
@@ -266,14 +266,14 @@ export const useLayoutStore = defineStore('layout', () => {
   };
 
   // ==================== 返回值 ====================
-  
+
   return {
     // 状态
     layoutConfig,
     layoutState,
     windowWidth,
     showMobileSidebar,
-    
+
     // 计算属性
     isMobile,
     isTablet,
@@ -286,7 +286,7 @@ export const useLayoutStore = defineStore('layout', () => {
     isShowTab,
     tabStyle,
     isShowIcon,
-    
+
     // 方法
     initLayout,
     destroyLayout,

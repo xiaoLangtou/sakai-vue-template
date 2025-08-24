@@ -439,15 +439,18 @@ defineExpose({
 <template>
     <div class="configurable-table">
         <!-- 搜索和工具栏 -->
-        <ListSearch :filter-configs="filterConfigs ?? []" placeholder="请输入搜索内容" :loading="loading"
+        <ListSearch
+:filter-configs="filterConfigs ?? []" placeholder="请输入搜索内容" :loading="loading"
             :model-value="searchParams" @search="handleFilterChange">
             <template #actions>
                 <!-- 刷新按钮 -->
-                <Button icon="pi pi-refresh" class="mr-2" severity="secondary" outlined :disabled="loading"
+                <Button
+icon="pi pi-refresh" class="mr-2" severity="secondary" outlined :disabled="loading"
                     @click="handleRefresh" />
 
                 <!-- 导出按钮 -->
-                <Button icon="pi pi-download" class="mr-2" severity="secondary" outlined :disabled="loading || !hasData"
+                <Button
+icon="pi pi-download" class="mr-2" severity="secondary" outlined :disabled="loading || !hasData"
                     @click="exportData" />
 
                 <!-- 列设置 -->
@@ -462,14 +465,17 @@ defineExpose({
         <div class="table-container">
 
 
-            <DataTable ref="dataTableRef" :value="value" :data-key="dataKey" :class="computedTableClass"
+            <DataTable
+ref="dataTableRef" :value="value" :data-key="dataKey" :class="computedTableClass"
                 :style="computedTableStyle" v-bind="{ ...$attrs, ...tableBaseConfig }" @row-click="handleRowClick"
                 @row-dblclick="handleRowDblClick" @sort="(event: any) => handleSortEvent(event)"
                 @selection-change="handleSelectionChange">
                 <!-- 动态生成列 - 优化key策略 -->
-                <template v-for="(column, columnIndex) in processedColumns"
+                <template
+v-for="(column, columnIndex) in processedColumns"
                     :key="`${column.key || column.field || columnIndex}-${column.header || column.title}`">
-                    <Column :field="column.field" :header="column.header || column.title"
+                    <Column
+:field="column.field" :header="column.header || column.title"
                         :sortable="column.sortable ?? false" :frozen="column.frozen" :align-frozen="column.alignFrozen"
                         :header-style="hasData ? getHeaderStyle(column) : undefined"
                         :style="getColumnStyle(column, hasData)" :selection-mode="(column as any).selectionMode">
@@ -485,7 +491,8 @@ defineExpose({
 
                         <!-- 文本内容 -->
                         <template v-else-if="column.text" #body="slotProps">
-                            <div v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(column as any).showTooltip ? {
+                            <div
+v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(column as any).showTooltip ? {
                                 value: getTooltipContent(column, slotProps.data, slotProps.index),
                                 ...getTooltipOptions(column)
                             } : undefined" :style="getColumnBodyStyle(column)">
@@ -498,7 +505,8 @@ defineExpose({
 
                         <!-- 默认字段内容 -->
                         <template v-else #body="slotProps">
-                            <div v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(column as any).showTooltip ? {
+                            <div
+v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(column as any).showTooltip ? {
                                 value: getTooltipContent(column, slotProps.data, slotProps.index),
                                 ...getTooltipOptions(column)
                             } : undefined" :style="getColumnBodyStyle(column)">
@@ -536,14 +544,16 @@ defineExpose({
                 </template>
             </DataTable>
             <!-- 独立分页器组件 -->
-            <Paginator v-model:first="first" :rows="rows" :total-records="totalRecords"
+            <Paginator
+v-model:first="first" :rows="rows" :total-records="totalRecords"
                 :rows-per-page-options="rowsPerPageOptions" :template="paginatorTemplate"
                 :current-page-report-template="currentPageReportTemplate" :page-link-size="pageLinkSize"
                 :always-show="alwaysShowPaginator" class="mt-3" @page="handlePaginatorPage" />
         </div>
 
         <!-- 列设置组件 -->
-        <TableColumnSettings ref="columnSettingsRef" :columns="internalColumns"
+        <TableColumnSettings
+ref="columnSettingsRef" :columns="internalColumns"
             :selected-style="(selectedStyle as 'small' | 'normal' | 'large')"
             :table-settings="currentTableSettings as any" @update:columns="handleColumnsChange"
             @column-change="handleColumnChange" @style-change="handleStyleChange"

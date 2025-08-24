@@ -12,7 +12,7 @@ const { layoutConfig, layoutState } = storeToRefs(layoutStore);
 
 
 const currentLayout = computed(() => {
-    switch (layoutConfig.layoutMode) {
+    switch (layoutConfig.value.layoutMode) {
         case 'topbar':
             return TopbarLayout;
         default:

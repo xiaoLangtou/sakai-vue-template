@@ -25,7 +25,6 @@
 
 
 .mobile-menu .menu-content {
-    padding: 1.5rem 1rem;
     gap: 0.25rem;
     transition: padding 0.3s ease;
 }
@@ -39,12 +38,12 @@
 
 /* 折叠状态样式 */
 .collapsed-menu {
-    width: 4rem;
+    @apply w-full;
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collapsed-menu .menu-content {
-    padding: 0.75rem 0.5rem;
+    padding: 0.75rem 0;
     align-items: center;
     gap: 0.25rem;
     transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
@@ -54,6 +53,7 @@
 
 /* 菜单项包装器 */
 .menu-item-wrapper {
+    @apply w-full h-full;
     position: relative;
 }
 
@@ -99,7 +99,7 @@
 /* 基础菜单项样式 */
 .menu-item {
     font-size: 14px;
-    @apply flex items-center px-3 py-2.5 mx-0 my-0.5 rounded-xl cursor-pointer text-slate-600 dark:text-slate-400 font-medium;
+    @apply flex items-center px-3 py-2.5 rounded-xl cursor-pointer text-slate-500 dark:text-slate-400 font-medium;
     position: relative;
     backdrop-filter: blur(8px);
     box-sizing: border-box;
@@ -112,21 +112,9 @@
 }
 
 .menu-item.active {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white;
+    @apply bg-gradient-to-r from-surface-100 to-surface-200 text-slate-800;
     font-weight: 600;
 }
-
-.menu-item.active::before {
-    content: '';
-    position: absolute;
-    left: -0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    @apply bg-primary-500 rounded-full;
-}
-
 
 
 /* 图标样式 */
@@ -139,7 +127,7 @@
 .menu-item-icon {
     width: 1.25rem;
     height: 1.25rem;
-    margin-right: 0.75rem;
+    margin-right: calc(var(--spacing)*2);
     flex-shrink: 0;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -232,7 +220,7 @@
     top: -0.25rem;
     bottom: 0.5rem;
     width: 2px;
-    @apply bg-gradient-to-b from-primary-500/30 to-primary-500/10;
+    @apply bg-gradient-to-b from-surface-500/20 to-surface-500/10;
     border-radius: 1px;
 }
 
@@ -242,14 +230,14 @@
 
 /* 折叠状态菜单项 */
 .collapsed-menu-item {
-    @apply flex items-center justify-center w-11 h-11 mx-auto my-1 rounded-xl cursor-pointer text-slate-500;
+    @apply flex items-center justify-center w-full h-11 mx-auto my-1 rounded-sm cursor-pointer text-slate-500;
     position: relative;
     backdrop-filter: blur(8px);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collapsed-menu-item:hover {
-    @apply bg-slate-100 bg-opacity-80 text-slate-700 shadow-md;
+    @apply bg-slate-100 bg-opacity-80 text-slate-700;
     /* 移除scale避免抖动 */
 }
 
@@ -314,4 +302,19 @@
     .collapsed-menu-item {
         @apply w-12 h-12;
     }
+}
+
+
+.menu-item.parent-highlighted {
+    .menu-item-icon {
+        @apply text-slate-800;
+    }
+
+    .menu-item-title {
+        @apply text-slate-800 font-semibold;
+    }
+}
+
+.collapsed-menu-item.parent-highlighted {
+    @apply text-slate-800;
 }

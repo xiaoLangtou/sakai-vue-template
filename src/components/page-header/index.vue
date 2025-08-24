@@ -16,9 +16,9 @@
           severity="secondary"
           text
           rounded
-          @click="handleBack"
           class="p-2 hover:bg-gray-100 transition-colors"
           :aria-label="backAriaLabel"
+          @click="handleBack"
         />
 
         <!-- 自定义图标插槽 -->
@@ -26,7 +26,7 @@
           <slot name="icon" />
         </div>
 
-        <Divider layout="vertical" v-if="showBackButton" />
+        <Divider v-if="showBackButton" layout="vertical" />
 
         <!-- 标题和描述 -->
         <div class="flex flex-col">

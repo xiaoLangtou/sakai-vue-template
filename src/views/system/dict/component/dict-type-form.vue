@@ -159,15 +159,18 @@ const resetForm = () => {
 </script>
 
 <template>
-    <CustomDrawer v-model:visible="drawerVisible" header="新建字典" width-type="extra-large" :show-default-footer="false"
+    <CustomDrawer
+v-model:visible="drawerVisible" header="新建字典" width-type="extra-large" :show-default-footer="false"
         class="!w-[800px]">
-        <Form ref="formRef" :initial-values="initialDictTypeValue" :resolver="zodResolver(dictTypeSchema)"
+        <Form
+ref="formRef" :initial-values="initialDictTypeValue" :resolver="zodResolver(dictTypeSchema)"
             :validate-on-value-update="false" :validate-on-blur="false" :validate-on-mount="false" class="form-grid"
             @keydown.enter.prevent @validate="handleFormValidation" @submit="onFormSubmit">
             <!-- 字典名称字段 -->
             <SmartFormField name="dictName" label="字典名称" required class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <InputText id="dictName" :model-value="value" placeholder="请输入字典名称，如：用户状态" autofocus class="w-full"
+                    <InputText
+id="dictName" :model-value="value" placeholder="请输入字典名称，如：用户状态" autofocus class="w-full"
                         :class="{ 'p-invalid': invalid }"
                         @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
@@ -175,7 +178,8 @@ const resetForm = () => {
             <!-- 字典编码字段 -->
             <SmartFormField name="dictCode" label="字典编码" required class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <InputText id="dictCode" :model-value="value" placeholder="请输入字典编码，如：user_status" class="w-full"
+                    <InputText
+id="dictCode" :model-value="value" placeholder="请输入字典编码，如：user_status" class="w-full"
                         :class="{ 'p-invalid': invalid }"
                         @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
@@ -183,7 +187,8 @@ const resetForm = () => {
             <!-- 字典类型字段 -->
             <SmartFormField name="systemFlag" label="字典类型" required class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <Select id="systemFlag" :model-value="value"
+                    <Select
+id="systemFlag" :model-value="value"
                         :options="[{ label: '业务字典', value: 'BUSINESS' }, { label: '系统字典', value: 'SYSTEM' }]"
                         option-label="label" option-value="value" placeholder="选择字典类型" class="w-full"
                         :class="{ 'p-invalid': invalid }"
@@ -194,7 +199,8 @@ const resetForm = () => {
             <!-- 状态字段 -->
             <SmartFormField name="status" label="状态" class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <Select id="status" :model-value="value" :options="statusOptions" option-label="label"
+                    <Select
+id="status" :model-value="value" :options="statusOptions" option-label="label"
                         option-value="value" placeholder="选择状态" class="w-full" :class="{ 'p-invalid': invalid }"
                         @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
@@ -203,7 +209,8 @@ const resetForm = () => {
             <!-- 描述字段 -->
             <SmartFormField name="dictDesc" label="描述" class="mb-4">
                 <template #default="{ value, onInput, invalid }">
-                    <Textarea id="dictDesc" :model-value="value" rows="5" cols="30" :auto-resize="true" class="w-full"
+                    <Textarea
+id="dictDesc" :model-value="value" rows="5" cols="30" :auto-resize="true" class="w-full"
                         :class="{ 'p-invalid': invalid }" placeholder="请输入字典描述"
                         @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
@@ -215,7 +222,8 @@ const resetForm = () => {
             <div class="flex justify-between items-center">
                 <div class="text-sm text-gray-500">请确保信息填写完整</div>
                 <div class="flex gap-3">
-                    <Button type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined
+                    <Button
+type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined
                         @click="resetForm" />
                     <Button type="button" label="创建" icon="pi pi-check" :disabled="invalid" @click="handleSubmit" />
                 </div>

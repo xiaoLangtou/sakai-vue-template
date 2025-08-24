@@ -125,33 +125,42 @@ const checked = ref(false);
                     </div>
 
                     <div>
-                        <label for="username"
+                        <label
+for="username"
                             class="block text-surface-900 dark:text-surface-0 font-medium mb-2">账号</label>
-                        <InputText id="username" v-model="account.username" type="text" placeholder="请输入账号"
+                        <InputText
+id="username" v-model="account.username" type="text" placeholder="请输入账号"
                             class="w-full md:w-[30rem] mb-4" />
 
-                        <label for="password"
+                        <label
+for="password"
                             class="block text-surface-900 dark:text-surface-0 font-medium mb-2">密码</label>
-                        <Password id="password" v-model="account.password" placeholder="请输入密码" :toggle-mask="true"
+                        <Password
+id="password" v-model="account.password" placeholder="请输入密码" :toggle-mask="true"
                             class="mb-4 md:w-[30rem]" fluid :feedback="false"></Password>
 
                         <!-- 验证码 -->
-                        <label for="captcha"
+                        <label
+for="captcha"
                             class="block text-surface-900 dark:text-surface-0 font-medium mb-2">验证码</label>
                         <div class="flex items-center justify-between gap-4 md:w-[30rem] mb-8">
-                            <InputText id="captcha" v-model="account.captcha" type="text" placeholder="请输入验证码"
+                            <InputText
+id="captcha" v-model="account.captcha" type="text" placeholder="请输入验证码"
                                 class="w-full" />
                             <!-- 验证码图片 -->
                             <div class="flex-shrink-0">
                                 <div class="relative cursor-pointer" @click="getCaptcha">
-                                    <img v-if="captchaImage" :src="captchaImage" alt="验证码"
+                                    <img
+v-if="captchaImage" :src="captchaImage" alt="验证码"
                                         class="h-10 border rounded" />
-                                    <div v-else
+                                    <div
+v-else
                                         class="h-10 w-20 border rounded flex items-center justify-center text-xs text-muted-color">
                                         点击获取
                                     </div>
                                     <!-- 验证码过期蒙层 -->
-                                    <div v-if="isCaptchaExpired"
+                                    <div
+v-if="isCaptchaExpired"
                                         class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded cursor-pointer"
                                         @click="closeCaptchaExpiredModal">
                                         <div class="text-white text-xs text-center px-2">

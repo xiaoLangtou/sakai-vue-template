@@ -22,17 +22,20 @@ const handleToggle = () => {
 </script>
 
 <template>
-    <header class="app-header" :class="{
+    <header
+class="app-header" :class="{
         'mobile-header': isMobile,
         'desktop-header': !isMobile
     }">
         <div class="header-left">
             <!-- 移动端菜单按钮 -->
-            <Button v-if="isMobile" icon="pi pi-bars" severity="secondary" text rounded class="mobile-menu-toggle"
+            <Button
+v-if="isMobile" icon="pi pi-bars" severity="secondary" text rounded class="mobile-menu-toggle"
                 aria-label="切换菜单" @click="handleToggle" />
 
             <!-- 桌面端折叠按钮 -->
-            <Button v-if="!isMobile" icon="pi pi-bars" severity="secondary" text rounded
+            <Button
+v-if="!isMobile" icon="pi pi-bars" severity="secondary" text rounded
                 :aria-label="collapsed ? '展开侧边栏' : '折叠侧边栏'" @click="$emit('toggle-sidebar')" />
             <!-- 移动端Logo -->
             <div v-if="isMobile" class="mobile-logo">

@@ -26,7 +26,8 @@ const handleMenuItemClick = () => {
 </script>
 
 <template>
-    <aside :class="[
+    <aside
+:class="[
         'sidebar',
         isMobile ? 'mobile-sidebar' : 'desktop-sidebar',
         !isMobile && 'fixed lg:relative',
@@ -44,10 +45,12 @@ const handleMenuItemClick = () => {
         isMobile ? 'flex' : 'hidden 2xl:flex'
     ]">
         <!-- 顶部Logo区域 -->
-        <div v-if="!isMobile"
+        <div
+v-if="!isMobile"
             :class="['sidebar-header', 'flex items-center', collapsed ? 'justify-center px-2' : 'justify-start px-6', 'min-h-[64px] w-full', 'backdrop-blur-sm']">
             <!-- Logo -->
-            <Transition enter-active-class="transition-all duration-400 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            <Transition
+enter-active-class="transition-all duration-400 cubic-bezier(0.34, 1.56, 0.64, 1)"
                 leave-active-class="transition-all duration-250 cubic-bezier(0.25, 0.46, 0.45, 0.94)"
                 enter-from-class="opacity-0 scale-90 translate-x-4" enter-to-class="opacity-100 scale-100 translate-x-0"
                 leave-from-class="opacity-100 scale-100 translate-x-0"
@@ -84,8 +87,9 @@ const handleMenuItemClick = () => {
             <!-- 滚动区域 -->
             <div
                 class="h-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-surface-300 dark:scrollbar-thumb-surface-600 scrollbar-track-transparent">
-                <div :class="isMobile ? 'p-0 h-full' : 'pt-6 px-3 pb-2 h-full'">
-                    <AppMenu :collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
+                <div :class="isMobile ? 'p-0 h-full' : 'pt-6  pb-2 h-full'">
+                    <AppMenu
+:collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
                         @menu-item-click="handleMenuItemClick" />
                 </div>
             </div>

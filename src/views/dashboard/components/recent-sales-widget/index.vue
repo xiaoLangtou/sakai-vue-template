@@ -16,7 +16,7 @@ onMounted(() => {
 <template>
     <div class="card">
         <div class="font-semibold text-xl mb-4">Recent Sales</div>
-        <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
+        <DataTable :value="products" :rows="5" :paginator="true" responsive-layout="scroll">
             <Column style="width: 15%" header="Image">
                 <template #body="slotProps">
                     <img :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" :alt="slotProps.data.image" width="50" class="shadow" />

@@ -13,10 +13,10 @@
         <ConfigurableTable
             :value="roles"
             :columns="tableColumns"
-            dataKey="id"
+            data-key="id"
             :loading="loading"
             :search-params="searchParams"
-            :filterConfigs="filterConfigs"
+            :filter-configs="filterConfigs"
             @update:columns="handleColumnsChange"
             @column-change="handleColumnChange"
             @filter-change="handleFilterChange"
@@ -32,8 +32,9 @@
             <template #column-code="{ data }">
                 <div class="flex items-center gap-1">
                     <Tag severity="secondary" :value="data.code"></Tag>
-                    <i class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
-                        @click="copyRoleCode(data.code)" title="复制角色编码"></i>
+                    <i
+class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
+                        title="复制角色编码" @click="copyRoleCode(data.code)"></i>
                 </div>
             </template>
 
@@ -80,7 +81,8 @@
                 <div class="flex items-center justify-center">
                     <Button icon="pi pi-pen-to-square" label="编辑" variant="text" @click="openEditDialog(data)" />
                     <Button icon="pi pi-users" label="用户" variant="text" @click="assignUsers(data)" />
-                    <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
+                    <Button
+icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
                         @click="(event) => openRowMenu(event, data.id)" />
                     <!-- 每行一个 Menu -->
                     <Menu :ref="(el) => setMenuRef(el, data.id)" :model="getMoreActions(data)" popup />

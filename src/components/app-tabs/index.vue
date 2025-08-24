@@ -146,17 +146,6 @@ const handleTabChange = (value: string | number): void => {
  */
 const handleTabClose = (tab: TabItem, event: Event): void => {
     event.stopPropagation();
-
-    if (!tab.closable) {
-        toast.add({
-            severity: 'warn',
-            summary: '提示',
-            detail: '首页标签不可关闭',
-            life: 3000
-        });
-        return;
-    }
-
     const success = tabsStore.removeTab(tab.key);
     if (success && tabsStore.activeTab) {
         const activeTab = tabsStore.activeTab;
@@ -382,26 +371,31 @@ const handleSearchInput = (event: Event) => {
     <div :class="['app-tabs', props.class, 'app-tabs__' + tabStyle]">
         <div class="flex items-center justify-between pr-4 gap-4">
             <div class="flex-[calc(100%_-_46px)] w-[calc(100%_-_46px)]">
-                <Tabs :value="activeTabKey" :scrollable="true" :show-navigators="true" class="custom-tabs"
+                <Tabs
+:value="activeTabKey" :scrollable="true" :show-navigators="true" class="custom-tabs"
                     @update:value="handleTabChange">
                     <TabList class="custom-tab-list">
-                        <Tab v-for="tab in tabs" :key="tab.key" :value="tab.key" as="div"
+                        <Tab
+v-for="tab in tabs" :key="tab.key" :value="tab.key" as="div"
                             :class="setTabStyle(tabStyle, tab.key)"
                             @contextmenu.prevent="handleContextMenu(tab, $event)">
                             <template v-if="tabStyle == 'Fashion'">
-                                <div :class="['tab-container', { 'active': tab.key === activeTabKey }]"
+                                <div
+:class="['tab-container', { 'active': tab.key === activeTabKey }]"
                                     :title="tab.title" tab-id="0">
                                     <div class="tab">
                                         <div class="title flex items-center gap-1">
                                             <div v-if="props.showIcon && tab.icon" class="app-tab__icon">
-                                                <component :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
+                                                <component
+:is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
                                                     :size="16" />
                                                 <i v-else-if="tab.icon" :class="tab.icon" />
                                             </div>
 
                                             {{ tab.title }}
                                         </div>
-                                        <button v-if="props.showClose && tab.closable && tabs.length > 1"
+                                        <button
+v-if="props.showClose && tab.closable && tabs.length > 1"
                                             :aria-label="`关闭 ${tab.title}`" @click.stop="handleTabClose(tab, $event)">
                                             <X :size="12" />
                                         </button>
@@ -414,7 +408,8 @@ const handleSearchInput = (event: Event) => {
                             <div v-else class="flex justify-between items-center w-[100px] app-tab-content">
                                 <div class="flex items-center gap-1">
                                     <div v-if="props.showIcon && tab.icon" class="app-tab__icon">
-                                        <component :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
+                                        <component
+:is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
                                             :size="16" />
                                         <i v-else-if="tab.icon" :class="tab.icon" />
                                     </div>
@@ -422,7 +417,8 @@ const handleSearchInput = (event: Event) => {
                                         class="app-tab__title text-ellipsis overflow-hidden whitespace-nowrap inline-block w-20 text-left">{{
                                             tab.title }}</span>
                                 </div>
-                                <button v-if="props.showClose && tab.closable && tabs.length > 1"
+                                <button
+v-if="props.showClose && tab.closable && tabs.length > 1"
                                     :aria-label="`关闭 ${tab.title}`" @click.stop="handleTabClose(tab, $event)">
                                     <X :size="12" />
                                 </button>
@@ -431,7 +427,8 @@ const handleSearchInput = (event: Event) => {
                     </TabList>
                 </Tabs>
             </div>
-            <div v-if="tabs.length > 1"
+            <div
+v-if="tabs.length > 1"
                 class="w-[30px] h-[30px] flex items-center justify-center  bg-white dark:bg-transparent cursor-pointer rounded-[8px]"
                 @click="toggle">
                 <chevron-down :size="16" />
@@ -448,7 +445,8 @@ const handleSearchInput = (event: Event) => {
                 <div class="relative">
                     <IconField>
                         <InputIcon class="pi pi-search" />
-                        <InputText v-model="searchKeyword" placeholder="搜索标签页" class="w-full text-sm pr-8"
+                        <InputText
+v-model="searchKeyword" placeholder="搜索标签页" class="w-full text-sm pr-8"
                             @input="handleSearchInput" />
                         <InputIcon v-if="searchKeyword" class="pi pi-times cursor-pointer" @click="clearSearch" />
                     </IconField>
@@ -469,7 +467,8 @@ const handleSearchInput = (event: Event) => {
                     </div>
 
                     <!-- 搜索结果为空时的提示 -->
-                    <div v-if="searchKeyword && filteredTabs.length === 0"
+                    <div
+v-if="searchKeyword && filteredTabs.length === 0"
                         class="text-center py-4 text-gray-500 dark:text-gray-400">
                         <i class="pi pi-search text-2xl mb-2 block"></i>
                         <p class="text-sm">未找到匹配的标签页</p>
@@ -477,20 +476,24 @@ const handleSearchInput = (event: Event) => {
 
                     <!-- 标签页列表容器 -->
                     <div class="max-h-[240px] overflow-y-auto">
-                        <div v-for="(tab, index) in filteredTabs" :key="`${tab.title}-${index}`"
+                        <div
+v-for="(tab, index) in filteredTabs" :key="`${tab.title}-${index}`"
                             class="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group"
                             :class="{
                                 'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700': tab.key === activeTabKey
                             }" @click="handleTabChange(tab.key)">
                             <!-- 图标 -->
-                            <component :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)" :size="16"
+                            <component
+:is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)" :size="16"
                                 class="text-gray-600 dark:text-gray-400 flex-shrink-0" />
-                            <i v-else-if="tab.icon"
+                            <i
+v-else-if="tab.icon"
                                 :class="[tab.icon, 'text-sm text-gray-600 dark:text-gray-400 flex-shrink-0']" />
 
                             <!-- 标题和路径 -->
                             <div class="flex-1 min-w-0">
-                                <div class="text-sm text-gray-700 dark:text-gray-300 truncate" :class="{
+                                <div
+class="text-sm text-gray-700 dark:text-gray-300 truncate" :class="{
                                     'font-medium text-blue-600 dark:text-blue-400': tab.key === activeTabKey
                                 }">
                                     {{ tab.title }}
@@ -501,7 +504,8 @@ const handleSearchInput = (event: Event) => {
                             </div>
 
                             <!-- 关闭按钮 -->
-                            <X v-if="tab.closable && tabs.length > 1" :size="14"
+                            <X
+v-if="tab.closable && tabs.length > 1" :size="14"
                                 class="text-gray-400 hover:text-red-500 transition-colors duration-200 flex-shrink-0 opacity-0 group-hover:opacity-100"
                                 :class="{ 'opacity-100': tab.key === activeTabKey }"
                                 @click.stop="handleTabClose(tab, $event)" />

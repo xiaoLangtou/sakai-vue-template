@@ -417,7 +417,8 @@ watch(() => props.visible, (newVisible) => {
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" header="批量添加字典项" :modal="true" :style="{ width: '1200px' }"
+    <Dialog
+v-model:visible="dialogVisible" header="批量添加字典项" :modal="true" :style="{ width: '1200px' }"
         class="batch-add-dialog" @show="handleDialogOpen">
         <!-- 操作提示区域 -->
         <div class="operation-tips">
@@ -427,53 +428,61 @@ watch(() => props.visible, (newVisible) => {
                     支持从Excel复制粘贴数据，格式：标签、值、排序、备注（Tab分隔）
                 </span>
             </div>
-            <Button label="粘贴Excel数据" icon="pi pi-clipboard" severity="secondary" outlined size="small"
+            <Button
+label="粘贴Excel数据" icon="pi pi-clipboard" severity="secondary" outlined size="small"
                 @click="focusPasteArea" />
         </div>
 
         <!-- 隐藏的粘贴区域 -->
-        <textarea ref="pasteArea" class="paste-area" @paste="handlePaste" @keydown.esc="hidePasteArea"
-            @blur="hidePasteArea" placeholder="在此粘贴Excel数据（Ctrl+V），按ESC键关闭" />
+        <textarea
+ref="pasteArea" class="paste-area" placeholder="在此粘贴Excel数据（Ctrl+V），按ESC键关闭" @paste="handlePaste"
+            @keydown.esc="hidePasteArea" @blur="hidePasteArea" />
 
         <!-- 数据表格 -->
         <div class="table-container">
-            <DataTable :value="batchItems" :scrollable="true" scrollHeight="450px" stripedRows showGridlines
-                responsiveLayout="scroll" dataKey="tempId">
+            <DataTable
+:value="batchItems" :scrollable="true" scroll-height="450px" striped-rows show-gridlines
+                responsive-layout="scroll" data-key="tempId">
                 <Column field="label" header="字典标签 *" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText :model-value="data.label" @update:model-value="updateField(index, 'label', $event)"
-                            @blur="markFieldTouched(data.tempId!, 'label')"
-                            :class="{ 'p-invalid': hasFieldError(data, 'label') }" placeholder="请输入字典标签" />
+                        <InputText
+:model-value="data.label" :class="{ 'p-invalid': hasFieldError(data, 'label') }"
+                            placeholder="请输入字典标签"
+                            @update:model-value="updateField(index, 'label', $event)" @blur="markFieldTouched(data.tempId!, 'label')" />
                     </template>
                 </Column>
 
                 <Column field="value" header="字典值 *" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText :model-value="data.value" @update:model-value="updateField(index, 'value', $event)"
-                            @blur="markFieldTouched(data.tempId!, 'value')"
-                            :class="{ 'p-invalid': hasFieldError(data, 'value') }" placeholder="请输入字典值" />
+                        <InputText
+:model-value="data.value" :class="{ 'p-invalid': hasFieldError(data, 'value') }"
+                            placeholder="请输入字典值"
+                            @update:model-value="updateField(index, 'value', $event)" @blur="markFieldTouched(data.tempId!, 'value')" />
                     </template>
                 </Column>
 
                 <Column field="sort" header="排序" style="min-width: 120px">
                     <template #body="{ data, index }">
-                        <InputNumber :model-value="data.sort" @update:model-value="updateField(index, 'sort', $event)"
-                            :min="0" :max="999" showButtons buttonLayout="horizontal"
-                            incrementButtonClass="p-button-secondary" decrementButtonClass="p-button-secondary" />
+                        <InputNumber
+:model-value="data.sort" :min="0"
+                            :max="999" show-buttons button-layout="horizontal" increment-button-class="p-button-secondary"
+                            decrement-button-class="p-button-secondary" @update:model-value="updateField(index, 'sort', $event)" />
                     </template>
                 </Column>
 
                 <Column field="remark" header="备注" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText :model-value="data.remark" @update:model-value="updateField(index, 'remark', $event)"
-                            placeholder="请输入备注" />
+                        <InputText
+:model-value="data.remark" placeholder="请输入备注"
+                            @update:model-value="updateField(index, 'remark', $event)" />
                     </template>
                 </Column>
 
                 <Column header="操作" style="width: 80px" :exportable="false">
                     <template #body="{ index }">
-                        <Button icon="pi pi-trash" severity="danger" text size="small"
-                            :disabled="batchItems.length <= 1" @click="removeBatchRow(index)" title="删除此行" />
+                        <Button
+icon="pi pi-trash" severity="danger" text size="small"
+                            :disabled="batchItems.length <= 1" title="删除此行" @click="removeBatchRow(index)" />
                     </template>
                 </Column>
             </DataTable>
@@ -489,9 +498,11 @@ watch(() => props.visible, (newVisible) => {
                     </div>
                 </div>
                 <div class="footer-right">
-                    <Button label="取消" icon="pi pi-times" severity="secondary" outlined
+                    <Button
+label="取消" icon="pi pi-times" severity="secondary" outlined
                         @click="dialogVisible = false" />
-                    <Button label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting"
+                    <Button
+label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting"
                         @click="submitBatchAdd" />
                 </div>
             </div>

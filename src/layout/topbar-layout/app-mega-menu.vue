@@ -165,7 +165,7 @@ watchEffect(() => {
 
 <template>
     <div class="menubar-container">
-        <Menubar :model="model" ref="menubar">
+        <Menubar ref="menubar" :model="model">
             <template #item="{ item, props, hasSubmenu, root }">
                 <a v-ripple class="flex items-center" :class="{ 'active-route': item.to === activeItemPath && !hasSubmenu }" v-bind="props.action">
                     <i v-if="item.icon" :class="item.icon"></i>

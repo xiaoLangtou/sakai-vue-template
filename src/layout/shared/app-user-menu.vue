@@ -67,7 +67,8 @@ const toggle = (event: MouseEvent) => {
 };
 </script>
 <template>
-    <div class=" flex items-center justify-between p-1 hover:bg-zinc-100 hover:dark:bg-zinc-800 rounded-md cursor-pointer"
+    <div
+class=" flex items-center justify-between p-1 hover:bg-zinc-100 hover:dark:bg-zinc-800 rounded-md cursor-pointer"
         @click="toggle">
         <div class="flex items-center gap-4">
             <Avatar icon="pi pi-user" size="large" />
@@ -96,7 +97,8 @@ const toggle = (event: MouseEvent) => {
                     <component :is="lucideIconName(item.icon)" :size="16"></component>
                     <span>{{ item.label }}</span>
                     <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
-                    <span v-if="item.shortcut"
+                    <span
+v-if="item.shortcut"
                         class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
                             item.shortcut }}</span>
                 </div>

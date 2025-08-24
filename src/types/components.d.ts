@@ -23,6 +23,7 @@ declare module 'vue' {
     DataTable: typeof import('primevue/datatable')['default']
     Dialog: typeof import('primevue/dialog')['default']
     Divider: typeof import('primevue/divider')['default']
+    Drawer: typeof import('primevue/drawer')['default']
     Fieldset: typeof import('primevue/fieldset')['default']
     FilterItem: typeof import('./../components/search/filter-item/index.vue')['default']
     FloatingConfigurator: typeof import('./../components/floating-configurator/index.vue')['default']

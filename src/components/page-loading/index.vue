@@ -1,6 +1,7 @@
 <template>
     <Transition name="fade">
-        <div v-if="pageLoadingStore.isLoading"
+        <div
+v-if="pageLoadingStore.isLoading"
             class="fixed inset-0 z-[9999] flex items-center justify-center bg-white/80 backdrop-blur-sm dark:bg-gray-900/80">
             <div class="flex flex-col items-center space-y-4">
                 <!-- 加载动画 -->

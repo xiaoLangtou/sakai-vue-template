@@ -143,7 +143,8 @@ watch(
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" :header="title" :modal="true" :dismissable-mask="true" :closable="true"
+    <Dialog
+v-model:visible="dialogVisible" :header="title" :modal="true" :dismissable-mask="true" :closable="true"
         :style="{ width: width }" class="button-selector-dialog">
         <div class="p-6">
             <div class="mb-6">
@@ -152,18 +153,21 @@ watch(
                         <h5 class="font-semibold text-gray-800 mb-1">选择要添加的按钮</h5>
                         <p class="text-sm text-gray-600">{{ description }}</p>
                     </div>
-                    <Button :label="toggleAllLabel" size="small" severity="secondary" outlined
+                    <Button
+:label="toggleAllLabel" size="small" severity="secondary" outlined
                         @click="toggleAllButtons" />
                 </div>
             </div>
 
             <div class="space-y-3">
-                <div v-for="button in buttons" :key="button.permission"
+                <div
+v-for="button in buttons" :key="button.permission"
                     class="button-selector-item flex items-center p-3 border rounded cursor-pointer hover:bg-gray-50 hover:border-blue-300 transition-colors"
                     :class="{ 'border-blue-500 bg-blue-50 shadow-sm selected': isButtonSelected(button.permission) }"
                     @click="toggleButtonSelection(button.permission)">
                     <div class="flex items-center flex-1">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                        <div
+class="w-8 h-8 rounded-full flex items-center justify-center mr-2"
                             :class="isButtonSelected(button.permission) ? 'bg-blue-100' : 'bg-gray-100'">
                             <i
                                 :class="[button.icon, isButtonSelected(button.permission) ? 'text-blue-600' : 'text-gray-600']"></i>
@@ -174,7 +178,8 @@ watch(
                         </div>
                     </div>
                     <div class="ml-2">
-                        <i class="pi transition-colors"
+                        <i
+class="pi transition-colors"
                             :class="isButtonSelected(button.permission) ? 'pi-check-circle text-blue-500' : 'pi-circle text-gray-300'"></i>
                     </div>
                 </div>

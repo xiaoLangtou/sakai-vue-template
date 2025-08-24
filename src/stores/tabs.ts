@@ -117,15 +117,6 @@ export const useTabsStore = defineStore('tabs', () => {
   const removeTab = (key: string): boolean => {
     const index = tabs.value.findIndex(tab => tab.key === key);
     if (index === -1) return false;
-
-    const tab = tabs.value[index];
-
-    // 首页不可关闭
-    if (tab.isHome) {
-      console.warn('首页标签不可关闭');
-      return false;
-    }
-
     // 移除标签页
     tabs.value.splice(index, 1);
 

@@ -478,16 +478,18 @@ const isLucideIcon = (icon: IconItem): boolean => {
 <template>
     <div class="icon-selector">
         <!-- 下拉选择框形式 -->
-        <Select v-if="mode === 'dropdown'" v-model="selectedIcon" :options="iconOptions" option-label="label"
+        <Select
+v-if="mode === 'dropdown'" v-model="selectedIcon" :options="iconOptions" option-label="label"
             option-value="value" :placeholder="placeholder" :filter="filter" :filter-placeholder="filterPlaceholder"
             :show-clear="showClear" :invalid="invalid" :disabled="disabled" class="w-full" @change="handleIconChange">
             <template #value="{ value }">
                 <div v-if="value" class="flex items-center gap-2">
                     <!-- PrimeVue 图标 -->
-                    <i v-if="!getIconItem(value) || !isLucideIcon(getIconItem(value)!)" :class="value"
+                    <i
+v-if="!getIconItem(value) || !isLucideIcon(getIconItem(value)!)" :class="value"
                         class="text-base text-surface-600"></i>
                     <!-- Lucide 图标 -->
-                    <component v-else :is="value" class="w-4 h-4 text-surface-600" />
+                    <component :is="value" v-else class="w-4 h-4 text-surface-600" />
                     <span class="text-sm">{{ getIconLabel(value) }}</span>
                 </div>
                 <span v-else class="text-sm text-surface-400">{{ placeholder }}</span>
@@ -495,10 +497,11 @@ const isLucideIcon = (icon: IconItem): boolean => {
             <template #option="{ option }">
                 <div class="flex items-center gap-2 py-1">
                     <!-- PrimeVue 图标 -->
-                    <i v-if="!getIconItem(option.value) || !isLucideIcon(getIconItem(option.value)!)"
+                    <i
+v-if="!getIconItem(option.value) || !isLucideIcon(getIconItem(option.value)!)"
                         :class="option.value" class="text-base text-surface-600"></i>
                     <!-- Lucide 图标 -->
-                    <component v-else :is="option.value" class="w-4 h-4 text-surface-600" />
+                    <component :is="option.value" v-else class="w-4 h-4 text-surface-600" />
                     <span class="text-sm">{{ option.label }}</span>
                 </div>
             </template>
@@ -510,12 +513,14 @@ const isLucideIcon = (icon: IconItem): boolean => {
                 <InputGroup>
                     <InputGroupAddon>
                         <!-- PrimeVue 图标预览 -->
-                        <i v-if="!getIconItem(selectedIcon) || !isLucideIcon(getIconItem(selectedIcon)!)"
+                        <i
+v-if="!getIconItem(selectedIcon) || !isLucideIcon(getIconItem(selectedIcon)!)"
                             :class="selectedIcon" class="text-sm text-surface-500"></i>
                         <!-- Lucide 图标预览 -->
-                        <component v-else :is="selectedIcon" :size="14" />
+                        <component :is="selectedIcon" v-else :size="14" />
                     </InputGroupAddon>
-                    <InputText v-model="selectedIcon" placeholder="点击选择图标" :invalid="invalid" :disabled="disabled"
+                    <InputText
+v-model="selectedIcon" placeholder="点击选择图标" :invalid="invalid" :disabled="disabled"
                         :class="{ 'pl-8': selectedIcon && showPreview }" class="w-full text-sm" readonly
                         @click="openIconSelector" />
                 </InputGroup>
@@ -523,7 +528,8 @@ const isLucideIcon = (icon: IconItem): boolean => {
         </div>
 
         <!-- 图标选择器弹窗 - 极简版 -->
-        <Dialog v-model:visible="iconSelectorVisible" :modal="true" :dismissable="true" header="选择图标"
+        <Dialog
+v-model:visible="iconSelectorVisible" :modal="true" :dismissable="true" header="选择图标"
             class="icon-selector-dialog" :style="{ width: '600px', maxWidth: '90vw' }">
 
             <!-- 搜索框 -->
@@ -534,7 +540,8 @@ const isLucideIcon = (icon: IconItem): boolean => {
             <!-- 图标库切换 -->
             <div v-if="showLibraryTabs && enabledLibraries.length > 1" class="mb-4">
                 <div class="flex gap-2">
-                    <Button v-for="library in enabledLibraries" :key="library"
+                    <Button
+v-for="library in enabledLibraries" :key="library"
                         :label="library === 'primevue' ? 'PrimeVue' : 'Lucide'"
                         :severity="currentLibrary === library ? 'primary' : 'secondary'"
                         :outlined="currentLibrary !== library" size="small" @click="switchLibrary(library)" />
@@ -544,11 +551,12 @@ const isLucideIcon = (icon: IconItem): boolean => {
             <!-- 图标网格 -->
             <div class="icon-grid-container">
                 <div class="icon-grid">
-                    <button v-for="icon in filteredIcons" :key="icon.name"
-                        :class="['icon-btn', { 'selected': tempSelectedIcon === icon.name }]" @click="selectIcon(icon)"
-                        :title="icon.label">
+                    <button
+v-for="icon in filteredIcons" :key="icon.name"
+                        :class="['icon-btn', { 'selected': tempSelectedIcon === icon.name }]" :title="icon.label"
+                        @click="selectIcon(icon)">
                         <i v-if="!isLucideIcon(icon)" :class="icon.name"></i>
-                        <component v-else :is="icon.name" class="w-5 h-5" />
+                        <component :is="icon.name" v-else class="w-5 h-5" />
                     </button>
                 </div>
 
@@ -563,11 +571,12 @@ const isLucideIcon = (icon: IconItem): boolean => {
             <template #footer>
                 <div class="flex justify-between items-center">
                     <div v-if="tempSelectedIcon" class="flex items-center gap-2 text-sm text-gray-600">
-                        <i v-if="getIconItem(tempSelectedIcon) && !isLucideIcon(getIconItem(tempSelectedIcon)!)"
+                        <i
+v-if="getIconItem(tempSelectedIcon) && !isLucideIcon(getIconItem(tempSelectedIcon)!)"
                             :class="tempSelectedIcon"></i>
                         <component
-                            v-else-if="getIconItem(tempSelectedIcon) && isLucideIcon(getIconItem(tempSelectedIcon)!)"
-                            :is="tempSelectedIcon" class="w-4 h-4" />
+                            :is="tempSelectedIcon"
+                            v-else-if="getIconItem(tempSelectedIcon) && isLucideIcon(getIconItem(tempSelectedIcon)!)" class="w-4 h-4" />
                         <span>{{ getIconLabel(tempSelectedIcon) }}</span>
                     </div>
                     <div v-else class="text-sm text-gray-400">请选择一个图标</div>

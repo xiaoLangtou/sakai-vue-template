@@ -404,11 +404,13 @@ const handleFormSubmit = () => {
 </script>
 
 <template>
-    <CustomDrawer v-model:visible="drawerVisible" :header="formData.id ? '编辑角色' : '新增角色'" :modal="true" :dismissable="!isSubmitting"
+    <CustomDrawer
+v-model:visible="drawerVisible" :header="formData.id ? '编辑角色' : '新增角色'" :modal="true" :dismissable="!isSubmitting"
         position="right" class="!w-[800px]" @hide="closeDrawer">
         <div class="flex-1 overflow-y-auto">
-            <Form ref="formRef" :resolver="zodResolver(roleSchema)" :default-values="getInitialValues()"
-                @submit="onFormSubmit" class="space-y-6">
+            <Form
+ref="formRef" :resolver="zodResolver(roleSchema)" :default-values="getInitialValues()"
+                class="space-y-6" @submit="onFormSubmit">
                 <!-- 基本信息 -->
                 <Fieldset legend="基本信息" :toggleable="true" class="mb-4">
                     <template #legend="{ toggleCallback }">
@@ -422,23 +424,27 @@ const handleFormSubmit = () => {
                          <!-- 角色名称 -->
                          <SmartFormField name="name" label="角色名称" required>
                              <template #default="{ field }">
-                                 <InputText v-model="field.value" placeholder="请输入角色名称，如：系统管理员"
+                                 <InputText
+v-model="field.value" placeholder="请输入角色名称，如：系统管理员"
                                      class="w-full" :invalid="field.invalid" />
                              </template>
                          </SmartFormField>
 
                          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                              <!-- 角色编码 -->
-                             <SmartFormField name="code" label="角色编码" required
+                             <SmartFormField
+name="code" label="角色编码" required
                                  description="编码将用于系统内部标识，建议使用英文字母">
                                  <template #default="{ field }">
                                      <div class="p-inputgroup">
-                                         <InputText v-model="field.value" placeholder="请输入角色编码，如：admin"
+                                         <InputText
+v-model="field.value" placeholder="请输入角色编码，如：admin"
                                              class="w-full" :invalid="field.invalid"
                                              @input="(e) => handleCodeInput((e.target as HTMLInputElement)?.value || '', (val) => field.value = val.target.value)" />
-                                         <Button type="button" icon="pi pi-refresh" severity="secondary" outlined
-                                             @click="generateCode(field.value ?? '', (val) => field.value = val.target.value)"
-                                             :disabled="!field.value" v-tooltip.top="'根据角色名称生成编码'" />
+                                         <Button
+v-tooltip.top="'根据角色名称生成编码'" type="button" icon="pi pi-refresh" severity="secondary"
+                                             outlined
+                                             :disabled="!field.value" @click="generateCode(field.value ?? '', (val) => field.value = val.target.value)" />
                                      </div>
                                  </template>
                              </SmartFormField>
@@ -446,8 +452,9 @@ const handleFormSubmit = () => {
                              <!-- 角色类型 -->
                              <SmartFormField name="type" label="角色类型">
                                  <template #default="{ field }">
-                                     <Select v-model="field.value" :options="typeOptions" optionLabel="label"
-                                         optionValue="value" placeholder="请选择角色类型" class="w-full"
+                                     <Select
+v-model="field.value" :options="typeOptions" option-label="label"
+                                         option-value="value" placeholder="请选择角色类型" class="w-full"
                                          :invalid="field.invalid">
                                          <template #option="slotProps">
                                              <div class="flex items-center gap-2">
@@ -477,8 +484,9 @@ const handleFormSubmit = () => {
                              <template #default="{ field }">
                                  <div class="space-y-4">
                                      <!-- 数据权限选择器 -->
-                                     <Select v-model="field.value" :options="dataScopeOptions" optionLabel="label"
-                                         optionValue="value" placeholder="请选择数据权限范围" class="w-full"
+                                     <Select
+v-model="field.value" :options="dataScopeOptions" option-label="label"
+                                         option-value="value" placeholder="请选择数据权限范围" class="w-full"
                                          :invalid="field.invalid" @change="handleDataScopeChange">
                                          <template #value="slotProps">
                                              <div v-if="slotProps.value" class="flex items-center gap-2">
@@ -512,7 +520,7 @@ const handleFormSubmit = () => {
                                                      <div class="flex items-center">
                                                          <RadioButton
                                                              v-model="customDataScopeType"
-                                                             inputId="dept-permission"
+                                                             input-id="dept-permission"
                                                              value="dept"
                                                              @change="() => handleCustomDataScopeTypeChange('dept')"
                                                          />
@@ -521,7 +529,7 @@ const handleFormSubmit = () => {
                                                      <div class="flex items-center">
                                                          <RadioButton
                                                              v-model="customDataScopeType"
-                                                             inputId="user-permission"
+                                                             input-id="user-permission"
                                                              value="user"
                                                              @change="() => handleCustomDataScopeTypeChange('user')"
                                                          />
@@ -547,7 +555,8 @@ const handleFormSubmit = () => {
 
                                                      <!-- 已选择的项目预览 -->
                                                      <div class="min-h-[60px] border border-gray-200 rounded p-3 bg-white">
-                                                         <div v-if="(customDataScopeType === 'dept' ? selectedDepts : selectedUsers).length === 0"
+                                                         <div
+v-if="(customDataScopeType === 'dept' ? selectedDepts : selectedUsers).length === 0"
                                                               class="text-gray-400 text-sm text-center py-2">
                                                              暂未选择任何{{ customDataScopeType === 'dept' ? '部门' : '用户' }}
                                                          </div>
@@ -595,12 +604,14 @@ const handleFormSubmit = () => {
                              <!-- 状态 -->
                              <SmartFormField name="status" label="状态">
                                  <template #default="{ field }">
-                                     <Select v-model="field.value" :options="statusOptions" optionLabel="label"
-                                          optionValue="value" placeholder="请选择状态" class="w-full"
+                                     <Select
+v-model="field.value" :options="statusOptions" option-label="label"
+                                          option-value="value" placeholder="请选择状态" class="w-full"
                                           :invalid="field.invalid">
                                           <template #option="slotProps">
                                               <div class="flex items-center gap-2">
-                                                  <Tag :value="slotProps.option.label"
+                                                  <Tag
+:value="slotProps.option.label"
                                                       :severity="getStatusSeverity(slotProps.option.value)" />
                                               </div>
                                           </template>
@@ -611,16 +622,18 @@ const handleFormSubmit = () => {
                               <!-- 排序 -->
                               <SmartFormField name="sort" label="排序" description="数值越小排序越靠前">
                                   <template #default="{ field }">
-                                      <InputNumber v-model="field.value" :min="0" :max="999"
+                                      <InputNumber
+v-model="field.value" :min="0" :max="999"
                                           placeholder="排序值" class="w-full" :invalid="field.invalid"
-                                          showButtons :step="1" />
+                                          show-buttons :step="1" />
                                   </template>
                               </SmartFormField>
                           </div>
 
                           <!-- 设为默认角色 -->
                           <div class="flex items-center gap-3">
-                              <SmartFormField name="isDefault" label="设为默认角色"
+                              <SmartFormField
+name="isDefault" label="设为默认角色"
                                   description="新用户注册时自动分配此角色">
                                   <template #default="{ field }">
                                       <InputSwitch v-model="field.value" />
@@ -643,7 +656,8 @@ const handleFormSubmit = () => {
                         <!-- 备注 -->
                         <SmartFormField name="remark" label="备注">
                             <template #default="{ field }">
-                                <Textarea v-model="field.value" rows="4" :autoResize="true"
+                                <Textarea
+v-model="field.value" rows="4" :auto-resize="true"
                                     placeholder="请输入角色备注信息..." :maxlength="500"
                                     class="w-full" :invalid="field.invalid" />
                                 <div class="text-right mt-1">
@@ -658,14 +672,17 @@ const handleFormSubmit = () => {
 
         <!-- 底部操作按钮 -->
         <template #footer>
-           <Button type="button" label="取消" icon="pi pi-times" severity="secondary" outlined
-                        :disabled="isSubmitting" @click="closeDrawer" class="action-button" />
-                    <Button type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined
-                        :disabled="isSubmitting" @click="resetForm" class="action-button" />
-                    <Button type="button" :label="submitButtonLabel"
+           <Button
+type="button" label="取消" icon="pi pi-times" severity="secondary" outlined
+                        :disabled="isSubmitting" class="action-button" @click="closeDrawer" />
+                    <Button
+type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined
+                        :disabled="isSubmitting" class="action-button" @click="resetForm" />
+                    <Button
+type="button" :label="submitButtonLabel"
                         :icon="isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-                        :disabled="invalid || isSubmitting" :loading="isSubmitting" @click="handleFormSubmit"
-                        class="action-button primary-button" />
+                        :disabled="invalid || isSubmitting" :loading="isSubmitting" class="action-button primary-button"
+                        @click="handleFormSubmit" />
         </template>
     </CustomDrawer>
 

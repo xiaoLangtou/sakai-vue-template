@@ -175,12 +175,13 @@ defineExpose({
                 <span v-if="config.required" class="required-mark">*</span>
             </label>
             <div v-if="config.tooltip" class="filter-tooltip">
-                <i class="pi pi-info-circle" v-tooltip="config.tooltip" />
+                <i v-tooltip="config.tooltip" class="pi pi-info-circle" />
             </div>
         </div>
 
         <div class="filter-input-wrapper">
-            <component :is="componentMap[config.type]" v-bind="componentProps" :model-value="value"
+            <component
+:is="componentMap[config.type]" v-bind="componentProps" :model-value="value"
                 @update:model-value="handleUpdate" />
             <div v-if="hasError" class="error-indicator">
                 <i class="pi pi-exclamation-triangle" />

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
+import { useLucideIcon } from '@/composables';
 import type { MenuItem } from '@/types/layout';
-import * as icons from "lucide-vue-next";
 import { ChevronRight } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFloatingMenu } from '../composables/useFloatingMenu';
-import { useLucideIcon } from '@/composables';
 
 interface Props {
     item: MenuItem;
@@ -55,6 +54,13 @@ const hasActiveChild = (children: MenuItem[]): boolean => {
         return false;
     });
 };
+
+/**
+ * 检查是否为父菜单高亮（有子菜单激活但自身不是当前路由）
+ */
+const isParentHighlighted = computed(() => {
+    return !isCurrentRoute.value && hasChildren.value && sortedChildren.value.length > 0 && hasActiveChild(sortedChildren.value);
+});
 
 onMounted(() => {
     register();
@@ -131,9 +137,7 @@ const positionFloatingMenu = (triggerElement: Element, menuContainer: HTMLElemen
     const menuRect = menuContainer.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-
-    console.log(triggerRect.right)
-    let left = triggerRect.right + 23;
+    let left = triggerRect.right + 1    ;
     let top = triggerRect.top;
 
     if (left + menuRect.width > viewportWidth) {
@@ -150,7 +154,7 @@ const positionFloatingMenu = (triggerElement: Element, menuContainer: HTMLElemen
     menuContainer.style.zIndex = '1000';
 };
 
- const { isLucideIcon, lucideIconName } = useLucideIcon();
+const { isLucideIcon, lucideIconName } = useLucideIcon();
 
 const { isOutside } = useMouseInElement(floatingMenu);
 
@@ -166,8 +170,11 @@ watch(isOutside, () => {
     <div>
         <!-- 折叠状态 -->
         <div v-if="collapsed && hasChildren" class="relative">
-            <div class="collapsed-menu-item" :class="{ 'active': isCurrentRoute }" @click="handleClick">
-                <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="20" />
+            <div class="collapsed-menu-item" :class="{
+                'active': isCurrentRoute,
+                'parent-highlighted': isParentHighlighted
+            }" @click="handleClick">
+                <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                 <i v-else-if="item.meta.icon" :class="item.meta.icon" />
             </div>
 
@@ -185,12 +192,15 @@ watch(isOutside, () => {
         <!-- 正常状态 -->
         <div v-if="!collapsed" class="relative">
             <div class="menu-item" :class="[
-                { 'active': isCurrentRoute },
+                {
+                    'active': isCurrentRoute,
+                    'parent-highlighted': isParentHighlighted
+                },
                 `level-${level}`
             ]" @click="handleClick">
 
                 <div class="menu-item-icon">
-                    <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="18" />
+                    <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                     <i v-else-if="item.meta.icon" :class="item.meta.icon" />
                 </div>
 
@@ -212,4 +222,7 @@ watch(isOutside, () => {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* 父菜单高亮样式 - 只高亮图标和标题颜色，不显示背景 */
+
+</style>

@@ -229,7 +229,8 @@ const openRowMenu = (event: Event, id: number) => {
                 <template #actions>
                     <Button label="新增" icon="pi pi-plus" class="mr-2" @click="openNewDictItem" />
                     <Button label="批量添加" icon="pi pi-plus-circle" class="mr-2" @click="openBatchAddDialog" />
-                    <Button label="批量删除" icon="pi pi-trash" severity="danger" class="mr-2"
+                    <Button
+label="批量删除" icon="pi pi-trash" severity="danger" class="mr-2"
                         :disabled="!selectedDictItems || selectedDictItems.length === 0"
                         @click="confirmDeleteSelectedItems" />
                     <Button label="导出" icon="pi pi-download" class="mr-2" @click="exportDict" />
@@ -237,10 +238,11 @@ const openRowMenu = (event: Event, id: number) => {
                 </template>
             </PageHeader>
         </template>
-        <ConfigurableTable :value="tableData" :columns="tableColumns" dataKey="id" :loading="isLoading"
-            :search-params="searchParams" :filterConfigs="filterConfigs" @update:columns="handleColumnsChange"
-            @page="handlePageChange" @filter-change="handleFilterChange" @refresh="handleRefresh"
-            v-model:selection="selectedDictItems" selectionMode="multiple">
+        <ConfigurableTable
+v-model:selection="selectedDictItems" :value="tableData" :columns="tableColumns" data-key="id"
+            :loading="isLoading" :search-params="searchParams" :filter-configs="filterConfigs"
+            selection-mode="multiple" @update:columns="handleColumnsChange" @page="handlePageChange"
+            @filter-change="handleFilterChange" @refresh="handleRefresh">
             <!-- 字典标签列 -->
             <template #column-label="slotProps">
                 <span class="font-medium">{{ slotProps.data.label }}</span>
@@ -268,22 +270,27 @@ const openRowMenu = (event: Event, id: number) => {
             <!-- 操作列 -->
             <template #column-actions="slotProps">
                 <div class="flex items-center justify-center gap-1">
-                    <Button icon="pi pi-pen-to-square" label="编辑" variant="text" size="small"
+                    <Button
+icon="pi pi-pen-to-square" label="编辑" variant="text" size="small"
                         @click="editDictItem(slotProps.data)" />
-                    <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
+                    <Button
+icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
                         @click="(event) => openRowMenu(event, slotProps.data.id)" />
                     <!-- 每行一个 Menu -->
-                    <Menu :ref="(el) => setMenuRef(el, slotProps.data.id)" :model="getItemMoreActions(slotProps.data)"
+                    <Menu
+:ref="(el) => setMenuRef(el, slotProps.data.id)" :model="getItemMoreActions(slotProps.data)"
                         popup />
                 </div>
             </template>
         </ConfigurableTable>
         <!-- 字典项对话框 -->
-        <DictItemDialog v-model:visible="dictItemDialog" :dict-type-id="dictTypeId" :edit-item="currentEditItem"
+        <DictItemDialog
+v-model:visible="dictItemDialog" :dict-type-id="dictTypeId" :edit-item="currentEditItem"
             :existing-items="dictItems" @save="handleDictItemSave" />
 
         <!-- 批量添加字典项对话框 -->
-        <BatchAddDialog v-model:visible="batchAddDialog" :dict-type-id="dictTypeId" :existing-items="dictItems"
+        <BatchAddDialog
+v-model:visible="batchAddDialog" :dict-type-id="dictTypeId" :existing-items="dictItems"
             @save="handleBatchSave" />
     </PageContainer>
 </template>

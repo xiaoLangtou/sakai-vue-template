@@ -39,7 +39,8 @@ const toggleMobileMenu = (event) => {
 </script>
 
 <template>
-    <div class="layout-topbar" :class="{
+    <div
+class="layout-topbar" :class="{
         'mobile-topbar': isMobile,
         'desktop-topbar': !isMobile
     }">
@@ -52,7 +53,7 @@ const toggleMobileMenu = (event) => {
                 </button>
 
                 <!-- 移动端更多菜单 -->
-                <button type="button" class="layout-topbar-action" @click="toggleMobileMenu" aria-label="更多选项">
+                <button type="button" class="layout-topbar-action" aria-label="更多选项" @click="toggleMobileMenu">
                     <i class="pi pi-ellipsis-v"></i>
                 </button>
 
@@ -91,8 +92,9 @@ const toggleMobileMenu = (event) => {
                     </button>
                 </div>
 
-                <button class="layout-topbar-menu-button layout-topbar-action"
-                    v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }">
+                <button
+v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
+                    class="layout-topbar-menu-button layout-topbar-action">
                     <i class="pi pi-ellipsis-v"></i>
                 </button>
 
@@ -117,7 +119,8 @@ const toggleMobileMenu = (event) => {
     </div>
 
     <!-- 用户资料抽屉 -->
-    <Drawer v-model:visible="profileDrawerVisible" header="Profile" position="right" class="profile-drawer"
+    <Drawer
+v-model:visible="profileDrawerVisible" header="Profile" position="right" class="profile-drawer"
         :style="{ width: isMobile ? '100vw' : '50rem' }">
         <UserProfile />
     </Drawer>

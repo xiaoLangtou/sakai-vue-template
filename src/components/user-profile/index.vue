@@ -93,7 +93,7 @@ const formattedDate = computed(() => {
 
         <!-- 日历 -->
         <div class="profile-calendar">
-            <DatePicker v-model="selectedDate" inline showWeek class="profile-datepicker" />
+            <DatePicker v-model="selectedDate" inline show-week class="profile-datepicker" />
         </div>
 
         <!-- 选中日期显示 -->

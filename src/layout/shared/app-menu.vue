@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { MenuOptions } from '@/services/types/menu';
+import useMenuStore from '@/stores/menu';
 import { computed } from 'vue';
 import AppMenuItem from './app-menu-item.vue';
-import useMenuStore from '@/stores/menu';
-import type { MenuOptions } from '@/services/types/menu';
 
 defineProps({
     collapsed: {
@@ -56,8 +56,10 @@ const handleMenuItemClick = () => {
             </template>
         </div>
     </nav>
+
+
+
+
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

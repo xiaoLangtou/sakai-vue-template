@@ -11,57 +11,47 @@ import AppSidebar from './app-sidebar.vue';
 const layoutStore = useLayoutStore();
 const {
     layoutConfig,
-    isMobile
 } = storeToRefs(layoutStore);
-
-const {
-    isCollapsed,
-    toggleSidebar,
-    isTablet,
-    isDesktop,
-    showMobileSidebar,
-    closeMobileSidebar
-} = layoutStore;
 
 // 统一的切换处理函数
 const handleToggleSidebar = () => {
-    if (isMobile.value || isTablet.value) {
+    if (layoutStore.isMobile || layoutStore.isTablet) {
         // 移动端和平板端：切换抽屉侧边栏
-        showMobileSidebar.value = !showMobileSidebar.value;
+        layoutStore.showMobileSidebar = !layoutStore.showMobileSidebar;
     } else {
         // 桌面端：切换侧边栏折叠状态
-        toggleSidebar();
+        layoutStore.toggleSidebar();
     }
 };
 
 // 提供给子组件使用
 provide('layout', {
-    isCollapsed,
-    toggleSidebar,
-    layoutConfig,
-    isMobile,
-    isTablet,
-    isDesktop,
-    showMobileSidebar,
-    closeMobileSidebar
+    isCollapsed: layoutStore.isCollapsed,
+    toggleSidebar: layoutStore.toggleSidebar,
+    layoutConfig: layoutConfig,
+    isMobile: layoutConfig.isMobile,
+    isTablet: layoutConfig.isTablet,
+    isDesktop: layoutConfig.isDesktop,
+    showMobileSidebar: layoutStore.showMobileSidebar,
+    closeMobileSidebar: layoutStore.closeMobileSidebar
 });
 </script>
 
 <template>
     <!-- 侧边栏布局模式 -->
     <div class="app-layout" :class="{
-        'sidebar-collapsed': isCollapsed,
-        'mobile-layout': isMobile,
-        'tablet-layout': isTablet,
-        'desktop-layout': isDesktop
+        'sidebar-collapsed': layoutStore.isCollapsed,
+        'mobile-layout': layoutConfig.isMobile,
+        'tablet-layout': layoutConfig.isTablet,
+        'desktop-layout': layoutConfig.isDesktop
     }">
         <!-- 桌面端和平板端侧边栏 -->
-        <AppSidebar :collapsed="isCollapsed" :is-mobile="isMobile" @toggle-sidebar="toggleSidebar" />
-
+        <AppSidebar :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile"
+            @toggle-sidebar="layoutStore.toggleSidebar" />
         <!-- 移动端和平板端抽屉式侧边栏 -->
-        <Drawer v-if="isMobile || isTablet" v-model:visible="showMobileSidebar" position="left"
-            :style="{ width: '280px', '--p-drawer-content-padding': '0px' }" class="mobile-sidebar-drawer"
-            @hide="closeMobileSidebar">
+        <Drawer v-if="layoutConfig.isMobile || layoutConfig.isTablet" v-model:visible="layoutStore.showMobileSidebar"
+            position="left" :style="{ width: '280px', '--p-drawer-content-padding': '0px' }"
+            class="mobile-sidebar-drawer" @hide="layoutStore.closeMobileSidebar">
             <template #header>
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -71,21 +61,22 @@ provide('layout', {
                 </div>
             </template>
             <div class="mobile-sidebar-content">
-                <AppSidebar :collapsed="false" :is-mobile="true" @menu-item-click="closeMobileSidebar" />
+                <AppSidebar :collapsed="false" :is-mobile="true" @menu-item-click="layoutStore.closeMobileSidebar" />
             </div>
         </Drawer>
 
         <!-- 右侧主体区域 -->
         <div class="main-content relative" :class="{
-            'mobile-main': isMobile,
-            'tablet-main': isTablet,
-            'desktop-main': isDesktop
+            'mobile-main': layoutConfig.isMobile,
+            'tablet-main': layoutConfig.isTablet,
+            'desktop-main': layoutConfig.isDesktop
         }">
             <!-- 顶部头部栏 -->
-            <AppHeader :collapsed="isCollapsed" :is-mobile="isMobile" @toggle-sidebar="handleToggleSidebar" />
+            <AppHeader :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile" @toggle-sidebar="handleToggleSidebar" />
 
             <!-- 标签页组件 -->
-            <AppTabs v-if="layoutConfig.showTab" class="tabs-container" :tabStyle="layoutConfig.tabStyle" :show-icon="layoutConfig.isShowIcon" />
+            <AppTabs v-if="layoutConfig.showTab" class="tabs-container" :tab-style="layoutConfig.tabStyle"
+                :show-icon="layoutConfig.isShowIcon" />
 
             <div
                 :class="`absolute ${layoutConfig.showTab ? `${layoutConfig.tabStyle == 'Fashion' ? 'top-[112px]' : 'top-[109px]'}` : 'top-[60px]'}  left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
@@ -100,7 +91,7 @@ provide('layout', {
             </div>
 
             <!-- 底部页脚 -->
-            <AppFooter v-if="!isMobile" />
+            <AppFooter v-if="!layoutStore.isMobile" />
         </div>
     </div>
 </template>

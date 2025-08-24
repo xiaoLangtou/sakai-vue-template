@@ -5,7 +5,7 @@ import type { IPageResult } from "@/services/types/types";
 import type { FilterConfig, SearchParams } from "@/types/search";
 import { to } from "@/utils/result-handler";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+ 
 import { useQuery } from "@tanstack/vue-query";
 
 

@@ -371,9 +371,9 @@ defineExpose({
                         <div
                             v-for="style in styleOptions"
                             :key="style.name"
-                            @click="handleStyleChange(style.name)"
                             class="relative p-3 border border-surface-200 rounded-lg cursor-pointer hover:bg-surface-50 transition-colors"
                             :class="selectedStyle === style.name ? 'border-primary bg-primary-50' : ''"
+                            @click="handleStyleChange(style.name)"
                         >
                             <!-- 选中状态图标 -->
                             <div v-if="selectedStyle === style.name" class="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center">
@@ -398,7 +398,7 @@ defineExpose({
                 <div v-if="showTableSettings" class="space-y-4">
                     <div v-for="setting in tableSettingsOptions" :key="setting.key" class="flex items-center justify-between">
                         <span class="text-sm font-medium text-surface-700">{{ setting.label }}</span>
-                        <ToggleSwitch :model-value="currentTableSettings[setting.key]" @update:model-value="handleTableSettingChange(setting.key, $event)" class="ml-auto" />
+                        <ToggleSwitch :model-value="currentTableSettings[setting.key]" class="ml-auto" @update:model-value="handleTableSettingChange(setting.key, $event)" />
                     </div>
                 </div>
 
@@ -428,7 +428,7 @@ defineExpose({
                             <!-- 固定列控制 -->
                             <div class="flex items-center gap-1">
                                 <!-- 固定左侧 -->
-                                <div @click="handleFrozenDirectionChange(getColumnKey(column), 'left')" class="freeze-button freeze-left" :class="{ active: getColumnFrozenDirection(column) === 'left' }" v-tooltip.top="'固定到左侧'">
+                                <div v-tooltip.top="'固定到左侧'" class="freeze-button freeze-left" :class="{ active: getColumnFrozenDirection(column) === 'left' }" @click="handleFrozenDirectionChange(getColumnKey(column), 'left')">
                                     <div class="freeze-icon">
                                         <div class="freeze-bar left"></div>
                                         <div class="freeze-content"></div>
@@ -436,14 +436,14 @@ defineExpose({
                                 </div>
 
                                 <!-- 取消固定 -->
-                                <div @click="handleFrozenDirectionChange(getColumnKey(column), 'none')" class="freeze-button freeze-none" :class="{ active: getColumnFrozenDirection(column) === 'none' }" v-tooltip.top="'取消固定'">
+                                <div v-tooltip.top="'取消固定'" class="freeze-button freeze-none" :class="{ active: getColumnFrozenDirection(column) === 'none' }" @click="handleFrozenDirectionChange(getColumnKey(column), 'none')">
                                     <div class="freeze-icon">
                                         <div class="freeze-content full"></div>
                                     </div>
                                 </div>
 
                                 <!-- 固定右侧 -->
-                                <div @click="handleFrozenDirectionChange(getColumnKey(column), 'right')" class="freeze-button freeze-right" :class="{ active: getColumnFrozenDirection(column) === 'right' }" v-tooltip.top="'固定到右侧'">
+                                <div v-tooltip.top="'固定到右侧'" class="freeze-button freeze-right" :class="{ active: getColumnFrozenDirection(column) === 'right' }" @click="handleFrozenDirectionChange(getColumnKey(column), 'right')">
                                     <div class="freeze-icon">
                                         <div class="freeze-content"></div>
                                         <div class="freeze-bar right"></div>
@@ -452,7 +452,7 @@ defineExpose({
                             </div>
 
                             <!-- 选中状态 -->
-                            <Checkbox :model-value="isColumnVisible(getColumnKey(column))" @update:model-value="() => handleToggleVisibility(column)" :binary="true" class="flex-shrink-0" />
+                            <Checkbox :model-value="isColumnVisible(getColumnKey(column))" :binary="true" class="flex-shrink-0" @update:model-value="() => handleToggleVisibility(column)" />
                         </div>
                     </div>
                 </div>

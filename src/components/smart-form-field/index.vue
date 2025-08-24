@@ -83,7 +83,7 @@ const labelStyle = computed(() => {
 </script>
 
 <template>
-    <FormField v-slot="$field" :name="name" :initialValue="initialValue" :resolver="resolver" :class="fieldClass">
+    <FormField v-slot="$field" :name="name" :initial-value="initialValue" :resolver="resolver" :class="fieldClass">
         <div class="smart-form-field" :class="{ 'smart-form-field--inline': inline }">
             <!-- Label -->
             <label v-if="label" :for="name" class="smart-form-field__label" :class="{ 'smart-form-field__label--required': required }" :style="labelStyle">
@@ -93,7 +93,7 @@ const labelStyle = computed(() => {
 
             <!-- 字段内容插槽 -->
             <div class="smart-form-field__content">
-                <slot :value="$field.value" :onInput="$field.onInput" :onBlur="$field.onBlur" :onChange="$field.onChange" :invalid="$field.invalid" :field="$field" />
+                <slot :value="$field.value" :on-input="$field.onInput" :on-blur="$field.onBlur" :on-change="$field.onChange" :invalid="$field.invalid" :field="$field" />
             </div>
 
             <!-- 错误信息 -->

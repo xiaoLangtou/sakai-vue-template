@@ -80,3 +80,12 @@
     padding: 4px;
     box-sizing: border-box;
 }
+
+body{
+    @font-face {
+        font-family: "Inclusive Sans";
+        src: url("@/assets/fonts/InclusiveSans.woff2");
+    }
+    font-family: "Inclusive Sans",sans-serif;
+
+}

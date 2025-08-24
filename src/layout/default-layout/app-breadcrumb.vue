@@ -48,7 +48,8 @@ const home = computed(() => {
     <div class="app-breadcrumb">
         <Breadcrumb :model="breadcrumbItems" :home="home">
             <template #item="{ item, props }">
-                <router-link v-if="item.to && !item.disabled" v-bind="props.action" :to="item.to"
+                <router-link
+v-if="item.to && !item.disabled" v-bind="props.action" :to="item.to"
                     class="breadcrumb-link">
                     <i v-if="item.icon" :class="item.icon" class="breadcrumb-icon"></i>
                     <span>{{ item.label }}</span>

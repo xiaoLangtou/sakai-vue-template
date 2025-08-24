@@ -179,7 +179,8 @@ const formatterDictType = (value: string) => {
                 </div>
             </div>
         </template>
-        <ConfigurableTable :value="tableData" :rows="pageInfo.size" :total-records="pageInfo.total"
+        <ConfigurableTable
+:value="tableData" :rows="pageInfo.size" :total-records="pageInfo.total"
             :columns="tableColumns" data-key="id" :loading="isLoading" :current="pageInfo.current"
             :search-params="searchParams" :filter-configs="filterConfigs" @update:columns="handleColumnsChange"
             @column-change="handleColumnChange" @filter-change="handleFilterChange" @refresh="handleRefresh"
@@ -192,7 +193,8 @@ const formatterDictType = (value: string) => {
             <template #column-dictCode="{ data }">
                 <div class="flex items-center gap-1">
                     <Tag severity="secondary" :value="data.dictCode"></Tag>
-                    <i class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
+                    <i
+class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
                         title="复制字典类型" @click="copyDictType(data.dictCode)"></i>
                 </div>
             </template>
@@ -212,7 +214,8 @@ const formatterDictType = (value: string) => {
                 <div class="flex items-center justify-center">
                     <Button icon="pi pi-pen-to-square" label="编辑" variant="text" @click="editDictType(data)" />
                     <Button icon="pi pi-list" label="字典项" variant="text" @click="viewDictItems(data)" />
-                    <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
+                    <Button
+icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
                         @click="(event) => openRowMenu(event, data.id)" />
                     <!-- 每行一个 Menu -->
                     <Menu :ref="(el) => setMenuRef(el, data.id)" :model="getMoreActions(data)" popup />

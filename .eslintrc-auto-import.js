@@ -282,6 +282,7 @@ export default {
     "useThrottleFn": true,
     "useThrottledRefHistory": true,
     "useTimeAgo": true,
+    "useTimeAgoIntl": true,
     "useTimeout": true,
     "useTimeoutFn": true,
     "useTimeoutPoll": true,

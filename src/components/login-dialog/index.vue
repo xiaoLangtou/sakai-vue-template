@@ -156,7 +156,8 @@ const getGreeting = () => {
 </script>
 
 <template>
-    <Dialog :visible="visible" modal header="重新登录" :style="{ width: '28rem' }" :closable="false" :draggable="false"
+    <Dialog
+:visible="visible" modal header="重新登录" :style="{ width: '28rem' }" :closable="false" :draggable="false"
         class="login-dialog">
         <div class="flex flex-col gap-6">
             <div class="text-center">
@@ -170,7 +171,8 @@ const getGreeting = () => {
                     <label for="dialog-username" class="block text-surface-900 dark:text-surface-0 font-medium mb-2">
                         账号
                     </label>
-                    <InputText id="dialog-username" v-model="account.username" type="text" placeholder="请输入账号"
+                    <InputText
+id="dialog-username" v-model="account.username" type="text" placeholder="请输入账号"
                         class="w-full" @keyup.enter="handleLogin" />
                 </div>
 
@@ -178,7 +180,8 @@ const getGreeting = () => {
                     <label for="dialog-password" class="block text-surface-900 dark:text-surface-0 font-medium mb-2">
                         密码
                     </label>
-                    <Password id="dialog-password" v-model="account.password" placeholder="请输入密码" :toggle-mask="true"
+                    <Password
+id="dialog-password" v-model="account.password" placeholder="请输入密码" :toggle-mask="true"
                         class="w-full" fluid :feedback="false" @keyup.enter="handleLogin" />
                 </div>
 
@@ -187,18 +190,21 @@ const getGreeting = () => {
                         验证码
                     </label>
                     <div class="flex items-center gap-3">
-                        <InputText id="dialog-captcha" v-model="account.captcha" type="text" placeholder="请输入验证码"
+                        <InputText
+id="dialog-captcha" v-model="account.captcha" type="text" placeholder="请输入验证码"
                             class="flex-1" @keyup.enter="handleLogin" />
                         <!-- 验证码图片 -->
                         <div class="flex-shrink-0">
                             <div class="relative cursor-pointer" @click="getCaptcha">
                                 <img v-if="captchaImage" :src="captchaImage" alt="验证码" class="h-10 border rounded" />
-                                <div v-else
+                                <div
+v-else
                                     class="h-10 w-20 border rounded flex items-center justify-center text-xs text-muted-color">
                                     点击获取
                                 </div>
                                 <!-- 验证码过期蒙层 -->
-                                <div v-if="isCaptchaExpired"
+                                <div
+v-if="isCaptchaExpired"
                                     class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded cursor-pointer"
                                     @click="closeCaptchaExpiredModal">
                                     <div class="text-white text-xs text-center px-2">
