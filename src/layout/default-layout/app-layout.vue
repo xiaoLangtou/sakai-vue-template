@@ -1,12 +1,13 @@
 <script setup>
 import { AppTabs } from '@/components/app-tabs';
-import Drawer from 'primevue/drawer';
-import { provide } from 'vue';
 import { useLayoutStore } from '@/stores/layout';
 import { storeToRefs } from 'pinia';
+import Drawer from 'primevue/drawer';
+import { onMounted, onUnmounted, provide } from 'vue';
 import AppFooter from './app-footer.vue';
 import AppHeader from './app-header.vue';
 import AppSidebar from './app-sidebar.vue';
+import { AppHeaderLogo } from '../shared';
 
 const layoutStore = useLayoutStore();
 const {
@@ -24,14 +25,23 @@ const handleToggleSidebar = () => {
     }
 };
 
+// 初始化和销毁布局监听器
+onMounted(() => {
+    layoutStore.initLayout();
+});
+
+onUnmounted(() => {
+    layoutStore.destroyLayout();
+});
+
 // 提供给子组件使用
 provide('layout', {
     isCollapsed: layoutStore.isCollapsed,
     toggleSidebar: layoutStore.toggleSidebar,
     layoutConfig: layoutConfig,
-    isMobile: layoutConfig.isMobile,
-    isTablet: layoutConfig.isTablet,
-    isDesktop: layoutConfig.isDesktop,
+    isMobile: layoutStore.isMobile,
+    isTablet: layoutStore.isTablet,
+    isDesktop: layoutStore.isDesktop,
     showMobileSidebar: layoutStore.showMobileSidebar,
     closeMobileSidebar: layoutStore.closeMobileSidebar
 });
@@ -41,38 +51,37 @@ provide('layout', {
     <!-- 侧边栏布局模式 -->
     <div class="app-layout" :class="{
         'sidebar-collapsed': layoutStore.isCollapsed,
-        'mobile-layout': layoutConfig.isMobile,
-        'tablet-layout': layoutConfig.isTablet,
-        'desktop-layout': layoutConfig.isDesktop
+        'mobile-layout': layoutStore.isMobile,
+        'tablet-layout': layoutStore.isTablet,
+        'desktop-layout': layoutStore.isDesktop
     }">
-        <!-- 桌面端和平板端侧边栏 -->
-        <AppSidebar :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile"
+        <!-- 桌面端侧边栏 -->
+        <AppSidebar v-if="layoutStore.isDesktop" :collapsed="layoutStore.isCollapsed" :is-mobile="false"
             @toggle-sidebar="layoutStore.toggleSidebar" />
-        <!-- 移动端和平板端抽屉式侧边栏 -->
-        <Drawer v-if="layoutConfig.isMobile || layoutConfig.isTablet" v-model:visible="layoutStore.showMobileSidebar"
-            position="left" :style="{ width: '280px', '--p-drawer-content-padding': '0px' }"
-            class="mobile-sidebar-drawer" @hide="layoutStore.closeMobileSidebar">
+        <!-- 移动端/平板端抽屉式侧边栏 -->
+        <Drawer v-if="layoutStore.isMobile || layoutStore.isTablet" v-model:visible="layoutStore.showMobileSidebar"
+            position="left" :style="{
+                width: '264px',
+                '--p-drawer-content-padding': '0px',
+                '--p-drawer-header-padding': '10px'
+            }" class="tablet-sidebar-drawer" @hide="layoutStore.closeMobileSidebar">
             <template #header>
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <i class="pi pi-bolt text-white text-sm"></i>
-                    </div>
-                    <span class="text-lg font-semibold text-surface-900 dark:text-surface-0">SAKAI</span>
-                </div>
+                <app-header-logo />
             </template>
-            <div class="mobile-sidebar-content">
+            <div :class="layoutStore.isTablet ? 'tablet-sidebar-content' : 'mobile-sidebar-content'">
                 <AppSidebar :collapsed="false" :is-mobile="true" @menu-item-click="layoutStore.closeMobileSidebar" />
             </div>
         </Drawer>
 
         <!-- 右侧主体区域 -->
         <div class="main-content relative" :class="{
-            'mobile-main': layoutConfig.isMobile,
-            'tablet-main': layoutConfig.isTablet,
-            'desktop-main': layoutConfig.isDesktop
+            'mobile-main': layoutStore.isMobile,
+            'tablet-main': layoutStore.isTablet,
+            'desktop-main': layoutStore.isDesktop
         }">
             <!-- 顶部头部栏 -->
-            <AppHeader :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile" @toggle-sidebar="handleToggleSidebar" />
+            <AppHeader :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile"
+                @toggle-sidebar="handleToggleSidebar" />
 
             <!-- 标签页组件 -->
             <AppTabs v-if="layoutConfig.showTab" class="tabs-container" :tab-style="layoutConfig.tabStyle"
@@ -84,7 +93,6 @@ provide('layout', {
 
             <!-- 主要内容区域 -->
             <div class="layout-main-container relative">
-
                 <div class="content-wrapper">
                     <router-view></router-view>
                 </div>
@@ -96,7 +104,7 @@ provide('layout', {
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .app-layout {
     display: flex;
     height: 100vh;
@@ -161,6 +169,11 @@ provide('layout', {
 }
 
 .mobile-sidebar-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tablet-sidebar-content {
     height: 100%;
     overflow-y: auto;
 }

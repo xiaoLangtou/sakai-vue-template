@@ -5,9 +5,11 @@ import { useLayoutStore } from '@/stores/layout';
 import AppFooter from './app-footer.vue';
 import AppMegaMenu from './app-mega-menu.vue';
 import AppTopbar from '../shared/app-topbar.vue';
+import AppHeaderLogo from '../shared/app-header-logo.vue';
 
 const layoutStore = useLayoutStore();
 const { layoutConfig, layoutState } = storeToRefs(layoutStore);
+
 
 // 头部和菜单栏高度
 const headerHeight = ref(64); // 4rem = 64px
@@ -32,43 +34,36 @@ onMounted(() => {
         console.log('headerHeight1222', headerHeight.value);
     }
 });
+
+
 </script>
 
 <template>
     <div class="app-layout-topbar">
         <!-- 固定顶部区域：Logo和工具栏 -->
-        <div class="topbar-header fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div
+            class="topbar-header fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="flex items-center justify-between h-16 px-6 max-w-screen-2xl mx-auto">
                 <!-- Logo区域 -->
-                <div class="flex items-center gap-3 flex-shrink-0">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-md">
-                        <img src="@/assets/images/logo.svg" alt="logo" class="w-6 h-6 filter brightness-0 invert" />
-                    </div>
-                    <div class="hidden sm:block">
-                        <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Sakai</h1>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Admin Dashboard</p>
-                    </div>
-                </div>
-                
+                 <app-header-logo />
+
+
                 <!-- 中间菜单区域 -->
-                <div class="flex-1 flex justify-center mx-8">
+                <div class="flex-1 flex mx-8">
                     <AppMegaMenu />
                 </div>
-                
+
                 <!-- 右侧工具栏区域 -->
                 <div class="flex items-center flex-shrink-0">
                     <AppTopbar />
                 </div>
             </div>
-
-            <!-- 装饰性渐变层 -->
-            <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent opacity-50"></div>
         </div>
 
 
         <!-- 可滚动的主内容区域 -->
         <div class="layout-main-container !p-0" :style="{ marginTop: headerHeight + 'px' }">
-            <div class="content-wrapper p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
+            <div class="content-wrapper p-6 bg-gray-100 dark:bg-gray-900 h-full">
                 <router-view />
             </div>
             <!-- 底部全局Footer -->
@@ -100,18 +95,13 @@ onMounted(() => {
 .layout-main-container {
     position: relative;
     width: 100%;
+    height: calc(100vh - 56px);
 }
 
 /* 内容包装器 */
 .content-wrapper {
     background-color: var(--surface-ground);
     transition: margin-top 0.3s ease;
-}
-
-/* 确保内容区域有足够的最小高度 */
-.content-wrapper {
-    min-height: calc(100vh - 7rem);
-    /* 减去头部和菜单栏的高度 */
 }
 
 /* 响应式适配 */

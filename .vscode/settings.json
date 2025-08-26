@@ -25,5 +25,8 @@
     },
     "[scss]": {
         "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "johnsoncodehk.vscode-tsconfig-helper"
     }
 }

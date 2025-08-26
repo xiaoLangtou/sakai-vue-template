@@ -14,6 +14,7 @@
     :show-close-icon="showCloseIcon"
     :position="position"
     :header="header"
+    :base-z-index="999"
     :class="drawerClasses"
     @update:visible="handleUpdateVisible"
     @show="handleShow"
@@ -207,18 +208,7 @@ const drawerClasses = computed(() => {
  */
 const drawerProps = computed(() => {
   const {
-    visible,
-    showContent,
-    showDefaultFooter,
-    showConfirmButton,
-    showCancelButton,
-    confirmButtonText,
-    cancelButtonText,
-    confirmButtonIcon,
-    cancelButtonIcon,
-    confirmLoading,
-    widthType,
-    customWidth,
+  
     ...rest
   } = props;
   return rest;

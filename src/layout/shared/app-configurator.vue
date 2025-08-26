@@ -127,7 +127,7 @@ const surfaces = ref([
 ]);
 
 function getPresetExt() {
-    console.log(layoutConfig)
+    console.log(layoutConfig.value)
     const color = primaryColors.value.find((c) => c.name === layoutConfig.value.primary);
 
     if (color && color.name === 'noir') {
@@ -219,7 +219,9 @@ function getPresetExt() {
 
 function updateColors(type: 'primary' | 'surface', color: any) {
     if (type === 'primary') {
+
         layoutConfig.value.primary = color.name;
+        console.log(layoutConfig.value.primary)
     } else if (type === 'surface') {
         layoutConfig.value.surface = color.name;
     }
@@ -316,15 +318,13 @@ watch(
 
 
 <template>
-    <CustomDrawer
-:visible="props.visible" header="系统配置" position="right" style="width: 420px;"
+    <CustomDrawer :visible="props.visible" header="系统配置" position="right" style="width: 420px;"
         :show-default-footer="false" @update:visible="emit('update:visible', $event)">
         <div class="theme-customizer">
             <!-- Theme Style Section -->
             <AppConfigCard title="主题风格">
                 <div class="flex items-center justify-center">
-                    <SelectButton
-v-model="preset" :options="presetOptions" :allow-empty="false"
+                    <SelectButton v-model="preset" :options="presetOptions" :allow-empty="false"
                         @change="onPresetChange" />
                 </div>
             </AppConfigCard>
@@ -332,14 +332,12 @@ v-model="preset" :options="presetOptions" :allow-empty="false"
 
             <AppConfigCard title="主题颜色">
                 <div class="color-grid">
-                    <div
-v-for="color in primaryColors" :key="color.name" class="color-option group"
-                        :class="{ 'color-option--selected': layoutConfig.value.primary === color.name }"
+                    <div v-for="color in primaryColors" :key="color.name" class="color-option group"
+                        :class="{ 'color-option--selected': layoutConfig.primary === color.name }"
                         @click="updateColors('primary', color)">
-                        <div
-class="color-swatch"
+                        <div class="color-swatch"
                             :style="{ backgroundColor: color.palette[500] || getColorByName(color.name) }">
-                            <i v-if="layoutConfig.value.primary === color.name" class="pi pi-check check-icon"></i>
+                            <i v-if="layoutConfig.primary === color.name" class="pi pi-check check-icon"></i>
                         </div>
                         <span class="color-label">{{ capitalizeFirst(color.name) }}</span>
                     </div>
@@ -349,12 +347,11 @@ class="color-swatch"
             <!-- Surface Color Section -->
             <AppConfigCard title="前景色">
                 <div class="color-grid">
-                    <div
-v-for="surface in surfaces" :key="surface.name" class="color-option group"
-                        :class="{ 'color-option--selected': layoutConfig.value.surface === surface.name }"
+                    <div v-for="surface in surfaces" :key="surface.name" class="color-option group"
+                        :class="{ 'color-option--selected': layoutConfig.surface === surface.name }"
                         @click="updateColors('surface', surface)">
                         <div class="color-swatch" :style="{ backgroundColor: surface.palette[500] || '#6b7280' }">
-                            <i v-if="layoutConfig.value.surface === surface.name" class="pi pi-check check-icon"></i>
+                            <i v-if="layoutConfig.surface === surface.name" class="pi pi-check check-icon"></i>
                         </div>
                         <span class="color-label">{{ capitalizeFirst(surface.name) }}</span>
                     </div>
@@ -364,8 +361,7 @@ v-for="surface in surfaces" :key="surface.name" class="color-option group"
             <!-- Layout Mode Section -->
             <AppConfigCard title="布局模式">
                 <div class="layout-mode-options">
-                    <div
-v-for="option in layoutModeOptions" :key="option.value" class="layout-mode-option group"
+                    <div v-for="option in layoutModeOptions" :key="option.value" class="layout-mode-option group"
                         :class="{ 'layout-mode-option--selected': layoutMode === option.value }"
                         @click="layoutMode = option.value as 'sidebar' | 'topbar'; onLayoutModeChange()">
                         <div class="layout-preview">
@@ -407,8 +403,7 @@ v-for="option in layoutModeOptions" :key="option.value" class="layout-mode-optio
                     <!-- 标签页的样式 -->
                     <div class="flex items-center justify-between">
                         <span class="font-bold">标签页的样式</span>
-                        <SelectButton
-v-model="tabStyle" option-label="label" option-value="value" :options="[{
+                        <SelectButton v-model="tabStyle" option-label="label" option-value="value" :options="[{
                             label: '时尚',
                             value: 'Fashion'
                         }, {

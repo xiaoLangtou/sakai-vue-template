@@ -104,15 +104,37 @@ export const useLayoutStore = defineStore('layout', () => {
    * 监听窗口大小变化
    */
   const handleResize = () => {
+    const prevWidth = windowWidth.value;
     windowWidth.value = window.innerWidth;
 
-    // 当切换到桌面端时，关闭移动端侧边栏并自动展开侧边栏
-    if (isDesktop.value) {
+    // 检测屏幕大小变化
+    const wasMobile = prevWidth < 768;
+    const wasTablet = prevWidth >= 768 && prevWidth < 1600;
+    const wasDesktop = prevWidth >= 1600;
+
+    // 当从移动端或平板端切换到桌面端时
+    if (!wasDesktop && isDesktop.value) {
+      // 关闭移动端/平板端侧边栏
       if (showMobileSidebar.value) {
         showMobileSidebar.value = false;
       }
+      // 自动展开桌面端侧边栏
       if (layoutState.value.staticMenuDesktopInactive) {
         layoutState.value.staticMenuDesktopInactive = false;
+      }
+    }
+    // 当从桌面端切换到移动端或平板端时
+    else if (wasDesktop && (isMobile.value || isTablet.value)) {
+      // 关闭移动端/平板端侧边栏
+      if (showMobileSidebar.value) {
+        showMobileSidebar.value = false;
+      }
+    }
+    // 当在移动端和平板端之间切换时
+    else if ((wasMobile && isTablet.value) || (wasTablet && isMobile.value)) {
+      // 关闭侧边栏，让用户重新选择
+      if (showMobileSidebar.value) {
+        showMobileSidebar.value = false;
       }
     }
   };

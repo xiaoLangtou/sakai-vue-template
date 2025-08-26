@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 
-import AppMenu from '../shared/app-menu.vue';
-import AppUserMenu from '../shared/app-user-menu.vue';
+import { PanelLeftClose, PanelLeftDashed } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
 
-defineProps({
+import { AppHeaderLogo, AppMenu, AppUserMenu } from "../shared";
+
+const props = defineProps({
     collapsed: {
         type: Boolean,
         default: false
@@ -14,62 +16,131 @@ defineProps({
     }
 });
 
+// 控制侧边栏是否为fixed模式
+const isFixedMode = ref(false);
+// 控制侧边栏是否自动隐藏
+const shouldAutoHide = ref(false);
+// 隐藏定时器
+let hideTimer: NodeJS.Timeout | null = null;
 
-
-const emit = defineEmits(['menu-item-click']);
+const emit = defineEmits(['menu-item-click', 'toggleSidebar']);
 
 const handleMenuItemClick = () => {
     emit('menu-item-click');
 };
 
+// 切换fixed模式
+const toggleFixedMode = () => {
+    isFixedMode.value = !isFixedMode.value;
+    // 切换到fixed模式时，重置自动隐藏状态
+    if (isFixedMode.value) {
+        shouldAutoHide.value = false;
+        // 清除可能存在的定时器
+        if (hideTimer) {
+            clearTimeout(hideTimer);
+            hideTimer = null;
+        }
+    }
+};
+
+// 鼠标进入悬停区域或侧边栏
+const handleMouseEnter = () => {
+    if (isFixedMode.value) {
+        // 清除隐藏定时器
+        if (hideTimer) {
+            clearTimeout(hideTimer);
+            hideTimer = null;
+        }
+        shouldAutoHide.value = false;
+    }
+};
+
+// 鼠标离开悬停区域和侧边栏
+const handleMouseLeave = () => {
+    if (isFixedMode.value) {
+        // 清除之前的定时器
+        if (hideTimer) {
+            clearTimeout(hideTimer);
+        }
+        // 延迟隐藏，给用户时间移动鼠标
+        hideTimer = setTimeout(() => {
+            shouldAutoHide.value = true;
+            hideTimer = null;
+        }, 100);
+    }
+};
+
+// 监听 collapsed 属性变化
+watch(() => props.collapsed, (newValue, oldValue) => {
+    // 当 collapsed 发生变化时
+    if (newValue !== oldValue) {
+        // 如果当前是 fixed 模式，则切换为 relative 模式
+        if (isFixedMode.value) {
+            isFixedMode.value = false;
+            // 重置自动隐藏状态
+            shouldAutoHide.value = false;
+            // 清除可能存在的定时器
+            if (hideTimer) {
+                clearTimeout(hideTimer);
+                hideTimer = null;
+            }
+        }
+    }
+});
+
+
+watch(() => props.isMobile, () => {
+    if (props.isMobile) {
+        isFixedMode.value = false;
+        shouldAutoHide.value = false;
+    }
+}, { immediate: true });
 
 </script>
 
 <template>
-    <aside
-:class="[
-        'sidebar',
-        isMobile ? 'mobile-sidebar' : 'desktop-sidebar',
-        !isMobile && 'fixed lg:relative',
-        'top-0 left-0 h-full',
-        'bg-surface-50 dark:bg-surface-900',
-        !isMobile && 'border-r border-surface-200/60 dark:border-surface-700/60',
-        'sidebar-transition',
-        !isMobile && 'z-40',
-        !isMobile && (collapsed ? 'w-[80px]' : 'w-[256px]'),
-        isMobile && 'w-full',
-        'flex flex-col',
-        !isMobile && 'shadow-2xl shadow-surface-900/10 dark:shadow-surface-950/30 lg:shadow-xl lg:shadow-surface-900/5 dark:lg:shadow-surface-950/20',
-        'bg-white dark:bg-surface-900',
-        // 响应式显示控制：移动端模式下显示，桌面端模式下显示，平板端隐藏（使用抽屉）
-        isMobile ? 'flex' : 'hidden 2xl:flex'
-    ]">
+    <div v-if="!isMobile && isFixedMode"
+        class="layout-sidebar-hover fixed top-0 left-0 w-[6px] h-[100vh] bg-gray-200 z-30"
+        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"></div>
+    <aside :class="[
+        'app-sidebar',
+        {
+            'app-sidebar--mobile': isMobile,
+            'app-sidebar--desktop': !isMobile,
+            'app-sidebar--fixed-mode': !isMobile && isFixedMode,
+            'app-sidebar--relative-mode': !isMobile && !isFixedMode,
+            'app-sidebar--collapsed': !isMobile && collapsed,
+            'app-sidebar--expanded': !isMobile && !collapsed,
+            'app-sidebar--hover-hidden': !isMobile && isFixedMode,
+            'sidebar-auto-hide': !isMobile && isFixedMode && shouldAutoHide
+        }
+    ]" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
         <!-- 顶部Logo区域 -->
-        <div
-v-if="!isMobile"
-            :class="['sidebar-header', 'flex items-center', collapsed ? 'justify-center px-2' : 'justify-start px-6', 'min-h-[64px] w-full', 'backdrop-blur-sm']">
-            <!-- Logo -->
-            <Transition
-enter-active-class="transition-all duration-400 cubic-bezier(0.34, 1.56, 0.64, 1)"
-                leave-active-class="transition-all duration-250 cubic-bezier(0.25, 0.46, 0.45, 0.94)"
-                enter-from-class="opacity-0 scale-90 translate-x-4" enter-to-class="opacity-100 scale-100 translate-x-0"
-                leave-from-class="opacity-100 scale-100 translate-x-0"
-                leave-to-class="opacity-0 scale-95 translate-x-2">
-                <div v-if="!collapsed" class="flex items-center gap-4 justify-center w-full">
-                    <div class="flex items-center justify-center gap-4">
-                        <img src="@/assets/images/logo.svg" alt="logo" class="w-12 h-12" />
-                        <div class="flex flex-col">
-                            <span
-                                class="text-xl font-bold text-surface-900 dark:text-surface-50 truncate tracking-tight">TVA</span>
-                            <span
-                                class="text-xs text-surface-500 dark:text-surface-400 truncate font-medium">管理后台</span>
+        <div v-if="!isMobile"
+            :class="['sidebar-header', 'flex items-center justify-center', 'min-h-[64px] w-full', 'relative overflow-hidden', 'border-b border-surface-200/40 dark:border-surface-700/40']">
+            <!-- Logo容器 -->
+            <div class="relative z-10 flex items-center justify-center w-full">
+                <Transition enter-active-class="transition-all duration-300 ease-out"
+                    leave-active-class="transition-all duration-200 ease-in" enter-from-class="opacity-0 scale-90"
+                    enter-to-class="opacity-100 scale-100" leave-from-class="opacity-100 scale-100"
+                    leave-to-class="opacity-0 scale-95" mode="out-in">
+                    <!-- 展开状态 -->
+                    <div v-if="!collapsed" key="expanded" class="flex items-center justify-between w-full gap-3">
+                        <AppHeaderLogo />
+                        <!-- 按钮 -->
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 cursor-pointer"
+                            @click="toggleFixedMode">
+                            <PanelLeftClose v-if="!isFixedMode" :size="18" />
+                            <PanelLeftDashed v-else :size="18" />
                         </div>
                     </div>
-                </div>
-                <div v-else class="flex items-center justify-center">
-                    <img src="@/assets/images/logo.svg" alt="logo" class="w-12 h-12" />
-                </div>
-            </Transition>
+
+                    <!-- 折叠状态 -->
+                    <div v-else key="collapsed" class="flex items-center justify-center">
+                        <AppHeaderLogo :collapsed="collapsed" />
+                    </div>
+                </Transition>
+            </div>
         </div>
 
         <!-- 中间导航菜单 - 带滚动遮罩 -->
@@ -87,107 +158,177 @@ enter-active-class="transition-all duration-400 cubic-bezier(0.34, 1.56, 0.64, 1
             <!-- 滚动区域 -->
             <div
                 class="h-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-surface-300 dark:scrollbar-thumb-surface-600 scrollbar-track-transparent">
-                <div :class="isMobile ? 'p-0 h-full' : 'pt-6  pb-2 h-full'">
-                    <AppMenu
-:collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
+                <div :class="isMobile ? 'p-0 h-full' : 'pt-3  pb-2 h-full'">
+                    <AppMenu :collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
                         @menu-item-click="handleMenuItemClick" />
                 </div>
             </div>
         </div>
         <!-- 底部用户信息区域 -->
-        <div class="sidebar-footer p-2 box-border">
+        <Divider type="dashed" />
+        <div class="sidebar-footer px-2 py-2 box-border">
             <app-user-menu />
         </div>
-
-
     </aside>
 </template>
 
-<style lang="scss" scoped>
-
-
-/* 侧边栏折叠动画优化 */
-.sidebar {
-    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: left center;
+<style scoped lang="scss">
+.sidebar-header {
+    @apply flex items-center justify-between p-4 border-b border-surface-200/60 dark:border-surface-700/60;
 }
 
-/* 桌面端侧边栏动画优化 */
-.desktop-sidebar {
+// 基础侧边栏样式
+.app-sidebar {
+    @apply h-full flex flex-col z-40;
+    @apply bg-white dark:bg-surface-900;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: left center;
+
+    .p-divider-horizontal {
+        margin: 0;
+    }
+}
+
+// 移动端样式
+.app-sidebar--mobile {
+    @apply w-full flex;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease;
+}
+
+// 桌面端样式
+.app-sidebar--desktop {
+    @apply border-r border-surface-200/60 dark:border-surface-700/60;
+    @apply shadow-2xl shadow-surface-900/10 dark:shadow-surface-950/30 lg:shadow-xl lg:shadow-surface-900/5 dark:lg:shadow-surface-950/20;
+    @apply flex;
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
         box-shadow 0.25s ease;
     will-change: width;
 }
 
+// 固定模式样式
+.app-sidebar--fixed-mode {
+    @apply fixed;
+}
+
+// 相对模式样式
+.app-sidebar--relative-mode {
+    @apply fixed lg:relative;
+}
+
+// 折叠状态样式
+.app-sidebar--collapsed {
+    @apply w-[70px];
+
+    .sidebar-header {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+// 展开状态样式
+.app-sidebar--expanded {
+    @apply w-[256px];
+
+    .sidebar-header {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+// Fixed模式下的侧边栏样式 - 默认显示状态
+.app-sidebar--hover-hidden {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+    z-index: 1000;
+    will-change: transform, opacity;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+// 当鼠标在悬停区域或侧边栏上时保持显示
+.layout-sidebar-hover:hover+.app-sidebar--hover-hidden,
+.app-sidebar--hover-hidden:hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+    z-index: 1000;
+}
+
+// 使用JavaScript控制的隐藏状态类
+.app-sidebar--hover-hidden.sidebar-auto-hide {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-100%);
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 /* 侧边栏头部动画 */
 .sidebar-header {
-    transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     overflow: hidden;
 }
 
-/* Logo区域动画优化 */
-.sidebar-header .flex {
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
 /* 菜单容器动画 */
-.sidebar .overflow-y-auto {
+.app-sidebar .overflow-y-auto {
     transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 折叠状态下的特殊效果 */
-.desktop-sidebar.w-\[80px\] {
-    transform: translateX(0);
-}
-
-.desktop-sidebar.w-\[80px\] .sidebar-header {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-}
-
-/* 展开状态下的特殊效果 */
-.desktop-sidebar.w-\[256px\] {
-    transform: translateX(0);
-}
-
-.desktop-sidebar.w-\[256px\] .sidebar-header {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-}
-
-/* 移动端侧边栏动画 */
-.mobile-sidebar {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        opacity 0.3s ease;
-}
-
 /* 性能优化 - 启用硬件加速 */
-.sidebar,
+.app-sidebar,
 .sidebar-header {
     backface-visibility: hidden;
     transform: translateZ(0);
 }
 
-/* 响应式布局控制 - 只对非移动端模式生效 */
-@media (max-width: 1599px) {
-    .sidebar:not(.mobile-sidebar) {
-        display: none !important;
+/* 响应式布局控制 - 与JavaScript断点保持一致 */
+@media (max-width: 767px) {
+    .app-sidebar:not(.app-sidebar--mobile) {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1599px) {
+    .app-sidebar:not(.app-sidebar--mobile) {
+        display: none;
     }
 }
 
 @media (min-width: 1600px) {
-    .sidebar:not(.mobile-sidebar) {
-        display: flex !important;
+    .app-sidebar:not(.app-sidebar--mobile) {
+        display: flex;
     }
 }
 
 /* 响应式动画优化 */
 @media (prefers-reduced-motion: reduce) {
 
-    .sidebar,
-    .sidebar-header,
-    .desktop-sidebar,
-    .mobile-sidebar {
+    .app-sidebar,
+    .sidebar-header {
         transition: none;
     }
 }

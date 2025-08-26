@@ -176,6 +176,7 @@ watch(isOutside, () => {
             }" @click="handleClick">
                 <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                 <i v-else-if="item.meta.icon" :class="item.meta.icon" />
+                <span class="menu-item-title">{{ item.meta.title }}</span>
             </div>
 
             <Teleport to="body">

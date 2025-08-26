@@ -67,17 +67,16 @@ const toggle = (event: MouseEvent) => {
 };
 </script>
 <template>
-    <div
-class=" flex items-center justify-between p-1 hover:bg-zinc-100 hover:dark:bg-zinc-800 rounded-md cursor-pointer"
+    <div :class="[' flex items-center  p-2 bg-zinc-50 dark:bg-zinc-800 rounded-md cursor-pointer',layoutStore.isCollapsed?'justify-center ':'justify-between']"
         @click="toggle">
         <div class="flex items-center gap-4">
-            <Avatar icon="pi pi-user" size="large" />
-            <div class="flex flex-col">
+            <Avatar icon="pi pi-user" style="width: 32px;height: 32px;" />
+            <div class="flex flex-col" v-if="!layoutStore.isCollapsed">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-50">用户名称</span>
                 <span class="text-xs text-surface-500 dark:text-surface-400">用户角色</span>
             </div>
         </div>
-        <div class="flex justify-center items-center">
+        <div class="flex justify-center items-center" v-if="!layoutStore.isCollapsed">
             <ChevronsUpDown :size="16" />
         </div>
     </div>
@@ -97,8 +96,7 @@ class=" flex items-center justify-between p-1 hover:bg-zinc-100 hover:dark:bg-zi
                     <component :is="lucideIconName(item.icon)" :size="16"></component>
                     <span>{{ item.label }}</span>
                     <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
-                    <span
-v-if="item.shortcut"
+                    <span v-if="item.shortcut"
                         class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
                             item.shortcut }}</span>
                 </div>
