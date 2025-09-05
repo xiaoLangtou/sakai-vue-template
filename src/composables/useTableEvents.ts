@@ -1,25 +1,6 @@
 import { ref } from 'vue';
 import type { SearchParams } from '@/types/search';
-
-export interface TableEventsEmits<T = any> {
-    'row-click': [event: { originalEvent: Event; data: T; index: number }];
-    'row-dblclick': [event: { originalEvent: Event; data: T; index: number }];
-    'selection-change': [selection: T[]];
-    'filter-change': [params: SearchParams];
-    'state-restore': [state: any];
-    'state-save': [state: any];
-    refresh: [];
-    page: [event: any];
-    sort: [event: any];
-    filter: [event: any];
-    'update:selection': [selection: T | T[]];
-    'cell-edit-complete': [event: any];
-    'cell-edit-cancel': [event: any];
-    'row-expand': [event: any];
-    'row-collapse': [event: any];
-    'column-resize-end': [event: any];
-    'column-reorder': [event: any];
-}
+import type { TableEventsEmits } from '@/types/table';
 
 export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>, ...args: any[]) => void) {
     // 内部状态

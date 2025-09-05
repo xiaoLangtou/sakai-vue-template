@@ -1,50 +1,13 @@
 import { ref, watch, nextTick } from 'vue';
-import type { TableColumns } from './useColumns';
-
-export interface TableState {
-    columns: TableColumns<any>;
-    selectedStyle: 'small' | 'normal' | 'large';
-    tableSettings: Record<string, any>;
-    pagination?: {
-        first: number;
-        rows: number;
-        page: number;
-    };
-    sorting?: {
-        sortField: string;
-        sortOrder: number;
-        multiSortMeta?: Array<{ field: string; order: number }>;
-    };
-    filters?: Record<string, any>;
-    selection?: any[];
-    expandedRows?: any[];
-}
-
-export interface PersistenceProps {
-    persistState: boolean;
-    persistStateKey?: string;
-    persistColumns?: boolean;
-    persistPagination?: boolean;
-    persistSorting?: boolean;
-    persistFilters?: boolean;
-    persistSelection?: boolean;
-    persistExpansion?: boolean;
-}
-
-export interface PersistenceState {
-    columns: any;
-    selectedStyle: any;
-    tableSettings: any;
-    pagination?: any;
-    sorting?: any;
-    filters?: any;
-    selection?: any;
-    expandedRows?: any;
-}
+import type { 
+    TablePersistenceProps,
+    TablePersistenceState,
+    TableState
+} from '@/types/table';
 
 export function useTablePersistence(
-    props: PersistenceProps,
-    state: PersistenceState
+    props: TablePersistenceProps,
+    state: TablePersistenceState
 ) {
     const isRestoring = ref(false);
     const storageKey = ref(props.persistStateKey || 'table-state');

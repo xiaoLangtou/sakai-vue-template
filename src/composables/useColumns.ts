@@ -1,159 +1,10 @@
 import { computed, unref } from 'vue'
 import type { Ref, MaybeRef } from 'vue'
+import type { TableBaseColumn, TableColumnGroup, TableColumn, TableColumns } from '@/types/table'
 
 /**
- * 表格基础列配置
+ * 判断是否为列组
  */
-export interface TableBaseColumn<T = any> {
-    /** 列的唯一标识 */
-    key?: string
-    /** 列标题 */
-    title?: string
-    /** 列标题（header 别名） */
-    header?: string
-    /** 数据字段名 */
-    field?: string
-    /** 列宽度 */
-    width?: number | string
-    /** 最小宽度 */
-    minWidth?: number
-    /** 最大宽度 */
-    maxWidth?: number
-    /** 是否可排序 */
-    sortable?: boolean
-    /** 是否可过滤 */
-    filterable?: boolean
-    /** 是否显示该列 */
-    visible?: boolean
-    /** 是否禁用该列 */
-    disabled?: boolean | Ref<boolean> | ((row: T, index: number) => boolean)
-    /** 自定义文本内容 */
-    text?: string | ((row: T, index: number) => string)
-    /** 自定义渲染函数 */
-    render?: (row: T, index: number) => any
-    /** 列对齐方式 */
-    align?: 'left' | 'center' | 'right'
-    /** 垂直对齐方式 */
-    verticalAlign?: 'top' | 'middle' | 'bottom'
-    /** 选择模式 */
-    selectionMode?: 'single' | 'multiple'
-    /** 是否固定列 */
-    fixed?: 'left' | 'right' | boolean
-    /** 是否冻结列 */
-    frozen?: boolean
-    /** 冻结列对齐方式 */
-    alignFrozen?: 'left' | 'right'
-    /** 列排序顺序 */
-    order?: number
-    /** 是否可调整大小 */
-    resizable?: boolean
-    /** 列的CSS类名 */
-    class?: string
-    /** 列的样式 */
-    style?: Record<string, any>
-
-    /** 列标题的样式 */
-    headerStyle?: Record<string, any>
-
-    /** 列内容的样式 */
-    bodyStyle?: Record<string, any>
-
-    /** 列头内容的样式 */
-    headerCellStyle?: Record<string, any>
-    /** 列内容的样式 */
-    cellStyle?: Record<string, any>
-
-    /** 是否启用文本溢出省略号 */
-    ellipsis?: boolean
-    /** 是否显示tooltip */
-    showTooltip?: boolean
-    /** tooltip显示的字段名（默认使用field字段） */
-    tooltipField?: string
-    /** 自定义tooltip内容 */
-    tooltipContent?: string | ((row: T, index: number) => string)
-    /** tooltip配置选项 */
-    tooltipOptions?: {
-        position?: 'top' | 'bottom' | 'left' | 'right'
-        showDelay?: number
-        hideDelay?: number
-        autoHide?: boolean
-        escape?: boolean
-        class?: string
-    }
-
-    [key: string]: any
-}
-
-/**
- * 表格列组配置
- */
-export interface TableColumnGroup<T = any> {
-    /** 组标题 */
-    title?: string
-    /** 组标题（header 别名） */
-    header?: string
-    /** 子列 */
-    children?: TableColumn<T>[]
-    /** 是否禁用该列组 */
-    disabled?: TableBaseColumn<T>['disabled']
-    /** 自定义文本内容 */
-    text?: TableBaseColumn<T>['text']
-    /** 自定义渲染函数 */
-    render?: TableBaseColumn<T>['render']
-    /** 列的唯一标识 */
-    key?: string
-    /** 数据字段名 */
-    field?: string
-    /** 列宽度 */
-    width?: number | string
-    /** 最小宽度 */
-    minWidth?: number
-    /** 最大宽度 */
-    maxWidth?: number
-    /** 是否可排序 */
-    sortable?: boolean
-    /** 列对齐方式 */
-    align?: 'left' | 'center' | 'right'
-    /** 垂直对齐方式 */
-    verticalAlign?: 'top' | 'middle' | 'bottom'
-    /** 是否冻结列 */
-    frozen?: boolean
-    /** 冻结列对齐方式 */
-    alignFrozen?: 'left' | 'right'
-    /** 列标题的样式 */
-    headerStyle?: Record<string, any>
-    /** 列的样式 */
-    style?: Record<string, any>
-    /** 是否启用文本溢出省略号 */
-    ellipsis?: boolean
-    /** 是否显示tooltip */
-    showTooltip?: boolean
-    /** tooltip显示的字段名（默认使用field字段） */
-    tooltipField?: string
-    /** 自定义tooltip内容 */
-    tooltipContent?: string | ((row: T, index: number) => string)
-    /** tooltip配置选项 */
-    tooltipOptions?: {
-        position?: 'top' | 'bottom' | 'left' | 'right'
-        showDelay?: number
-        hideDelay?: number
-        autoHide?: boolean
-        escape?: boolean
-        class?: string
-    }
-    /** 选择模式 */
-    selectionMode?: 'single' | 'multiple'
-}
-
-/**
- * 表格列类型（基础列或列组）
- */
-export type TableColumn<T = any> = TableBaseColumn<T> | TableColumnGroup<T>
-
-/**
- * 表格列数组类型
- */
-export type TableColumns<T = any> = Array<TableColumn<T>>
 
 /**
  * 判断是否为列组
@@ -187,13 +38,13 @@ function isColumnDisabled<T>(column: TableColumn<T>, row?: T, index?: number): b
 export function useColumns<T>(columns: MaybeRef<TableColumns<T>>) {
     // 缓存处理过的列，避免重复计算
     const processedColumnsCache = new WeakMap<TableColumn<T>, TableColumn<T>>();
-    
+
     const processColumn = (col: TableColumn<T>): TableColumn<T> => {
         // 检查缓存
         if (processedColumnsCache.has(col)) {
             return processedColumnsCache.get(col)!;
         }
-        
+
         // 直接使用原始列配置，不强制设置默认 minWidth
         const processedCol = { ...col };
 
@@ -203,7 +54,7 @@ export function useColumns<T>(columns: MaybeRef<TableColumns<T>>) {
                 .filter(childCol => !isColumnDisabled(childCol))
                 .map(childCol => processColumn(childCol));
         }
-        
+
         // 缓存结果
         processedColumnsCache.set(col, processedCol);
         return processedCol;
@@ -479,7 +330,6 @@ export function getGroupedColumns<T>(columns: MaybeRef<TableColumns<T>>) {
  * @returns 偏移量（像素）
  */
 export function getColumnOffset<T>(columns: MaybeRef<TableColumns<T>>, columnKey: string): number {
-    const cols = unref(columns)
     const groupedColumns = getGroupedColumns(columns).value
 
     // 查找列在哪个分组中

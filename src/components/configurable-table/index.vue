@@ -2,106 +2,19 @@
 import { ListSearch } from '@/components';
 import TableColumnSettings from '@/components/table-column-settings/index.vue';
 import { useTableConfiguration, useTableEvents, useTablePersistence, useTableStyles } from '@/composables';
-import type { TableColumn, TableColumns } from '@/composables/useColumns';
+import type {
+    ConfigurableTableEmits,
+    ConfigurableTableProps,
+    TableColumn
+} from '@/types/table';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import type { FilterConfig, SearchParams } from '../search';
 
-// 优化后的接口定义
-interface TableSettings {
-    showRowDivider: boolean;
-    stripedRows: boolean;
-    showShadow: boolean;
-    showBorder: boolean;
-    virtualScroll?: boolean;
-    virtualScrollItemSize?: number;
-}
 
-interface Props<T = any> {
-    /** 表格数据 */
-    value: T[];
-    /** 列配置 */
-    columns: TableColumns<T>;
-    /** 数据唯一标识字段 */
-    dataKey?: string;
-    /** 是否显示网格线 */
-    showGridlines?: boolean;
-    /** 是否启用分页 */
-    paginator?: boolean;
-    /** 每页显示行数 */
-    rows?: number;
-    /** 是否可滚动 */
-    scrollable?: boolean;
-    /** 当前页 */
-    current?: number;
-    /** 每页行数选项 */
-    rowsPerPageOptions?: number[];
-    /** 总记录数 */
-    totalRecords?: number;
-    /** 分页器模板 */
-    paginatorTemplate?: string;
-    /** 当前页报告模板 */
-    currentPageReportTemplate?: string;
-    /** 分页器页码链接大小 */
-    pageLinkSize?: number;
-    /** 是否总是显示分页器 */
-    alwaysShowPaginator?: boolean;
-    /** 响应式布局 */
-    responsiveLayout?: string;
-    /** 是否显示斑马纹 */
-    stripedRows?: boolean;
-    /** 是否加载中 */
-    loading?: boolean;
-    /** 表格样式类 */
-    tableClass?: string;
-    /** 表格样式 */
-    tableStyle?: Record<string, any>;
-    /** 是否显示列设置按钮 */
-    showColumnSettings?: boolean;
-    /** 列设置按钮位置 */
-    columnSettingsPosition?: 'header' | 'toolbar';
-    /** 表格标题 */
-    title?: string;
-    /** 工具栏插槽内容 */
-    showToolbar?: boolean;
-    /** 表格尺寸 */
-    size?: 'small' | 'normal' | 'large';
-    /** 表格设置选项 */
-    tableSettings?: TableSettings;
-    /** 筛选配置 */
-    filterConfigs?: FilterConfig[];
-    /** 搜索参数 */
-    searchParams?: SearchParams;
-    /** 是否启用虚拟滚动 */
-    virtualScroll?: boolean;
-    /** 虚拟滚动行高 */
-    virtualScrollItemSize?: number;
-    /** 是否启用状态持久化 */
-    persistState?: boolean;
-    /** 持久化存储键 */
-    persistStateKey?: string;
-    /** 是否可选择行 */
-    selectionMode?: 'single' | 'multiple';
-    /** 选中的行 */
-    selection?: T | T[];
-}
 
-interface Emits<T = any> {
-    'update:columns': [columns: TableColumns<T>];
-    'update:selection': [selection: T | T[]];
-    'column-change': [column: TableColumn<T>, type: 'visibility' | 'frozen' | 'order'];
-    'row-click': [event: { originalEvent: Event; data: T; index: number }];
-    'row-dblclick': [event: { originalEvent: Event; data: T; index: number }];
-    'selection-change': [selection: T[]];
-    'filter-change': [params: SearchParams];
-    'state-restore': [state: any];
-    'state-save': [state: any];
-    refresh: [];
-    page: [event: any];
-    sort: [event: any];
-    filter: [event: any];
-}
+// 使用全局事件类型
+type Emits<T = any> = ConfigurableTableEmits<T>;
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ConfigurableTableProps>(), {
     dataKey: 'id',
     showGridlines: false,
     paginator: true,
@@ -131,6 +44,15 @@ const props = withDefaults(defineProps<Props>(), {
         showBorder: true,
         virtualScroll: false,
         virtualScrollItemSize: 46
+    }),
+    actions: () => ({
+        field: 'column-actions',
+        header: '操作',
+        headerStyle: {
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        frozen: false,
     })
 });
 
@@ -140,9 +62,10 @@ const emit = defineEmits<Emits>();
 const {
     internalColumns,
     processedColumns,
+    actionColumn,
     handleColumnsChange,
     handleColumnChange
-} = useTableConfiguration(props, emit);
+} = useTableConfiguration(props, emit as any);
 
 const {
     computedTableClass,
@@ -153,7 +76,6 @@ const {
     showStripedRows,
     handleStyleChange,
     handleTableSettingChange,
-    getColumnStyle,
     getColumnBodyStyle,
     getHeaderStyle
 } = useTableStyles(props);
@@ -179,7 +101,7 @@ const columnSettingsRef = ref();
 const dataTableRef = ref();
 
 // 分页器状态
-const first = ref(props.current - 1);
+const first = ref((props.current - 1) * props.rows);
 const rows = ref(props.rows);
 
 // 分页器事件处理
@@ -194,7 +116,7 @@ const handlePaginatorPage = (event: any) => {
 };
 
 // 计算属性
-const hasData = computed(() => props.value && props.value.length > 0);
+const hasData = computed(() => props.data && props.data.length > 0);
 
 // 表格基础配置
 const tableBaseConfig = computed(() => {
@@ -287,7 +209,6 @@ const getDisplayText = (column: TableColumn<any>, rowData: any, index: number): 
 
 const getTooltipOptions = (column: TableColumn<any>): Record<string, any> => {
     const defaultOptions = {
-        position: 'top',
         showDelay: 300,
         hideDelay: 0,
         autoHide: true,
@@ -295,6 +216,25 @@ const getTooltipOptions = (column: TableColumn<any>): Record<string, any> => {
     };
 
     return { ...defaultOptions, ...column.tooltipOptions };
+};
+
+/**
+ * 使用 render 函数渲染操作列内容
+ * @param column - 操作列配置
+ * @param slotProps - 插槽属性
+ * @returns VNode
+ */
+const renderActionColumn = (column: TableColumn<any>, slotProps: any) => {
+    const { h } = require('vue');
+
+    if (column.render && typeof column.render === 'function') {
+        const result = column.render(slotProps.data, slotProps.index);
+        // 如果render函数返回的是VNode，直接返回；否则包装成文本节点
+        return typeof result === 'object' && result !== null ? result : h('span', {}, result);
+    }
+
+    // 如果没有render函数，返回空span
+    return h('span', {}, '');
 };
 
 // 优化的事件处理
@@ -413,6 +353,12 @@ watch(
     { deep: true }
 );
 
+watch(() => props.current, (newVal: number) => {
+    first.value = (newVal - 1) * props.rows;
+    rows.value = props.rows;
+})
+
+
 // 暴露组件方法
 defineExpose({
     openColumnSettings,
@@ -439,18 +385,15 @@ defineExpose({
 <template>
     <div class="configurable-table">
         <!-- 搜索和工具栏 -->
-        <ListSearch
-:filter-configs="filterConfigs ?? []" placeholder="请输入搜索内容" :loading="loading"
+        <ListSearch :filter-configs="filterConfigs ?? []" placeholder="请输入搜索内容" :loading="loading"
             :model-value="searchParams" @search="handleFilterChange">
             <template #actions>
                 <!-- 刷新按钮 -->
-                <Button
-icon="pi pi-refresh" class="mr-2" severity="secondary" outlined :disabled="loading"
+                <Button icon="pi pi-refresh" class="mr-2" severity="secondary" outlined :disabled="loading"
                     @click="handleRefresh" />
 
                 <!-- 导出按钮 -->
-                <Button
-icon="pi pi-download" class="mr-2" severity="secondary" outlined :disabled="loading || !hasData"
+                <Button icon="pi pi-download" class="mr-2" severity="secondary" outlined :disabled="loading || !hasData"
                     @click="exportData" />
 
                 <!-- 列设置 -->
@@ -463,22 +406,17 @@ icon="pi pi-download" class="mr-2" severity="secondary" outlined :disabled="load
 
         <!-- 表格容器 -->
         <div class="table-container">
-
-
-            <DataTable
-ref="dataTableRef" :value="value" :data-key="dataKey" :class="computedTableClass"
-                :style="computedTableStyle" v-bind="{ ...$attrs, ...tableBaseConfig }" @row-click="handleRowClick"
-                @row-dblclick="handleRowDblClick" @sort="(event: any) => handleSortEvent(event)"
-                @selection-change="handleSelectionChange">
+            <DataTable ref="dataTableRef" :value="data"
+                v-bind="{ ...$attrs, ...tableBaseConfig, rowHover: true, dataKey: dataKey, style: computedTableStyle, class: computedTableClass }"
+                @row-click="handleRowClick" @row-dblclick="handleRowDblClick"
+                @sort="(event: any) => handleSortEvent(event)" @selection-change="handleSelectionChange">
                 <!-- 动态生成列 - 优化key策略 -->
-                <template
-v-for="(column, columnIndex) in processedColumns"
+                <template v-for="(column, columnIndex) in processedColumns"
                     :key="`${column.key || column.field || columnIndex}-${column.header || column.title}`">
-                    <Column
-:field="column.field" :header="column.header || column.title"
+                    <Column :field="column.field" :header="column.header || column.title"
                         :sortable="column.sortable ?? false" :frozen="column.frozen" :align-frozen="column.alignFrozen"
                         :header-style="hasData ? getHeaderStyle(column) : undefined"
-                        :style="getColumnStyle(column, hasData)" :selection-mode="(column as any).selectionMode">
+                        :body-style="getColumnBodyStyle(column)" :selection-mode="(column as any).selectionMode">
                         <!-- 自定义列内容 -->
                         <template v-if="$slots[`column-${column.key || column.field}`]" #body="slotProps">
                             <slot :name="`column-${column.key || column.field}`" v-bind="slotProps" />
@@ -489,27 +427,12 @@ v-for="(column, columnIndex) in processedColumns"
                             <component :is="column.render!(slotProps.data, slotProps.index)" />
                         </template>
 
-                        <!-- 文本内容 -->
-                        <template v-else-if="column.text" #body="slotProps">
-                            <div
-v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(column as any).showTooltip ? {
-                                value: getTooltipContent(column, slotProps.data, slotProps.index),
-                                ...getTooltipOptions(column)
-                            } : undefined" :style="getColumnBodyStyle(column)">
-                                {{ getDisplayText(column, slotProps.data, slotProps.index) }}
-                            </div>
-                            <template v-else>
-                                {{ getDisplayText(column, slotProps.data, slotProps.index) }}
-                            </template>
-                        </template>
-
                         <!-- 默认字段内容 -->
                         <template v-else #body="slotProps">
-                            <div
-v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(column as any).showTooltip ? {
+                            <div v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip.bottom="(column as any).showTooltip ? {
                                 value: getTooltipContent(column, slotProps.data, slotProps.index),
                                 ...getTooltipOptions(column)
-                            } : undefined" :style="getColumnBodyStyle(column)">
+                            } : undefined" class="w-full overflow-hidden text-ellipsis">
                                 {{ getDisplayText(column, slotProps.data, slotProps.index) }}
                             </div>
                             <template v-else>
@@ -518,7 +441,19 @@ v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(colum
                         </template>
                     </Column>
                 </template>
-
+                <!-- 操作列 -->
+                <Column v-bind="actionColumn" :header-style="hasData ? getHeaderStyle(actionColumn) : undefined"
+                    :body-style="hasData ? getColumnBodyStyle(actionColumn) : undefined">
+                    <template #body="slotProps">
+                        <!-- 优先使用 render 函数 -->
+                        <component v-if="(actionColumn as any).render"
+                            :is="renderActionColumn(actionColumn as any, slotProps)" />
+                        <!-- 否则使用插槽 -->
+                        <slot v-else
+                            :name="(actionColumn as any).slotName ? (actionColumn as any).slotName : actionColumn.field"
+                            v-bind="slotProps"></slot>
+                    </template>
+                </Column>
                 <!-- 额外的列插槽 -->
                 <slot />
 
@@ -544,26 +479,25 @@ v-if="(column as any).ellipsis || (column as any).showTooltip" v-tooltip="(colum
                 </template>
             </DataTable>
             <!-- 独立分页器组件 -->
-            <Paginator
-v-model:first="first" :rows="rows" :total-records="totalRecords"
+            <Paginator v-model:first="first" :rows="rows" :total-records="totalRecords"
                 :rows-per-page-options="rowsPerPageOptions" :template="paginatorTemplate"
                 :current-page-report-template="currentPageReportTemplate" :page-link-size="pageLinkSize"
                 :always-show="alwaysShowPaginator" class="mt-3" @page="handlePaginatorPage" />
         </div>
 
         <!-- 列设置组件 -->
-        <TableColumnSettings
-ref="columnSettingsRef" :columns="internalColumns"
+        <TableColumnSettings ref="columnSettingsRef" :columns="internalColumns"
             :selected-style="(selectedStyle as 'small' | 'normal' | 'large')"
-            :table-settings="currentTableSettings as any" @update:columns="handleColumnsChange"
+            :table-settings="(currentTableSettings as any)" @update:columns="handleColumnsChange"
             @column-change="handleColumnChange" @style-change="handleStyleChange"
             @setting-change="handleTableSettingChange" @update:selected-style="(selectedStyle as any) = $event"
-            @update:table-settings="currentTableSettings = $event as any">
+            @update:table-settings="currentTableSettings = ($event as any)">
             <template #column-label="{ column }">
                 <slot name="column-label" :column="column">
                     {{ column.header || column.title || column.field || column.key }}
                 </slot>
             </template>
+
         </TableColumnSettings>
     </div>
 </template>
@@ -635,14 +569,13 @@ ref="columnSettingsRef" :columns="internalColumns"
     }
 }
 
-/* 深色主题支持 */
-@media (prefers-color-scheme: dark) {
-    .empty-state {
-        color: var(--surface-400);
-    }
+:deep(.p-datatable.p-datatable-striped .p-datatable-tbody>tr.p-row-odd td.p-datatable-frozen-column) {
+    background: var(--p-datatable-row-striped-background);
 
-    .loading-text {
-        color: var(--surface-400);
-    }
+}
+
+:deep(.p-datatable-hoverable .p-datatable-tbody > tr:not(.p-datatable-row-selected):hover .p-datatable-frozen-column) {
+    background: var(--p-datatable-row-hover-background);
+    color: var(--p-datatable-row-hover-color);
 }
 </style>

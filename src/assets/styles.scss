@@ -4,6 +4,7 @@
 @use '@/assets/layout/layout.scss';
 
 
+
 /* 全局滚动条样式优化 */
 /* Webkit 浏览器 (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
@@ -68,7 +69,7 @@
 }
 
 .p-datatable .p-datatable-thead>tr>th {
-    @apply bg-surface-100 dark:bg-surface-900 text-surface-700 dark:text-surface-300;
+    @apply bg-surface-50 dark:bg-surface-900 text-surface-700 dark:text-surface-300;
     font-weight: 600;
 }
 
@@ -81,6 +82,6 @@
     box-sizing: border-box;
 }
 
-.p-drawer-mask{
+.p-drawer-mask {
     z-index: 999;
 }

@@ -170,19 +170,21 @@ watch(isOutside, () => {
     <div>
         <!-- 折叠状态 -->
         <div v-if="collapsed && hasChildren" class="relative">
-            <div class="collapsed-menu-item" :class="{
+            <div
+class="collapsed-menu-item" :class="{
                 'active': isCurrentRoute,
                 'parent-highlighted': isParentHighlighted
             }" @click="handleClick">
                 <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                 <i v-else-if="item.meta.icon" :class="item.meta.icon" />
-                <span class="menu-item-title">{{ item.meta.title }}</span>
+                <span class="menu-item-title text-sm">{{ item.meta.title }}</span>
             </div>
 
             <Teleport to="body">
                 <div v-if="showFloating" ref="floatingMenu" class="floating-menu" @click.stop>
                     <div class="floating-menu-content">
-                        <AppMenuItem v-for="(child, i) in sortedChildren" :key="child.id" :item="child" :index="i"
+                        <AppMenuItem
+v-for="(child, i) in sortedChildren" :key="child.id" :item="child" :index="i"
                             :collapsed="false" :level="level + 1" :is-mobile="isMobile"
                             @menu-item-click="() => { emit('menu-item-click'); hideFloatingMenu(); }" />
                     </div>
@@ -192,7 +194,8 @@ watch(isOutside, () => {
 
         <!-- 正常状态 -->
         <div v-if="!collapsed" class="relative">
-            <div class="menu-item" :class="[
+            <div
+class="menu-item" :class="[
                 {
                     'active': isCurrentRoute,
                     'parent-highlighted': isParentHighlighted
@@ -207,14 +210,16 @@ watch(isOutside, () => {
 
                 <span class="menu-item-title">{{ item.meta.title }}</span>
 
-                <ChevronRight v-if="hasChildren" :size="16" class="menu-item-arrow"
+                <ChevronRight
+v-if="hasChildren" :size="16" class="menu-item-arrow"
                     :class="{ 'expanded': isExpanded }" />
             </div>
 
             <!-- 子菜单 -->
             <div v-if="hasChildren && isExpanded" class="submenu">
                 <div class="submenu-container">
-                    <AppMenuItem v-for="(child, i) in sortedChildren" :key="child.id" :item="child" :index="i"
+                    <AppMenuItem
+v-for="(child, i) in sortedChildren" :key="child.id" :item="child" :index="i"
                         :collapsed="collapsed" :level="level + 1" :is-mobile="isMobile" class="submenu-item"
                         @menu-item-click="emit('menu-item-click')" />
                 </div>

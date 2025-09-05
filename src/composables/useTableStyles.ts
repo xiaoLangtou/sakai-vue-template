@@ -1,22 +1,5 @@
 import { ref, computed, watch } from 'vue';
-import type { TableColumn } from './useColumns';
-
-export interface TableSettings {
-    showRowDivider: boolean;
-    stripedRows: boolean;
-    showShadow: boolean;
-    showBorder: boolean;
-    virtualScroll?: boolean;
-    virtualScrollItemSize?: number;
-}
-
-export interface TableStylesProps {
-    size: 'small' | 'normal' | 'large';
-    tableSettings: TableSettings;
-    tableClass?: string;
-    tableStyle?: Record<string, any>;
-    stripedRows?: boolean;
-}
+import type { TableColumn, TableSettings, TableStylesProps } from '@/types/table';
 
 export function useTableStyles(props: TableStylesProps) {
     const selectedStyle = ref<'small' | 'normal' | 'large'>(props.size);
@@ -86,54 +69,12 @@ export function useTableStyles(props: TableStylesProps) {
         return currentTableSettings.value.stripedRows;
     });
 
-    // 获取列的样式配置
-    const getColumnStyle = (column: TableColumn<any>, hasData: boolean): Record<string, any> => {
-        if (!hasData) return {};
-
-        const baseStyle: Record<string, any> = {
-            ...column.style
-        };
-
-        // 设置宽度（优先级最高）
-        if (column.width) {
-            baseStyle.width = typeof column.width === 'number'
-                ? `${column.width}px`
-                : column.width;
-        }
-
-        // 设置最小宽度
-        if (column.minWidth) {
-            baseStyle.minWidth = typeof column.minWidth === 'number'
-                ? `${column.minWidth}px`
-                : column.minWidth;
-        }
-
-        // 设置最大宽度
-        if (column.maxWidth) {
-            baseStyle.maxWidth = typeof column.maxWidth === 'number'
-                ? `${column.maxWidth}px`
-                : column.maxWidth;
-        }
-
-        // 处理ellipsis相关的样式设置
-        if ((column as any).ellipsis) {
-            // 如果没有设置宽度，则使用100%
-            if (!column.width && !baseStyle.width) {
-                baseStyle.width = '100%';
-            }
-        }
-
-        // 文本对齐
-        if (column.align) {
-            baseStyle.textAlign = column.align;
-        }
-
-        return baseStyle;
-    };
-
     // 获取列的body样式
     const getColumnBodyStyle = (column: TableColumn<any>): Record<string, any> => {
-        const style: Record<string, any> = {};
+        const style: Record<string, any> = {
+            minWidth: "80px",
+            ...column.style
+        };
 
         // 设置宽度（与表头保持一致）
         if (column.width) {
@@ -188,10 +129,8 @@ export function useTableStyles(props: TableStylesProps) {
 
             if (column.alignFrozen === 'left') {
                 style.left = '0';
-                style.borderRight = '1px solid var(--surface-border)';
             } else if (column.alignFrozen === 'right') {
                 style.right = '0';
-                style.borderLeft = '1px solid var(--surface-border)';
             }
         }
 
@@ -231,10 +170,9 @@ export function useTableStyles(props: TableStylesProps) {
 
             if (column.alignFrozen === 'left') {
                 style.left = '0';
-                style.borderRight = '1px solid var(--surface-border)';
+
             } else if (column.alignFrozen === 'right') {
                 style.right = '0';
-                style.borderLeft = '1px solid var(--surface-border)';
             }
         }
 
@@ -283,13 +221,13 @@ export function useTableStyles(props: TableStylesProps) {
         computedTableStyle,
         showGridlines,
         showStripedRows,
-        getColumnStyle,
         getColumnBodyStyle,
         getHeaderStyle,
         handleStyleChange,
         handleTableSettingChange,
         resetStyles,
-        getCurrentTheme
+        getCurrentTheme,
+
 
     };
 }

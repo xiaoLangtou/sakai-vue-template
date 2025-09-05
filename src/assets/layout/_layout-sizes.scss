@@ -1,0 +1,109 @@
+/**
+ * 布局尺寸配置文件
+ * 统一管理所有布局组件的尺寸常量
+ * 避免在样式中硬编码尺寸值
+ */
+
+// ===== 侧边栏尺寸 =====
+$sidebar-width-expanded: 256px;   // 16rem - 侧边栏展开宽度
+$sidebar-width-collapsed: 70px;   // 4.375rem - 侧边栏折叠宽度
+
+// ===== 头部高度 =====
+// 桌面端头部高度
+$header-height-desktop: 4rem;     // 64px - 桌面端头部高度
+$menu-height-desktop: 3rem;       // 48px - 桌面端菜单高度
+
+// 移动端头部高度
+$header-height-mobile: 3.5rem;    // 56px - 移动端头部高度
+$menu-height-mobile: 2.5rem;      // 40px - 移动端菜单高度
+
+// 平板端头部高度
+$header-height-tablet: 4rem;      // 64px - 平板端头部高度
+$menu-height-tablet: 3rem;        // 48px - 平板端菜单高度
+
+// ===== 标签页高度 =====
+$tabs-height-desktop: 2.5rem;     // 40px - 桌面端标签页高度
+$tabs-height-tablet: 2.25rem;     // 36px - 平板端标签页高度
+$tabs-height-mobile: 2rem;        // 32px - 移动端标签页高度
+
+// ===== 底部高度 =====
+$footer-height-desktop: 3rem;     // 48px - 桌面端底部高度
+$footer-height-tablet: 2.5rem;    // 40px - 平板端底部高度
+$footer-height-mobile: 2rem;      // 32px - 移动端底部高度
+
+// ===== 操作按钮高度 =====
+$action-button-height-desktop: 2.5rem;  // 40px - 桌面端操作按钮高度
+$action-button-height-tablet: 2.25rem;  // 36px - 平板端操作按钮高度
+$action-button-height-mobile: 2rem;     // 32px - 移动端操作按钮高度
+
+// ===== 用户头像尺寸 =====
+$avatar-size-large: 2.5rem;       // 40px - 大尺寸头像
+$avatar-size-medium: 2rem;        // 32px - 中等尺寸头像
+$avatar-size-small: 1.5rem;       // 24px - 小尺寸头像
+
+// ===== 菜单项高度 =====
+$menu-item-height-desktop: 2.75rem;     // 44px - 桌面端菜单项高度
+$menu-item-height-tablet: 2.5rem;       // 40px - 平板端菜单项高度
+$menu-item-height-mobile: 2.25rem;      // 36px - 移动端菜单项高度
+$menu-badge-size: 1.5rem;               // 24px - 菜单徽章尺寸
+
+// ===== 内容区域内边距 =====
+$content-padding-desktop: 1.5rem;       // 24px - 桌面端内容内边距
+$content-padding-tablet: 1rem;          // 16px - 平板端内容内边距
+$content-padding-mobile: 0.75rem;       // 12px - 移动端内容内边距
+
+// ===== 组合高度计算 =====
+// 顶部栏布局总高度
+$topbar-total-height-desktop: calc(#{$header-height-desktop} + #{$menu-height-desktop}); // 7rem
+$topbar-total-height-tablet: calc(#{$header-height-tablet} + #{$menu-height-tablet});   // 7rem
+$topbar-total-height-mobile: calc(#{$header-height-mobile} + #{$menu-height-mobile});   // 6rem
+
+// 主内容区域可用高度
+$main-content-height-desktop: calc(100vh - #{$topbar-total-height-desktop});
+$main-content-height-tablet: calc(100vh - #{$topbar-total-height-tablet});
+$main-content-height-mobile: calc(100vh - #{$topbar-total-height-mobile});
+
+// ===== 动画过渡时间 =====
+$transition-duration-fast: 0.2s;        // 快速过渡
+$transition-duration-normal: 0.3s;      // 正常过渡
+$transition-duration-slow: 0.4s;        // 慢速过渡
+
+// 侧边栏动画
+$sidebar-transition-duration: 0.35s;
+$sidebar-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+// ===== Z-Index 层级 =====
+$z-index-sidebar: 100;
+$z-index-header: 200;
+$z-index-dropdown: 300;
+$z-index-modal: 400;
+$z-index-toast: 500;
+
+// ===== 响应式使用说明 =====
+// 注意：响应式混合器需要在使用时单独引入breakpoints模块
+// 示例用法：
+// @use 'breakpoints' as bp;
+// @use 'layout-sizes' as sizes;
+// 
+// .element {
+//   height: sizes.$header-height-desktop;
+//   
+//   @include bp.tablet-only {
+//     height: sizes.$header-height-tablet;
+//   }
+//   
+//   @include bp.mobile-only {
+//     height: sizes.$header-height-mobile;
+//   }
+// }
+
+// ===== 工具类生成 =====
+// 注意：工具类需要在单独的文件中生成，并引入breakpoints模块
+// 生成侧边栏宽度工具类
+.sidebar-width-expanded {
+  width: $sidebar-width-expanded;
+}
+
+.sidebar-width-collapsed {
+  width: $sidebar-width-collapsed;
+}

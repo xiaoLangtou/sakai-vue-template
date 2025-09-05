@@ -1,3 +1,5 @@
+@use './breakpoints' as bp;
+
 .app-header {
     display: flex;
     align-items: center;
@@ -95,7 +97,8 @@
 }
 
 /* 响应式适配 */
-@media (max-width: 640px) {
+
+@include bp.mobile-only {
     .mobile-header {
         padding: 0 12px;
         height: 52px;
@@ -111,13 +114,13 @@
     }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@include bp.tablet-only {
     .app-header {
         padding: 0 20px;
     }
 }
 
-@media (min-width: 1024px) {
+@include bp.desktop-up {
     .desktop-header {
         padding: 0 24px;
     }

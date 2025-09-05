@@ -6,8 +6,10 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const Button: typeof import('primevue/button')['Button']
   const EffectScope: typeof import('vue')['EffectScope']
   const Image: typeof import('primevue/image')['Image']
+  const Menu: typeof import('primevue/menu')['Menu']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']

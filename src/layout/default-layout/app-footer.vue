@@ -15,17 +15,17 @@ class="layout-footer" :class="{
     }">
         <div class="footer-content">
             <span class="footer-text">
-                SAKAI by
-                <a 
-                    href="https://primevue.org" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                TVA by
+                <a
+                    href="https://primevue.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     class="footer-link"
                 >
                     PrimeVue
                 </a>
             </span>
-            
+
             <!-- 移动端隐藏的额外信息 -->
             <div v-if="!isMobile" class="footer-extra">
                 <span class="text-surface-500 dark:text-surface-400 text-sm">
@@ -36,13 +36,11 @@ class="layout-footer" :class="{
     </footer>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>/* 响应式适配 */
+@use '@/assets/layout/breakpoints' as bp;
+
 .layout-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem 1.5rem;
-    background-color: var(--surface-card);
+    @apply flex items-center justify-center px-4 py-6 bg-[var(--surface-ground)];
     border-top: 1px solid var(--surface-border);
     color: var(--text-color-secondary);
     font-size: 0.875rem;
@@ -50,17 +48,11 @@ class="layout-footer" :class="{
 }
 
 .footer-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
+    @apply flex items-center justify-center w-full max-w-[1200px] gap-2;
 }
 
 .footer-text {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    @apply flex items-center gap-1
 }
 
 .footer-link {
@@ -99,13 +91,14 @@ class="layout-footer" :class="{
     padding: 1rem 1.5rem;
 }
 
-/* 响应式适配 */
-@media (max-width: 640px) {
+
+
+@include bp.mobile-only {
     .layout-footer {
         padding: 0.5rem 0.75rem;
         font-size: 0.75rem;
     }
-    
+
     .footer-content {
         flex-direction: column;
         gap: 0.5rem;
@@ -113,7 +106,7 @@ class="layout-footer" :class="{
     }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@include bp.tablet-only {
     .layout-footer {
         padding: 0.875rem 1.25rem;
     }

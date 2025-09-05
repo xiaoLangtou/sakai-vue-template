@@ -1,0 +1,89 @@
+/**
+ * 响应式断点配置
+ * 定义项目中使用的所有断点和媒体查询
+ */
+
+// 引入布局尺寸配置
+@use 'layout-sizes' as sizes;
+
+// 断点定义
+$breakpoints: (
+  mobile: 0px,
+  tablet: 768px,
+  desktop: 1024px,
+  wide: 1440px
+);
+
+// 断点变量
+$mobile: 0px;
+$tablet: 768px;
+$desktop: 1024px;
+$wide: 1440px;
+
+// 媒体查询混合器
+@mixin mobile-only {
+  @media (max-width: #{$tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: #{$tablet}) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media (min-width: #{$tablet}) and (max-width: #{$desktop - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop-up {
+  @media (min-width: #{$desktop}) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media (min-width: #{$desktop}) and (max-width: #{$wide - 1px}) {
+    @content;
+  }
+}
+
+@mixin wide-up {
+  @media (min-width: #{$wide}) {
+    @content;
+  }
+}
+
+// 自定义断点混合器
+@mixin respond-to($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: #{map-get($breakpoints, $breakpoint)}) {
+      @content;
+    }
+  } @else {
+    @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+        + "Available breakpoints are: #{map-keys($breakpoints)}.";
+  }
+}
+
+// 范围断点混合器
+@mixin respond-between($min, $max) {
+  @if map-has-key($breakpoints, $min) and map-has-key($breakpoints, $max) {
+    @media (min-width: #{map-get($breakpoints, $min)}) and (max-width: #{map-get($breakpoints, $max) - 1px}) {
+      @content;
+    }
+  } @else {
+    @warn "One or both breakpoints are not defined in $breakpoints map.";
+  }
+}
+
+// 导出断点值供JavaScript使用
+:export {
+  mobile: #{$mobile};
+  tablet: #{$tablet};
+  desktop: #{$desktop};
+  wide: #{$wide};
+}

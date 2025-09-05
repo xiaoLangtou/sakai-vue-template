@@ -1,4 +1,5 @@
 .app-tabs {
+    height: 44px;
     background-color: var(--surface-ground);
     --p-tabs-tablist-background: var(--surface-ground);
     --p-tabs-tablist-border-width: 0;
@@ -43,23 +44,21 @@
 
         .p-tablist-tab-list {
             gap: 6px;
-            padding: 4px 16px 0 16px;
+            padding: 5px 16px;
             background: var(--surface-ground);
         }
 
         .app-tab-item {
-            border-radius: 8px 8px 0 0;
+            border-radius: 8px;
             background: var(--surface-100);
             border: 1px solid var(--surface-border);
-            border-bottom: none;
             transition: all 0.2s ease;
-            padding-top: 12px;
-            padding-bottom: 12px;
+            padding-top: 8px;
+            padding-bottom: 8px;
 
             &.p-tab-active {
                 background: var(--surface-card);
                 border-color: var(--primary-color);
-                border-bottom: 1px solid var(--surface-card);
                 z-index: 1;
                 position: relative;
             }
@@ -73,8 +72,6 @@
 
     &.app-tabs__Fashion {
         --p-tabs-tab-padding: 0;
-        border-bottom: 4px solid var(--surface-card);
-        ;
 
         .p-tablist-tab-list {
             flex-grow: 1;

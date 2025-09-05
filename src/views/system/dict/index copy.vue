@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ConfigurableTable, PageContainer } from '@/components';
-import type { TableColumns } from '@/composables';
 import type { IDictType } from '@/services/types/dict';
-import { CircleCheck, CircleX } from 'lucide-vue-next';
 import { useToast } from 'primevue/usetoast';
-import { h } from 'vue';
 import DictTypeForm from './component/dict-type-form.vue';
 import { useDict } from './composables/useDict';
+import type { TableColumns } from '@/composables';
+import { CircleCheck, CircleX } from 'lucide-vue-next';
+import { h } from 'vue';
 
 
 // 页面标题

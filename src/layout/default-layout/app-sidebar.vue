@@ -99,10 +99,12 @@ watch(() => props.isMobile, () => {
 </script>
 
 <template>
-    <div v-if="!isMobile && isFixedMode"
+    <div
+v-if="!isMobile && isFixedMode"
         class="layout-sidebar-hover fixed top-0 left-0 w-[6px] h-[100vh] bg-gray-200 z-30"
         @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"></div>
-    <aside :class="[
+    <aside
+:class="[
         'app-sidebar',
         {
             'app-sidebar--mobile': isMobile,
@@ -116,11 +118,13 @@ watch(() => props.isMobile, () => {
         }
     ]" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
         <!-- 顶部Logo区域 -->
-        <div v-if="!isMobile"
-            :class="['sidebar-header', 'flex items-center justify-center', 'min-h-[64px] w-full', 'relative overflow-hidden', 'border-b border-surface-200/40 dark:border-surface-700/40']">
+        <div
+v-if="!isMobile"
+            :class="['sidebar-header', 'flex items-center justify-center', 'min-h-[64px] w-full', 'relative overflow-hidden']">
             <!-- Logo容器 -->
             <div class="relative z-10 flex items-center justify-center w-full">
-                <Transition enter-active-class="transition-all duration-300 ease-out"
+                <Transition
+enter-active-class="transition-all duration-300 ease-out"
                     leave-active-class="transition-all duration-200 ease-in" enter-from-class="opacity-0 scale-90"
                     enter-to-class="opacity-100 scale-100" leave-from-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-95" mode="out-in">
@@ -128,7 +132,8 @@ watch(() => props.isMobile, () => {
                     <div v-if="!collapsed" key="expanded" class="flex items-center justify-between w-full gap-3">
                         <AppHeaderLogo />
                         <!-- 按钮 -->
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 cursor-pointer"
+                        <div
+class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 cursor-pointer"
                             @click="toggleFixedMode">
                             <PanelLeftClose v-if="!isFixedMode" :size="18" />
                             <PanelLeftDashed v-else :size="18" />
@@ -159,7 +164,8 @@ watch(() => props.isMobile, () => {
             <div
                 class="h-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-surface-300 dark:scrollbar-thumb-surface-600 scrollbar-track-transparent">
                 <div :class="isMobile ? 'p-0 h-full' : 'pt-3  pb-2 h-full'">
-                    <AppMenu :collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
+                    <AppMenu
+:collapsed="isMobile ? false : collapsed" :is-mobile="isMobile"
                         @menu-item-click="handleMenuItemClick" />
                 </div>
             </div>
@@ -173,15 +179,19 @@ watch(() => props.isMobile, () => {
 </template>
 
 <style scoped lang="scss">
+@use '@/assets/layout/breakpoints' as bp;
+@use '@/assets/layout/layout-sizes' as sizes;
+
 .sidebar-header {
-    @apply flex items-center justify-between p-4 border-b border-surface-200/60 dark:border-surface-700/60;
+    @apply flex items-center justify-between p-4;
 }
 
 // 基础侧边栏样式
 .app-sidebar {
-    @apply h-full flex flex-col z-40;
+    @apply h-full flex flex-col;
     @apply bg-white dark:bg-surface-900;
-    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: sizes.$z-index-sidebar;
+    transition: width sizes.$sidebar-transition-duration sizes.$sidebar-transition-timing;
     transform-origin: left center;
 
     .p-divider-horizontal {
@@ -218,7 +228,7 @@ watch(() => props.isMobile, () => {
 
 // 折叠状态样式
 .app-sidebar--collapsed {
-    @apply w-[70px];
+    width: sizes.$sidebar-width-collapsed;
 
     .sidebar-header {
         padding-left: 0.5rem;
@@ -228,7 +238,7 @@ watch(() => props.isMobile, () => {
 
 // 展开状态样式
 .app-sidebar--expanded {
-    @apply w-[256px];
+    width: sizes.$sidebar-width-expanded;
 
     .sidebar-header {
         padding-left: 1.5rem;
@@ -306,19 +316,20 @@ watch(() => props.isMobile, () => {
 }
 
 /* 响应式布局控制 - 与JavaScript断点保持一致 */
-@media (max-width: 767px) {
+
+@include bp.mobile-only {
     .app-sidebar:not(.app-sidebar--mobile) {
         display: none;
     }
 }
 
-@media (min-width: 768px) and (max-width: 1599px) {
+@include bp.tablet-only {
     .app-sidebar:not(.app-sidebar--mobile) {
         display: none;
     }
 }
 
-@media (min-width: 1600px) {
+@include bp.desktop-up {
     .app-sidebar:not(.app-sidebar--mobile) {
         display: flex;
     }

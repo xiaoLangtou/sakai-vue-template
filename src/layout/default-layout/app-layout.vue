@@ -11,12 +11,12 @@ import { AppHeaderLogo } from '../shared';
 
 const layoutStore = useLayoutStore();
 const {
-    layoutConfig,
+    layoutConfig
 } = storeToRefs(layoutStore);
 
 // 统一的切换处理函数
 const handleToggleSidebar = () => {
-    if (layoutStore.isMobile || layoutStore.isTablet) {
+    if ( layoutStore.isMobile || layoutStore.isTablet ) {
         // 移动端和平板端：切换抽屉侧边栏
         layoutStore.showMobileSidebar = !layoutStore.showMobileSidebar;
     } else {
@@ -49,22 +49,26 @@ provide('layout', {
 
 <template>
     <!-- 侧边栏布局模式 -->
-    <div class="app-layout" :class="{
+    <div
+        :class="{
         'sidebar-collapsed': layoutStore.isCollapsed,
         'mobile-layout': layoutStore.isMobile,
         'tablet-layout': layoutStore.isTablet,
-        'desktop-layout': layoutStore.isDesktop
-    }">
+        'desktop-layout': layoutStore.isDesktop,
+        'wide-layout': layoutStore.isWide
+    }" class="app-layout">
         <!-- 桌面端侧边栏 -->
-        <AppSidebar v-if="layoutStore.isDesktop" :collapsed="layoutStore.isCollapsed" :is-mobile="false"
+        <AppSidebar
+            v-if="layoutStore.isDesktop || layoutStore.isWide" :collapsed="layoutStore.isCollapsed" :is-mobile="false"
             @toggle-sidebar="layoutStore.toggleSidebar" />
         <!-- 移动端/平板端抽屉式侧边栏 -->
-        <Drawer v-if="layoutStore.isMobile || layoutStore.isTablet" v-model:visible="layoutStore.showMobileSidebar"
-            position="left" :style="{
+        <Drawer
+            v-if="layoutStore.isMobile || layoutStore.isTablet" v-model:visible="layoutStore.showMobileSidebar"
+            :style="{
                 width: '264px',
                 '--p-drawer-content-padding': '0px',
                 '--p-drawer-header-padding': '10px'
-            }" class="tablet-sidebar-drawer" @hide="layoutStore.closeMobileSidebar">
+            }" class="tablet-sidebar-drawer" position="left" @hide="layoutStore.closeMobileSidebar">
             <template #header>
                 <app-header-logo />
             </template>
@@ -74,21 +78,25 @@ provide('layout', {
         </Drawer>
 
         <!-- 右侧主体区域 -->
-        <div class="main-content relative" :class="{
+        <div
+            :class="{
             'mobile-main': layoutStore.isMobile,
             'tablet-main': layoutStore.isTablet,
-            'desktop-main': layoutStore.isDesktop
-        }">
+            'desktop-main': layoutStore.isDesktop,
+            'wide-main': layoutStore.isWide
+        }" class="main-content relative">
             <!-- 顶部头部栏 -->
-            <AppHeader :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile"
+            <AppHeader
+                :collapsed="layoutStore.isCollapsed" :is-mobile="layoutStore.isMobile"
                 @toggle-sidebar="handleToggleSidebar" />
 
             <!-- 标签页组件 -->
-            <AppTabs v-if="layoutConfig.showTab" class="tabs-container" :tab-style="layoutConfig.tabStyle"
-                :show-icon="layoutConfig.isShowIcon" />
+            <AppTabs
+                v-if="layoutConfig.showTab" :show-icon="layoutConfig.isShowIcon" :tab-style="layoutConfig.tabStyle"
+                class="tabs-container" />
 
             <div
-                :class="`absolute ${layoutConfig.showTab ? `${layoutConfig.tabStyle == 'Fashion' ? 'top-[112px]' : 'top-[109px]'}` : 'top-[60px]'}  left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-transparent dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
+                :class="`absolute ${layoutConfig.showTab ? `${layoutConfig.tabStyle == 'Fashion' ? 'top-[108px]' : 'top-[108px]'}` : 'top-[60px]'}  left-0 right-0 h-8 bg-gradient-to-b from-surface-50 to-surface-100 dark:from-surface-900 dark:to-transparent pointer-events-none z-10`">
             </div>
 
             <!-- 主要内容区域 -->
@@ -105,6 +113,9 @@ provide('layout', {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/layout/breakpoints' as bp;
+@use '@/assets/layout/layout-sizes' as sizes;
+
 .app-layout {
     display: flex;
     height: 100vh;
@@ -129,7 +140,8 @@ provide('layout', {
 }
 
 .content-wrapper {
-    min-height: 100%;
+    @apply min-h-full;
+    transition: margin-left sizes.$sidebar-transition-duration ease;
 }
 
 /* 移动端布局 */
@@ -163,6 +175,15 @@ provide('layout', {
     margin-left: 0;
 }
 
+/* 宽屏布局 */
+.wide-layout .wide-main {
+    margin-left: 0;
+}
+
+.wide-layout.sidebar-collapsed .wide-main {
+    margin-left: 0;
+}
+
 /* 移动端抽屉样式 */
 .mobile-sidebar-drawer {
     z-index: 1000;
@@ -179,20 +200,21 @@ provide('layout', {
 }
 
 /* 响应式断点适配 */
-@media (max-width: 640px) {
+
+@include bp.mobile-only {
     .content-wrapper {
-        padding: 0.75rem;
+        padding: sizes.$content-padding-mobile;
     }
 }
 
-@media (min-width: 768px) and (max-width: 1599px) {
+@include bp.tablet-only {
     .content-wrapper {
         padding: 0.75rem;
         margin-left: 0;
     }
 }
 
-@media (min-width: 1600px) {
+@include bp.desktop-up {
     .content-wrapper {
         padding: 1rem;
     }

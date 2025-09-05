@@ -44,7 +44,8 @@ const handleMenuItemClick = () => {
 </script>
 
 <template>
-    <nav class="app-menu" :class="{
+    <nav
+class="app-menu" :class="{
         'mobile-menu': isMobile,
         'desktop-menu': !isMobile,
         'collapsed-menu': collapsed,
@@ -52,7 +53,8 @@ const handleMenuItemClick = () => {
     }">
         <div class="menu-content">
             <template v-for="(item, i) in filteredMenuItems" :key="item.id">
-                <AppMenuItem :item="item" :index="i" :collapsed="collapsed" :level="0" :is-mobile="isMobile"
+                <AppMenuItem
+:item="item" :index="i" :collapsed="collapsed" :level="0" :is-mobile="isMobile"
                     class="menu-item-wrapper" @menu-item-click="handleMenuItemClick" />
             </template>
         </div>

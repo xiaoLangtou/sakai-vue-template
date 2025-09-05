@@ -28,8 +28,9 @@ defineProps({
             </span>
         </div>
     </div>
-    <div v-else @click="handleLogoClick"
-        class="bg-white dark:bg-surface-800 p-2 rounded-lg shadow-sm border border-surface-200/60 dark:border-surface-700/60 hover:shadow-md transition-shadow duration-200">
+    <div
+v-else class="bg-white dark:bg-surface-800 p-2 rounded-lg shadow-sm border border-surface-200/60 dark:border-surface-700/60 hover:shadow-md transition-shadow duration-200"
+        @click="handleLogoClick">
         <img src="@/assets/images/logo.svg" alt="TVA" class="w-6 h-6" />
     </div>
 </template>

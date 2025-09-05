@@ -46,6 +46,7 @@
         "@rsbuild/plugin-sass": "^1.2.2",
         "@rsbuild/plugin-vue": "^1.0.7",
         "@rsbuild/plugin-vue-jsx": "^1.1.0",
+        "@tanstack/eslint-plugin-query": "^5.83.1",
         "@tsconfig/node22": "^22.0.0",
         "@types/eslint-config-prettier": "^6.11.3",
         "@types/md5": "^2.3.5",

@@ -128,12 +128,16 @@ v-model:visible="profileDrawerVisible" header="Profile" position="right" class="
 
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/layout/breakpoints' as bp;
+@use '@/assets/layout/layout-sizes' as sizes;
+
 .layout-topbar {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     position: relative;
+    z-index: sizes.$z-index-header;
 }
 
 .layout-topbar-actions {
@@ -152,13 +156,13 @@ v-model:visible="profileDrawerVisible" header="Profile" position="right" class="
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: sizes.$action-button-height-desktop;
+    height: sizes.$action-button-height-desktop;
     border: none;
     background: transparent;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all sizes.$sidebar-transition-duration;
     color: var(--text-color);
 }
 
@@ -218,8 +222,8 @@ v-model:visible="profileDrawerVisible" header="Profile" position="right" class="
 }
 
 .mobile-topbar .layout-topbar-action {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: sizes.$action-button-height-mobile;
+    height: sizes.$action-button-height-mobile;
 }
 
 /* 移动端菜单面板 */
@@ -287,7 +291,7 @@ v-model:visible="profileDrawerVisible" header="Profile" position="right" class="
 }
 
 /* 移动端抽屉全屏样式 */
-@media (max-width: 768px) {
+@include bp.mobile-only {
     .profile-drawer :deep(.p-drawer) {
         width: 100vw !important;
         max-width: 100vw !important;
@@ -298,8 +302,8 @@ v-model:visible="profileDrawerVisible" header="Profile" position="right" class="
     }
 
     .mobile-topbar .layout-topbar-action {
-        width: 2rem;
-        height: 2rem;
+        width: sizes.$action-button-height-mobile;
+        height: sizes.$action-button-height-mobile;
     }
 
     .mobile-topbar .layout-topbar-actions {
@@ -308,10 +312,10 @@ v-model:visible="profileDrawerVisible" header="Profile" position="right" class="
 }
 
 /* 响应式优化 */
-@media (min-width: 769px) and (max-width: 1023px) {
+@include bp.tablet-only {
     .layout-topbar-action {
-        width: 2.25rem;
-        height: 2.25rem;
+        width: sizes.$action-button-height-tablet;
+        height: sizes.$action-button-height-tablet;
     }
 }
 

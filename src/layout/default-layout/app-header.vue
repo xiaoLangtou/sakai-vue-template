@@ -22,13 +22,15 @@ const handleToggle = () => {
 </script>
 
 <template>
-    <header class="app-header" :class="{
+    <header
+class="app-header" :class="{
         'mobile-header': isMobile,
         'desktop-header': !isMobile
     }">
         <div class="header-left">
             <!-- 移动端菜单按钮 -->
-            <Button icon="pi pi-bars" severity="secondary" text rounded class="mobile-menu-toggle"
+            <Button
+icon="pi pi-bars" severity="secondary" text rounded class="mobile-menu-toggle"
                 aria-label="切换菜单" @click="handleToggle" />
             <!-- 桌面端面包屑导航 -->
             <AppBreadcrumb v-if="!isMobile" />

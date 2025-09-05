@@ -52,16 +52,19 @@ watchEffect(() => {
     <div class="menubar-container">
         <Menubar ref="menubar" :model="filteredMenuItems">
             <template #item="{ item, props, hasSubmenu, root }">
-                <a v-ripple class="flex items-center"
+                <a
+v-ripple class="flex items-center"
                     :class="{ 'active-route': item.path === activeItemPath && !hasSubmenu }" v-bind="props.action"
                     @click="handleClick(item, hasSubmenu)">
                     <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                     <i v-else-if="item.meta.icon" :class="item.meta.icon" />
                     <span>{{ item.meta.title }}</span>
-                    <span v-if="item.shortcut"
+                    <span
+v-if="item.shortcut"
                         class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
                             item.shortcut }}</span>
-                    <i v-if="hasSubmenu"
+                    <i
+v-if="hasSubmenu"
                         :class="['pi pi-angle-down ml-auto', { 'pi-angle-down': root, 'pi-angle-right': !root }]"></i>
                 </a>
             </template>
@@ -70,6 +73,8 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/layout/layout-sizes' as sizes;
+
 /**
  * Menubar 组件样式定制
  * 适配项目主题和设计规范
@@ -130,8 +135,8 @@ watchEffect(() => {
     margin-left: auto;
     background: var(--primary-color);
     color: var(--primary-color-text);
-    min-width: 1.5rem;
-    height: 1.5rem;
+    min-width: sizes.$menu-badge-size;
+    height: sizes.$menu-badge-size;
     line-height: 1.5rem;
     text-align: center;
     border-radius: 0.75rem;

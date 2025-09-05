@@ -13,7 +13,7 @@ import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 import autoImport from './.eslintrc-auto-import.js';
-
+import pluginQuery from '@tanstack/eslint-plugin-query'
 export default typescriptEslint.config(
     {
         ignores: [
@@ -33,6 +33,7 @@ export default typescriptEslint.config(
         extends: [
             eslint.configs.recommended,
             ...typescriptEslint.configs.recommended,
+            ...pluginQuery.configs['flat/recommended'],
             ...eslintPluginVue.configs['flat/recommended'],
         ],
         files: ['**/*.{ts,vue,tsx}'],
