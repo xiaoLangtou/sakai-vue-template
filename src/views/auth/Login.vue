@@ -119,7 +119,7 @@ const checked = ref(false);
                 style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
                 <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
                     <div class="text-center mb-8 flex flex-col items-center gap-2">
-                        <img class="w-[54px] h-[54px]" src="@/assets/images/logo.svg" />
+                        <img class="w-[54px] h-[54px]" src="@/assets/images/light-logo.svg" />
                         <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">欢迎来到 TVA!</div>
                         <span class="text-muted-color font-medium">请使用您的账号密码登录系统</span>
                     </div>

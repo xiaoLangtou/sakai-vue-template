@@ -1,52 +1,49 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useLayoutStore } from '@/stores/layout';
 import { storeToRefs } from 'pinia';
 import Drawer from 'primevue/drawer';
-import { UserProfile } from '@/components';
 import OverlayPanel from 'primevue/overlaypanel';
+import { UserProfile } from '@/components';
 
-defineProps({
-    isMobile: {
-        type: Boolean,
-        default: false
-    }
-});
-
+// ==================== Store 状态管理 ====================
 const layoutStore = useLayoutStore();
 const { isDarkTheme } = storeToRefs(layoutStore);
 const { toggleDarkMode, openConfigDrawer } = layoutStore;
 
-// 用户资料抽屉状态管理
-const profileDrawerVisible = ref(false);
-const mobileMenuPanel = ref();
+// ==================== 本地状态管理 ====================
+/** 用户资料抽屉显示状态 */
+const profileDrawerVisible = ref<boolean>(false);
+/** 移动端菜单面板引用 */
+const mobileMenuPanel = ref<InstanceType<typeof OverlayPanel>>();
 
+// ==================== 事件处理方法 ====================
 /**
  * 打开用户资料抽屉
  */
-const openProfileDrawer = () => {
+const openProfileDrawer = (): void => {
     profileDrawerVisible.value = true;
 };
-
-
 
 /**
  * 切换移动端菜单面板
  */
-const toggleMobileMenu = (event) => {
-    mobileMenuPanel.value.toggle(event);
+const toggleMobileMenu = (event: Event): void => {
+    mobileMenuPanel.value?.toggle(event);
 };
 </script>
 
 <template>
-    <div
-class="layout-topbar" :class="{
-        'mobile-topbar': isMobile,
-        'desktop-topbar': !isMobile
-    }">
+    <div :class="[
+        'layout-topbar',
+        {
+            'mobile-topbar': layoutStore.isMobile,
+            'desktop-topbar': !layoutStore.isMobile
+        }
+    ]">
         <div class="layout-topbar-actions">
             <!-- 移动端布局 -->
-            <template v-if="isMobile">
+            <template v-if="layoutStore.isMobile">
                 <!-- 主题切换按钮 -->
                 <button type="button" class="layout-topbar-action" @click="toggleDarkMode">
                     <i :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"></i>
@@ -120,8 +117,11 @@ v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: '
 
     <!-- 用户资料抽屉 -->
     <Drawer
-v-model:visible="profileDrawerVisible" header="Profile" position="right" class="profile-drawer"
-        :style="{ width: isMobile ? '100vw' : '50rem' }">
+        v-model:visible="profileDrawerVisible" 
+        header="Profile" 
+        position="right" 
+        class="profile-drawer"
+        :style="{ width: layoutStore.isMobile ? '100vw' : '50rem' }">
         <UserProfile />
     </Drawer>
 

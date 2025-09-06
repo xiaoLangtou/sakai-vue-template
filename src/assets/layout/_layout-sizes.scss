@@ -6,7 +6,7 @@
 
 // ===== 侧边栏尺寸 =====
 $sidebar-width-expanded: 256px;   // 16rem - 侧边栏展开宽度
-$sidebar-width-collapsed: 70px;   // 4.375rem - 侧边栏折叠宽度
+$sidebar-width-collapsed: 0;   // 4.375rem - 侧边栏折叠宽度
 
 // ===== 头部高度 =====
 // 桌面端头部高度
@@ -79,23 +79,7 @@ $z-index-dropdown: 300;
 $z-index-modal: 400;
 $z-index-toast: 500;
 
-// ===== 响应式使用说明 =====
-// 注意：响应式混合器需要在使用时单独引入breakpoints模块
-// 示例用法：
-// @use 'breakpoints' as bp;
-// @use 'layout-sizes' as sizes;
-// 
-// .element {
-//   height: sizes.$header-height-desktop;
-//   
-//   @include bp.tablet-only {
-//     height: sizes.$header-height-tablet;
-//   }
-//   
-//   @include bp.mobile-only {
-//     height: sizes.$header-height-mobile;
-//   }
-// }
+
 
 // ===== 工具类生成 =====
 // 注意：工具类需要在单独的文件中生成，并引入breakpoints模块
