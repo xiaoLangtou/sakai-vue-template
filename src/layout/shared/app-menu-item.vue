@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useLucideIcon } from '@/composables';
 import type { MenuItem } from '@/types/layout';
-import { ChevronRight } from 'lucide-vue-next';
+import { ChevronRight, ExternalLink } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useFloatingMenu } from '../composables/useFloatingMenu';
@@ -41,6 +41,14 @@ const shouldUseFloatingMenu = computed(() => props.collapsed && hasChildren.valu
 const sortedChildren = computed(() => {
     if ( !props.item.children ) return [];
     return [ ...props.item.children ].sort((a, b) => ( a.sortOrder ?? 0 ) - ( b.sortOrder ?? 0 ));
+});
+
+/**
+ * 判断是否为外链菜单项
+ * 条件：没有子菜单且有url属性
+ */
+const isExternalLink = computed(() => {
+    return !hasChildren.value && props.item.url;
 });
 
 const hasActiveChild = (children: MenuItem[]): boolean => {
@@ -100,7 +108,7 @@ const handleClick = async (event: Event) => {
     }
 
     if ( props.item.path ) {
-        router.push(props.item.path);
+        await router.push(props.item.path);
         if ( props.isMobile ) {
             emit('menu-item-click');
         }
@@ -179,6 +187,7 @@ watch(isOutside, () => {
                     <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                     <i v-else-if="item.meta.icon" :class="item.meta.icon" />
                     <span class="menu-item-title text-sm">{{ item.meta.title }}</span>
+                    <ExternalLink v-if="isExternalLink" :size="12" class="external-link-badge" />
                 </div>
 
                 <Teleport to="body">
@@ -201,6 +210,7 @@ watch(isOutside, () => {
                     <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                     <i v-else-if="item.meta.icon" :class="item.meta.icon" />
                     <span class="menu-item-title text-sm">{{ item.meta.title }}</span>
+                    <ExternalLink v-if="isExternalLink" :size="12" class="external-link-badge" />
                 </div>
             </template>
         </div>
@@ -223,6 +233,8 @@ watch(isOutside, () => {
 
                 <span class="menu-item-title">{{ item.meta.title }}</span>
 
+                <ExternalLink v-if="isExternalLink" :size="12" class="external-link-badge" />
+
                 <ChevronRight
                     v-if="hasChildren" :class="{ 'expanded': isExpanded }" :size="16"
                     class="menu-item-arrow" />
@@ -244,4 +256,30 @@ watch(isOutside, () => {
 <style scoped>
 /* 父菜单高亮样式 - 只高亮图标和标题颜色，不显示背景 */
 
+/* 外链徽标样式 */
+.external-link-badge {
+    @apply text-blue-500 opacity-70 ml-auto flex-shrink-0;
+    transition: opacity 0.2s ease;
+}
+
+/* 悬停时增强显示 */
+.menu-item:hover .external-link-badge,
+.collapsed-menu-item:hover .external-link-badge {
+    @apply opacity-100;
+}
+
+/* 激活状态下的外链徽标 */
+.menu-item.active .external-link-badge,
+.collapsed-menu-item.active .external-link-badge {
+    @apply text-white opacity-90;
+}
+
+/* 确保外链徽标在正确位置 */
+.menu-item {
+    @apply flex items-center gap-2;
+}
+
+.collapsed-menu-item {
+    @apply flex items-center gap-2;
+}
 </style>

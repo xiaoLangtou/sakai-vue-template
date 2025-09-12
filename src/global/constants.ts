@@ -15,3 +15,15 @@ export const LOGIN_URL = '/login'
 
 // 验证码过期时间
 export const CAPTCHA_EXPIRE_TIME = 1000 * 60 * 2;
+
+
+export const LAYOUT_CONSTANTS = {
+    BREAKPOINTS: {
+        MOBILE: 768,
+        TABLET: 1024,
+        DESKTOP: 1440
+    },
+    DEBOUNCE_DELAY: 150,
+    RESIZE_THRESHOLD: 50
+} as const;
+

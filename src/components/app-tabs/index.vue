@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useLucideIcon } from '@/composables';
 import type { TabItem } from '@/stores/tabs';
 import { useTabsStore } from '@/stores/tabs';
-import { ChevronDown, X } from "lucide-vue-next";
+import { ChevronDown, X } from 'lucide-vue-next';
 import ContextMenu from 'primevue/contextmenu';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
     showClose: true,
     style: 'Square',
     enableContextMenu: true,
-    class: '',
+    class: ''
 });
 
 const router = useRouter();
@@ -58,7 +58,7 @@ const { isLucideIcon, lucideIconName } = useLucideIcon();
 
 // 右键菜单项配置
 const contextMenuItems = computed(() => {
-    if (!contextMenuTab.value) return [];
+    if ( !contextMenuTab.value ) return [];
     const tab = contextMenuTab.value;
     const currentTabIndex = tabs.value.findIndex(t => t.key === tab.key);
     const isFirstTab = currentTabIndex === 0;
@@ -93,7 +93,7 @@ const contextMenuItems = computed(() => {
     ];
 
     // 如果不是最左侧标签页，显示"关闭左侧标签页"
-    if (!isFirstTab) {
+    if ( !isFirstTab ) {
         menuItems.push({
             label: '关闭左侧标签页',
             icon: 'pi pi-angle-double-left',
@@ -102,7 +102,7 @@ const contextMenuItems = computed(() => {
     }
 
     // 如果不是最右侧标签页，显示"关闭右侧标签页"
-    if (!isLastTab) {
+    if ( !isLastTab ) {
         menuItems.push({
             label: '关闭右侧标签页',
             icon: 'pi pi-angle-double-right',
@@ -120,21 +120,20 @@ const contextMenuItems = computed(() => {
 });
 
 
-
 /**
  * 处理标签页切换
  * @param value - 标签页key
  */
 const handleTabChange = (value: string | number): void => {
-    if (value === activeTabKey.value) return;
+    if ( value === activeTabKey.value ) return;
 
     tabsStore.setActiveTab(String(value));
     const tab = tabs.value.find(t => t.key === value);
-    if (tab) {
+    if ( tab ) {
         router.push({
             path: tab.path,
-            ...(tab.params && Object.keys(tab.params).length > 0 && { params: tab.params }),
-            ...(tab.query && Object.keys(tab.query).length > 0 && { query: tab.query })
+            ...( tab.params && Object.keys(tab.params).length > 0 && { params: tab.params } ),
+            ...( tab.query && Object.keys(tab.query).length > 0 && { query: tab.query } )
         });
     }
 };
@@ -147,12 +146,12 @@ const handleTabChange = (value: string | number): void => {
 const handleTabClose = (tab: TabItem, event: Event): void => {
     event.stopPropagation();
     const success = tabsStore.removeTab(tab.key);
-    if (success && tabsStore.activeTab) {
+    if ( success && tabsStore.activeTab ) {
         const activeTab = tabsStore.activeTab;
         router.push({
             path: activeTab.path,
-            ...(activeTab.params && Object.keys(activeTab.params).length > 0 && { params: activeTab.params }),
-            ...(activeTab.query && Object.keys(activeTab.query).length > 0 && { query: activeTab.query })
+            ...( activeTab.params && Object.keys(activeTab.params).length > 0 && { params: activeTab.params } ),
+            ...( activeTab.query && Object.keys(activeTab.query).length > 0 && { query: activeTab.query } )
         });
     }
 };
@@ -163,10 +162,10 @@ const handleTabClose = (tab: TabItem, event: Event): void => {
  * @param event - 鼠标事件
  */
 const handleContextMenu = (tab: TabItem, event: MouseEvent): void => {
-    if (!props.enableContextMenu) return;
+    if ( !props.enableContextMenu ) return;
 
     // 如果只有一个标签页，不显示右键菜单
-    if (tabs.value.length <= 1) return;
+    if ( tabs.value.length <= 1 ) return;
 
     contextMenuTab.value = tab;
     contextMenuRef.value?.show(event);
@@ -185,11 +184,11 @@ const closeContextMenu = (): void => {
  * @param action - 操作类型
  */
 const handleContextMenuAction = (action: string): void => {
-    if (!contextMenuTab.value) return;
+    if ( !contextMenuTab.value ) return;
 
     const tab = contextMenuTab.value;
 
-    switch (action) {
+    switch ( action ) {
         case 'close':
             handleTabClose(tab, new Event('click'));
             break;
@@ -202,8 +201,8 @@ const handleContextMenuAction = (action: string): void => {
                     tabsStore.closeOtherTabs(tab.key);
                     router.push({
                         path: tab.path,
-                        ...(tab.params && Object.keys(tab.params).length > 0 && { params: tab.params }),
-                        ...(tab.query && Object.keys(tab.query).length > 0 && { query: tab.query })
+                        ...( tab.params && Object.keys(tab.params).length > 0 && { params: tab.params } ),
+                        ...( tab.query && Object.keys(tab.query).length > 0 && { query: tab.query } )
                     });
                 }
             });
@@ -215,12 +214,12 @@ const handleContextMenuAction = (action: string): void => {
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
                     tabsStore.closeAllTabs();
-                    if (tabsStore.activeTab) {
+                    if ( tabsStore.activeTab ) {
                         const activeTab = tabsStore.activeTab;
                         router.push({
                             path: activeTab.path,
-                            ...(activeTab.params && Object.keys(activeTab.params).length > 0 && { params: activeTab.params }),
-                            ...(activeTab.query && Object.keys(activeTab.query).length > 0 && { query: activeTab.query })
+                            ...( activeTab.params && Object.keys(activeTab.params).length > 0 && { params: activeTab.params } ),
+                            ...( activeTab.query && Object.keys(activeTab.query).length > 0 && { query: activeTab.query } )
                         });
                     }
                 }
@@ -245,7 +244,7 @@ const handleContextMenuAction = (action: string): void => {
  * 检查滚动状态
  */
 const checkScrollStatus = (): void => {
-    if (!tabsWrapper.value) return;
+    if ( !tabsWrapper.value ) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = tabsWrapper.value;
     canScrollLeft.value = scrollLeft > 0;
@@ -259,7 +258,7 @@ const checkScrollStatus = (): void => {
 watch(
     () => route,
     (newRoute) => {
-        if (newRoute.meta?.hideInTabs) return;
+        if ( newRoute.meta?.hideInTabs ) return;
         tabsStore.addTab(newRoute);
     },
     { immediate: true, deep: true }
@@ -271,7 +270,7 @@ watch(
 onMounted(() => {
 
     // 添加当前路由标签
-    if (!route.meta?.hideInTabs) {
+    if ( !route.meta?.hideInTabs ) {
         tabsStore.addTab(route);
     }
 
@@ -297,14 +296,14 @@ onUnmounted(() => {
 
 
 const setTabStyle = (name: string | undefined, key: string) => {
-    if (!name) return "";
+    if ( !name ) return '';
     return {
-        "Card": `app-tab-item overflow-hidden ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`,
-        "Square": `app-tab-item overflow-hidden ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`,
-        "Fashion": `tab-frame`
+        'Card': `app-tab-item overflow-hidden ${ key !== activeTabKey.value ? 'hvr-bounce-to-top' : '' }`,
+        'Square': `app-tab-item overflow-hidden ${ key !== activeTabKey.value ? 'hvr-bounce-to-top' : '' }`,
+        'Fashion': `tab-frame`
 
-    }[name]
-}
+    }[name];
+};
 
 
 /**
@@ -320,7 +319,7 @@ watch(
 );
 
 
-const op = useTemplateRef("op");
+const op = useTemplateRef('op');
 
 // 搜索功能
 const searchKeyword = ref('');
@@ -329,14 +328,14 @@ const searchKeyword = ref('');
  * 过滤后的标签页列表
  */
 const filteredTabs = computed(() => {
-    if (!searchKeyword.value.trim()) {
+    if ( !searchKeyword.value.trim() ) {
         return tabs.value;
     }
 
     const keyword = searchKeyword.value.toLowerCase().trim();
     return tabs.value.filter(tab =>
         tab.title.toLowerCase().includes(keyword) ||
-        (tab.path && tab.path.toLowerCase().includes(keyword))
+        ( tab.path && tab.path.toLowerCase().includes(keyword) )
     );
 });
 
@@ -372,22 +371,22 @@ const handleSearchInput = (event: Event) => {
         <div class="flex items-center justify-between pr-4 gap-4">
             <div class="flex-[calc(100%_-_46px)] w-[calc(100%_-_46px)]">
                 <Tabs
-:value="activeTabKey" :scrollable="true" :show-navigators="true" class="custom-tabs"
+                    :scrollable="true" :show-navigators="true" :value="activeTabKey" class="custom-tabs"
                     @update:value="handleTabChange">
                     <TabList class="custom-tab-list">
                         <Tab
-v-for="tab in tabs" :key="tab.key" :value="tab.key" as="div"
-                            :class="setTabStyle(tabStyle, tab.key)"
+                            v-for="tab in tabs" :key="tab.key" :class="setTabStyle(tabStyle, tab.key)" :value="tab.key"
+                            as="div"
                             @contextmenu.prevent="handleContextMenu(tab, $event)">
                             <template v-if="tabStyle == 'Fashion'">
                                 <div
-:class="['tab-container', { 'active': tab.key === activeTabKey }]"
+                                    :class="['tab-container', { 'active': tab.key === activeTabKey }]"
                                     :title="tab.title" tab-id="0">
                                     <div class="tab">
                                         <div class="title flex items-center gap-1">
                                             <div v-if="props.showIcon && tab.icon" class="app-tab__icon">
                                                 <component
-:is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
+                                                    :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
                                                     :size="16" />
                                                 <i v-else-if="tab.icon" :class="tab.icon" />
                                             </div>
@@ -395,7 +394,7 @@ v-for="tab in tabs" :key="tab.key" :value="tab.key" as="div"
                                             {{ tab.title }}
                                         </div>
                                         <button
-v-if="props.showClose && tab.closable && tabs.length > 1"
+                                            v-if="props.showClose && tab.closable && tabs.length > 1"
                                             :aria-label="`关闭 ${tab.title}`" @click.stop="handleTabClose(tab, $event)">
                                             <X :size="12" />
                                         </button>
@@ -409,7 +408,7 @@ v-if="props.showClose && tab.closable && tabs.length > 1"
                                 <div class="flex items-center gap-1">
                                     <div v-if="props.showIcon && tab.icon" class="app-tab__icon">
                                         <component
-:is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
+                                            :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
                                             :size="16" />
                                         <i v-else-if="tab.icon" :class="tab.icon" />
                                     </div>
@@ -418,7 +417,7 @@ v-if="props.showClose && tab.closable && tabs.length > 1"
                                             tab.title }}</span>
                                 </div>
                                 <button
-v-if="props.showClose && tab.closable && tabs.length > 1"
+                                    v-if="props.showClose && tab.closable && tabs.length > 1"
                                     :aria-label="`关闭 ${tab.title}`" @click.stop="handleTabClose(tab, $event)">
                                     <X :size="12" />
                                 </button>
@@ -428,7 +427,7 @@ v-if="props.showClose && tab.closable && tabs.length > 1"
                 </Tabs>
             </div>
             <div
-v-if="tabs.length > 1"
+                v-if="tabs.length > 1"
                 class="w-[30px] h-[30px] flex items-center justify-center  bg-white dark:bg-transparent cursor-pointer rounded-[8px]"
                 @click="toggle">
                 <chevron-down :size="16" />
@@ -446,7 +445,7 @@ v-if="tabs.length > 1"
                     <IconField>
                         <InputIcon class="pi pi-search" />
                         <InputText
-v-model="searchKeyword" placeholder="搜索标签页" class="w-full text-sm pr-8"
+                            v-model="searchKeyword" class="w-full text-sm pr-8" placeholder="搜索标签页"
                             @input="handleSearchInput" />
                         <InputIcon v-if="searchKeyword" class="pi pi-times cursor-pointer" @click="clearSearch" />
                     </IconField>
@@ -468,7 +467,7 @@ v-model="searchKeyword" placeholder="搜索标签页" class="w-full text-sm pr-8
 
                     <!-- 搜索结果为空时的提示 -->
                     <div
-v-if="searchKeyword && filteredTabs.length === 0"
+                        v-if="searchKeyword && filteredTabs.length === 0"
                         class="text-center py-4 text-gray-500 dark:text-gray-400">
                         <i class="pi pi-search text-2xl mb-2 block"></i>
                         <p class="text-sm">未找到匹配的标签页</p>
@@ -477,25 +476,25 @@ v-if="searchKeyword && filteredTabs.length === 0"
                     <!-- 标签页列表容器 -->
                     <div class="max-h-[240px] overflow-y-auto">
                         <div
-v-for="(tab, index) in filteredTabs" :key="`${tab.title}-${index}`"
-                            class="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                            v-for="(tab, index) in filteredTabs" :key="`${tab.title}-${index}`"
                             :class="{
                                 'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700': tab.key === activeTabKey
-                            }" @click="handleTabChange(tab.key)">
+                            }"
+                            class="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group" @click="handleTabChange(tab.key)">
                             <!-- 图标 -->
                             <component
-:is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)" :size="16"
+                                :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)" :size="16"
                                 class="text-gray-600 dark:text-gray-400 flex-shrink-0" />
                             <i
-v-else-if="tab.icon"
+                                v-else-if="tab.icon"
                                 :class="[tab.icon, 'text-sm text-gray-600 dark:text-gray-400 flex-shrink-0']" />
 
                             <!-- 标题和路径 -->
                             <div class="flex-1 min-w-0">
                                 <div
-class="text-sm text-gray-700 dark:text-gray-300 truncate" :class="{
+                                    :class="{
                                     'font-medium text-blue-600 dark:text-blue-400': tab.key === activeTabKey
-                                }">
+                                }" class="text-sm text-gray-700 dark:text-gray-300 truncate">
                                     {{ tab.title }}
                                 </div>
                                 <div v-if="tab.path" class="text-xs text-gray-500 dark:text-gray-500 truncate">
@@ -505,9 +504,9 @@ class="text-sm text-gray-700 dark:text-gray-300 truncate" :class="{
 
                             <!-- 关闭按钮 -->
                             <X
-v-if="tab.closable && tabs.length > 1" :size="14"
+                                v-if="tab.closable && tabs.length > 1" :class="{ 'opacity-100': tab.key === activeTabKey }"
+                                :size="14"
                                 class="text-gray-400 hover:text-red-500 transition-colors duration-200 flex-shrink-0 opacity-0 group-hover:opacity-100"
-                                :class="{ 'opacity-100': tab.key === activeTabKey }"
                                 @click.stop="handleTabClose(tab, $event)" />
                         </div>
                     </div>

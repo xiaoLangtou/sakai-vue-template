@@ -39,6 +39,7 @@ declare module 'vue' {
     LoginDialog: typeof import('./../components/login-dialog/index.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     OrgSelector: typeof import('./../components/org-selector/index.vue')['default']
+    OverlayBadge: typeof import('primevue/overlaybadge')['default']
     PageContainer: typeof import('./../components/page-container/index.vue')['default']
     PageHeader: typeof import('./../components/page-header/index.vue')['default']
     PageLoading: typeof import('./../components/page-loading/index.vue')['default']

@@ -7,7 +7,7 @@ const defaultPreferences: LayoutConfig = {
     /** 主色调 */
     primary: 'indigo',
     /** 表面颜色 */
-    surface: null,
+    surface: 'slate',
     /** 是否为暗色主题 */
     darkTheme: false,
     /** 布局模式 */
@@ -50,7 +50,6 @@ const defaultPreferences: LayoutConfig = {
     isShowWatermark: false,
     /** 水印文字 */
     watermarkText: ''
-
 };
 
 

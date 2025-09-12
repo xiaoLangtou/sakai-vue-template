@@ -113,12 +113,11 @@
 
 .menu-item:hover {
     @apply bg-slate-100 dark:bg-slate-800 bg-opacity-80 text-slate-800 shadow-sm dark:text-slate-100;
-    /* 移除translateX避免抖动 */
 }
 
 .menu-item.active {
-    @apply bg-gradient-to-r from-surface-100 to-surface-200 text-slate-800;
-    @apply dark:from-slate-700 dark:to-slate-600 dark:text-slate-100;
+    @apply bg-surface-200 text-primary;
+    @apply dark:bg-surface-800 dark:text-slate-100;
     font-weight: 600;
 }
 

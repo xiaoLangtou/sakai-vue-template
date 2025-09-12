@@ -84,3 +84,17 @@ export const HttpMethodCN: Record<HTTP_METHOD, string> = {
     [HTTP_METHOD.TRACE]: '追踪',
     [HTTP_METHOD.CONNECT]: '连接',
 };
+
+
+
+export enum BreakpointType {
+    MOBILE = 'mobile',
+    TABLET = 'tablet',
+    DESKTOP = 'desktop',
+    WIDE = 'wide'
+}
+
+export enum SidebarMode {
+    RELATIVE = 'relative',
+    FIXED = 'fixed'
+}

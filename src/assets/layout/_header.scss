@@ -57,10 +57,7 @@
     truncate: true;
 }
 
-/* 桌面端样式 */
-.desktop-header {
-    padding: 0 24px;
-}
+
 
 .desktop-collapse-toggle {
     width: 40px;
@@ -120,11 +117,6 @@
     }
 }
 
-@include bp.desktop-up {
-    .desktop-header {
-        padding: 0 24px;
-    }
-}
 
 /* MegaMenu 自定义样式 */
 :deep(.custom-megamenu) {

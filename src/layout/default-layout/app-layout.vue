@@ -1,9 +1,9 @@
-<script setup>
+<script lang="ts" setup>
 import { AppTabs } from '@/components/app-tabs';
 import { useLayoutStore } from '@/stores/layout';
 import { storeToRefs } from 'pinia';
 import Drawer from 'primevue/drawer';
-import { onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import AppFooter from './app-footer.vue';
 import AppHeader from './app-header.vue';
 import AppSidebar from './app-sidebar.vue';
@@ -11,7 +11,20 @@ import { AppHeaderLogo } from '../shared';
 
 // ==================== Store 状态管理 ====================
 const layoutStore = useLayoutStore();
-const { layoutConfig } = storeToRefs(layoutStore);
+const { layoutConfig, isShowHeader } = storeToRefs(layoutStore);
+
+// ==================== 响应式引用优化 ====================
+// 提取常用的响应式属性，避免频繁访问 store，解决 IDE 卡死问题
+const {
+    isMobile,
+    isTablet,
+    isDesktop,
+    isWide,
+    isSidebarActive,
+    isCollapsed,
+    currentBreakpoint,
+    showMobileSidebar
+} = storeToRefs(layoutStore);
 
 // ==================== 生命周期管理 ====================
 onMounted(() => {
@@ -21,6 +34,23 @@ onMounted(() => {
 onUnmounted(() => {
     layoutStore.destroyLayout();
 });
+
+
+const gradientMaskForTheContentArea = computed(() => {
+    if ( layoutStore.isShowTab && !layoutStore.isShowHeader ) {
+        return 'top-[45px]';
+    } else if ( layoutStore.isShowTab && layoutStore.isShowHeader ) {
+        return 'top-[108px]';
+    } else {
+        return 'top-[60px]';
+    }
+});
+
+const tabsTopStyle = computed(() => {
+    return { top: layoutStore.isShowHeader ? '64px' : '0px' };
+});
+
+
 </script>
 
 <template>
@@ -29,19 +59,19 @@ onUnmounted(() => {
         :class="[
             'app-layout',
             {
-                'sidebar-collapsed': layoutStore.isCollapsed,
-                [`${layoutStore.currentBreakpoint}-layout`]: true
+                'sidebar-collapsed': isCollapsed,
+                [`${currentBreakpoint}-layout`]: true
             }
         ]">
 
         <!-- 桌面端侧边栏 -->
 
-        <AppSidebar v-if="(layoutStore.isDesktop || layoutStore.isWide) && layoutStore.isSidebarActive" />
+        <AppSidebar v-if="(isDesktop || isWide) && isSidebarActive" />
 
         <!-- 移动端/平板端抽屉式侧边栏 -->
         <Drawer
-            v-if="layoutStore.isMobile || layoutStore.isTablet"
-            v-model:visible="layoutStore.showMobileSidebar"
+            v-if="isMobile || isTablet"
+            v-model:visible="showMobileSidebar"
             :style="{
                 width: '264px',
                 '--p-drawer-content-padding': '0px',
@@ -53,7 +83,7 @@ onUnmounted(() => {
             <template #header>
                 <AppHeaderLogo />
             </template>
-            <div :class="`${layoutStore.currentBreakpoint}-sidebar-content`">
+            <div :class="`${currentBreakpoint}-sidebar-content`">
                 <AppSidebar />
             </div>
         </Drawer>
@@ -62,24 +92,24 @@ onUnmounted(() => {
         <div :class="[
             'main-content',
             'relative',
-            `${layoutStore.currentBreakpoint}-main`
+            `${currentBreakpoint}-main`
         ]">
             <!-- 顶部头部栏 -->
-            <AppHeader />
+            <AppHeader v-if="layoutStore.isShowHeader" />
 
             <!-- 标签页组件 -->
             <AppTabs
-                v-if="layoutConfig.showTab"
-                :show-icon="layoutConfig.isShowIcon"
-                :tab-style="layoutConfig.tabStyle"
-                class="tabs-container" />
+                v-if="layoutStore.isShowTab"
+                :show-icon="layoutStore.isShowIcon"
+                :style="tabsTopStyle"
+                :tab-style="layoutStore.tabStyle" class="tabs-container" />
 
             <!-- 内容区域渐变遮罩 -->
             <div :class="[
                 'absolute left-0 right-0 h-8 pointer-events-none z-10',
                 'bg-gradient-to-b from-surface-50 to-surface-100',
                 'dark:from-surface-900 dark:to-transparent',
-                layoutConfig.showTab ? 'top-[108px]' : 'top-[60px]'
+                gradientMaskForTheContentArea
             ]" />
 
             <!-- 主要内容区域 -->
@@ -90,7 +120,7 @@ onUnmounted(() => {
             </div>
 
             <!-- 底部页脚 -->
-            <AppFooter v-if="!layoutStore.isMobile" />
+            <AppFooter v-if="!isMobile && layoutStore.isShowFooter" />
         </div>
     </div>
 </template>
@@ -210,7 +240,6 @@ onUnmounted(() => {
 
 .tabs-container {
     position: sticky;
-    top: 64px;
     z-index: 2;
 
     @media (prefers-color-scheme: dark) {

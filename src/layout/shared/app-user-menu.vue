@@ -1,52 +1,54 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useLucideIcon } from '@/composables';
 import { AVATAR_SIZES } from '@/global/layout-sizes';
 import { useLayoutStore } from '@/stores/layout';
 import { Check, ChevronsUpDown } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
+import { useAuthStore } from '@/stores';
 
 const { lucideIconName } = useLucideIcon();
 const layoutStore = useLayoutStore();
 const { isDarkTheme } = storeToRefs(layoutStore);
 const { toggleDarkMode, openConfigDrawer } = layoutStore;
+const authStore = useAuthStore();
 const items = ref([
     {
         separator: true
     },
     {
-        label: "个人信息",
-        icon: "User"
+        label: '个人信息',
+        icon: 'User'
     },
     {
-        label: "系统设置",
-        icon: "Settings",
+        label: '系统设置',
+        icon: 'Settings',
         command: () => openConfigDrawer
     },
     {
-        label: "消息通知",
-        icon: "Bell"
+        label: '消息通知',
+        icon: 'Bell'
     },
     {
         separator: true
     },
     {
-        label: "外观切换",
-        icon: "SunMoon",
+        label: '外观切换',
+        icon: 'SunMoon',
         items: [
             {
-                label: "暗黑",
-                icon: "Moon",
+                label: '暗黑',
+                icon: 'Moon',
                 command: () => {
-                    if (!isDarkTheme.value) {
+                    if ( !isDarkTheme.value ) {
                         toggleDarkMode();
                     }
                 }
             },
             {
-                label: "明亮",
-                icon: "Sun",
+                label: '明亮',
+                icon: 'Sun',
                 command: () => {
-                    if (isDarkTheme.value) {
+                    if ( isDarkTheme.value ) {
                         toggleDarkMode();
                     }
                 }
@@ -58,7 +60,11 @@ const items = ref([
     },
     {
         label: '退出登录',
-        icon: "LogOut",
+        icon: 'LogOut',
+        command: () => {
+            // todo 退出登录
+            authStore.logoutAction();
+        }
     }
 ]);
 const menu = ref();
@@ -66,18 +72,31 @@ const menu = ref();
 const toggle = (event: MouseEvent) => {
     menu.value.toggle(event);
 };
+
+
+const avatarProps = computed(() => {
+    const props: Record<string, any> = {};
+    if ( authStore.userInfo?.headPic ) {
+        props.image = authStore.userInfo?.headPic;
+    } else {
+        props.icon = 'pi pi-user';
+    }
+    return props;
+});
+
 </script>
 <template>
     <div
-:class="[' flex items-center  p-2 bg-zinc-50 dark:bg-zinc-800 rounded-md cursor-pointer', layoutStore.isCollapsed ? 'justify-center ' : 'justify-between']"
+        :class="[' flex items-center  p-2 bg-zinc-50 dark:bg-zinc-800 rounded-md cursor-pointer', layoutStore.isCollapsed ? 'justify-center ' : 'justify-between']"
         @click="toggle">
         <div class="flex items-center gap-4">
             <Avatar
-icon="pi pi-user"
-                :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }" />
+                :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }"
+                class="overflow-hidden rounded-sm"
+                v-bind="avatarProps" />
             <div v-if="!layoutStore.isCollapsed" class="flex flex-col">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-50">用户名称</span>
-                <span class="text-xs text-surface-500 dark:text-surface-400">用户角色</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-50">{{ authStore.userInfo?.nickname }}</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{ authStore.userInfo?.email }}</span>
             </div>
         </div>
         <div v-if="!layoutStore.isCollapsed" class="flex justify-center items-center">
@@ -88,11 +107,12 @@ icon="pi pi-user"
         <template #start>
             <div class="flex items-center gap-4 w-full p-2">
                 <Avatar
-icon="pi pi-user"
-                    :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }" />
+                    :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }"
+                    class="overflow-hidden rounded-sm"
+                    v-bind="avatarProps" />
                 <div class="flex flex-col">
-                    <span class="text-sm font-medium text-surface-900 dark:text-surface-50">用户名称</span>
-                    <span class="text-xs text-surface-500 dark:text-surface-400">用户角色</span>
+                    <span class="text-sm font-medium text-surface-900 dark:text-surface-50">{{ authStore.userInfo?.nickname }}</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400">{{ authStore.userInfo?.email }}</span>
                 </div>
             </div>
         </template>
@@ -101,9 +121,9 @@ icon="pi pi-user"
                 <div class="flex items-center gap-2">
                     <component :is="lucideIconName(item.icon)" :size="16"></component>
                     <span>{{ item.label }}</span>
-                    <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
+                    <Badge v-if="item.badge" :value="item.badge" class="ml-auto" />
                     <span
-v-if="item.shortcut"
+                        v-if="item.shortcut"
                         class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
                             item.shortcut }}</span>
                 </div>
@@ -114,7 +134,6 @@ v-if="item.shortcut"
         </template>
     </TieredMenu>
 </template>
-
 
 
 <style scoped></style>

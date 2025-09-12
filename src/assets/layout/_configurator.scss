@@ -1,0 +1,168 @@
+// 主题定制器容器
+.theme-customizer {
+    @apply space-y-6;
+}
+
+// 定制器头部
+.customizer-header {
+    @apply flex items-center justify-between mb-6;
+}
+
+.customizer-subtitle {
+    @apply text-sm text-gray-600 dark:text-gray-400 m-0;
+}
+
+.refresh-btn {
+    @apply w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors duration-200 border-0 cursor-pointer;
+
+    i {
+        @apply text-gray-600 dark:text-gray-400 text-sm;
+    }
+
+    &:hover i {
+        @apply text-gray-800 dark:text-gray-200;
+    }
+}
+
+// 颜色网格
+.color-grid {
+    @apply grid grid-cols-4 gap-3;
+}
+
+.color-option {
+    @apply flex items-center gap-2 cursor-pointer border border-gray-200 dark:border-gray-700 pt-2 pb-2 pl-2 text-center;
+
+    &.color-option--selected {
+        @apply border-primary-500;
+    }
+}
+
+.color-swatch {
+    @apply w-5 h-5 rounded-full flex items-center justify-center relative overflow-hidden;
+
+    &::before {
+        content: '';
+        @apply absolute inset-0 bg-black bg-opacity-0;
+    }
+
+    &:hover::before {
+        @apply bg-opacity-10;
+    }
+}
+
+.check-icon {
+    @apply text-white text-sm font-bold;
+}
+
+.color-label {
+    @apply text-xs text-gray-600 dark:text-gray-400;
+}
+
+.color-option--selected .color-label {
+    @apply text-primary-600 dark:text-primary-400 font-semibold;
+}
+
+// 布局模式选项
+.layout-mode-options {
+    @apply grid grid-cols-2 gap-4;
+}
+
+.layout-mode-option {
+    @apply cursor-pointer;
+
+    &.layout-mode-option--selected .layout-preview {
+        @apply border-primary-500 bg-primary-50 dark:bg-primary-900/20;
+        box-shadow: 0 0 0 2px rgba(var(--primary-500), 0.2);
+    }
+
+    &.layout-mode-option--selected .layout-name {
+        @apply text-primary-600 dark:text-primary-400 font-semibold;
+    }
+}
+
+.layout-preview {
+    @apply w-full h-28 bg-gray-100 dark:bg-gray-800 rounded-lg p-3 border-2 border-gray-200 dark:border-gray-700 transition-all duration-200 group-hover:border-gray-300 dark:group-hover:border-gray-600 mb-2;
+}
+
+.preview-sidebar-layout {
+    @apply flex h-full gap-2;
+}
+
+.sidebar-nav {
+    @apply w-6 bg-gray-300 dark:bg-gray-600 rounded flex flex-col gap-1 p-1;
+}
+
+.nav-item {
+    @apply h-1.5 bg-gray-400 dark:bg-gray-500 rounded-sm;
+
+    &.active {
+        @apply bg-primary-500;
+    }
+}
+
+.main-area {
+    @apply flex-1 flex flex-col gap-1;
+}
+
+.area-header {
+    @apply h-2 bg-gray-300 dark:bg-gray-600 rounded;
+}
+
+.area-content {
+    @apply flex-1 bg-gray-200 dark:bg-gray-700 rounded;
+
+    &.full {
+        @apply w-full;
+    }
+}
+
+.preview-topbar-layout {
+    @apply flex flex-col h-full gap-2;
+}
+
+.topbar-nav {
+    @apply h-3 bg-gray-300 dark:bg-gray-600 rounded flex gap-1 p-1;
+
+    .nav-item {
+        @apply w-4 h-full bg-gray-400 dark:bg-gray-500 rounded-sm;
+
+        &.active {
+            @apply bg-primary-500;
+        }
+    }
+}
+
+.layout-label {
+    @apply text-center;
+}
+
+.layout-name {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-200;
+}
+
+// 响应式设计
+@media (max-width: 480px) {
+    .theme-customizer {
+        @apply p-4 space-y-4;
+    }
+
+    .color-grid {
+        @apply grid-cols-3 gap-2;
+    }
+
+    .color-swatch {
+        @apply w-10 h-10;
+    }
+
+    .color-label {
+        @apply text-xs;
+    }
+
+    .layout-mode-options {
+        @apply grid-cols-1 gap-3;
+    }
+
+    .layout-preview {
+        @apply h-16;
+    }
+}

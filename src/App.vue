@@ -1,6 +1,6 @@
 <script setup>
 import { useGlobalToast } from './composables/useGlobalToast';
-import { useLoginDialog } from './composables/useLoginDialog';
+import { useLoginDialog } from '@/composables';
 import PageLoading from '@/components/page-loading/index.vue';
 import { LoginDialog } from '@/components';
 
@@ -9,15 +9,19 @@ useGlobalToast();
 
 // 获取登录弹窗状态
 const { isLoginDialogVisible } = useLoginDialog();
+
+
+
 </script>
 
 <template>
     <router-view />
     <Toast />
+    <ConfirmDialog />
     <PageLoading />
-    
+
     <!-- 全局登录弹窗 -->
-    <LoginDialog 
+    <LoginDialog
         v-model:visible="isLoginDialogVisible"
         @login-success="() => {}"
     />

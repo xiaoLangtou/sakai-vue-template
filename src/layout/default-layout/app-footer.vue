@@ -1,10 +1,16 @@
 <script setup>
+import { useLayoutStore } from '@/stores/layout';
+import { storeToRefs } from 'pinia';
+
 defineProps({
     isMobile: {
         type: Boolean,
         default: false
     }
 });
+
+const layoutStore = useLayoutStore();
+const { companyName, companyHomepage, date, icp, icpLink } = storeToRefs(layoutStore);
 </script>
 
 <template>
@@ -14,23 +20,77 @@ class="layout-footer" :class="{
         'desktop-footer': !isMobile
     }">
         <div class="footer-content">
-            <span class="footer-text">
-                TVA by
-                <a
-                    href="https://primevue.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="footer-link"
-                >
-                    PrimeVue
-                </a>
-            </span>
-
-            <!-- 移动端隐藏的额外信息 -->
-            <div v-if="!isMobile" class="footer-extra">
-                <span class="text-surface-500 dark:text-surface-400 text-sm">
-                    © 2024 All rights reserved
-                </span>
+            <!-- 桌面端布局 -->
+            <div v-if="!isMobile" class="desktop-layout">
+                <div class="footer-center">
+                    <span v-if="companyName" class="footer-text">
+                        © {{ date || new Date().getFullYear() }} 
+                        <a 
+                            v-if="companyHomepage" 
+                            :href="companyHomepage" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="footer-link"
+                        >
+                            {{ companyName }}
+                        </a>
+                        <span v-else>{{ companyName }}</span>
+                        版权所有
+                    </span>
+                    <span v-else class="footer-text">
+                        © {{ date || new Date().getFullYear() }} 版权所有
+                    </span>
+                    
+                    <span v-if="icp" class="footer-separator">|</span>
+                    
+                    <span v-if="icp" class="footer-text">
+                        <a 
+                            v-if="icpLink" 
+                            :href="icpLink" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="footer-link"
+                        >
+                            {{ icp }}
+                        </a>
+                        <span v-else>{{ icp }}</span>
+                    </span>
+                </div>
+            </div>
+            
+            <!-- 移动端布局 -->
+            <div v-else class="mobile-layout">
+                <div class="footer-main">
+                    <span v-if="companyName" class="footer-text">
+                        © {{ date || new Date().getFullYear() }} 
+                        <a 
+                            v-if="companyHomepage" 
+                            :href="companyHomepage" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="footer-link"
+                        >
+                            {{ companyName }}
+                        </a>
+                        <span v-else>{{ companyName }}</span>
+                    </span>
+                    <span v-else class="footer-text">
+                        © {{ date || new Date().getFullYear() }}
+                    </span>
+                </div>
+                
+                <div v-if="icp" class="footer-icp">
+                    <a 
+                        v-if="icpLink" 
+                        :href="icpLink" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        class="footer-link"
+                    >
+                        {{ icp }}
+                    </a>
+                    <span v-else>{{ icp }}</span>
+                </div>
             </div>
         </div>
     </footer>
@@ -49,6 +109,32 @@ class="layout-footer" :class="{
 
 .footer-content {
     @apply flex items-center justify-center w-full max-w-[1200px] gap-2;
+}
+
+/* 桌面端布局样式 */
+.desktop-layout {
+    @apply flex items-center justify-center w-full;
+}
+
+.footer-center {
+    @apply flex items-center justify-center gap-3;
+}
+
+.footer-separator {
+    @apply text-surface-400 dark:text-surface-500 mx-1;
+}
+
+/* 移动端布局样式 */
+.mobile-layout {
+    @apply flex flex-col items-center gap-2 w-full;
+}
+
+.footer-main {
+    @apply flex items-center justify-center;
+}
+
+.footer-icp {
+    @apply flex items-center justify-center text-xs;
 }
 
 .footer-text {
