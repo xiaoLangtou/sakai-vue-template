@@ -51,6 +51,10 @@ export interface LayoutConfig {
     isShowWatermark: boolean;
     /** 水印文字 */
     watermarkText: string;
+    /** 色弱模式 */
+    isEnableColorWeak: boolean;
+    /** 灰色模式 */
+    isEnableGray: boolean;
 }
 
 /**

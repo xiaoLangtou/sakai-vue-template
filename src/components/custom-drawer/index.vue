@@ -7,6 +7,7 @@
 -->
 <template>
     <Drawer
+        :style="{ '--custom-width': customWidth }"
         v-bind="{ ...drawerProps, class: ['custom-drawer', drawerClasses],baseZIndex:999,dismissable:dismissable,modal:modal,position:position,showCloseIcon:showCloseIcon,visible:visible }"
         @hide="handleHide"
         @show="handleShow"
@@ -215,6 +216,10 @@ const drawerProps = computed(() => {
     return rest;
 });
 
+const customWidth = computed(() => {
+    return props.customWidth;
+});
+
 /**
  * 处理可见性更新
  * @param value - 新的可见性状态
@@ -284,12 +289,12 @@ const handleConfirm = () => {
 .custom-drawer {
     .p-drawer-header {
         border-bottom: 1px solid;
-        @apply border-surface-100;
+        @apply border-surface-100 dark:border-surface-700;
         --p-drawer-header-padding: .75rem 1.25rem;
     }
     .p-drawer-footer {
         border-top: 1px solid;
-        @apply border-surface-100;
+        @apply border-surface-100 dark:border-surface-700 ;
         --p-drawer-footer-padding: .75rem 1.25rem;
     }
 
@@ -340,7 +345,7 @@ const handleConfirm = () => {
     /* 自定义宽度 */
 
     &.custom-drawer-width {
-        width: v-bind(customWidth);
+        width: var(--custom-width)!important;
     }
 
     /* 移动端响应式 */

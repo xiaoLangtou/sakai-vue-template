@@ -20,3 +20,4 @@ export { default as PageHeader } from './page-header/index.vue';
 export { default as TableColumnSettings } from './table-column-settings/index.vue';
 export { default as UserProfile } from './user-profile/index.vue';
 export { default as LoginDialog } from './login-dialog/index.vue';
+export { default as NotificationDrawer } from './notification-drawer/index.vue';

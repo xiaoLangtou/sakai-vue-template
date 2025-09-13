@@ -17,8 +17,8 @@ defineProps({
     <div v-if="!collapsed" class="flex items-center gap-2 cursor-pointer" @click="handleLogoClick">
         <!-- Logo图标 -->
         <div
-            class="bg-white dark:bg-surface-800 p-2 rounded-lg shadow-sm border border-surface-200/60 dark:border-surface-700/60">
-            <img alt="TVA Logo" class="w-6 h-6" src="@/assets/images/logo.svg" />
+            class="bg-white dark:bg-surface-800 p-1 rounded-lg shadow-sm border border-surface-200/60 dark:border-surface-700/60">
+            <img alt="TVA Logo" class="w-8 h-8" src="@/assets/images/logo.svg" />
         </div>
 
         <!-- 品牌信息 -->

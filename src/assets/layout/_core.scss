@@ -22,4 +22,10 @@ a {
 }
 
 
+.color-weak{
+   @apply invert;
+}
 
+.color-gray{
+   @apply grayscale;
+}

@@ -49,7 +49,11 @@ const defaultPreferences: LayoutConfig = {
     /** 是否显示水印 */
     isShowWatermark: false,
     /** 水印文字 */
-    watermarkText: ''
+    watermarkText: '',
+    /** 色弱模式 */
+    isEnableColorWeak: false,
+    /** 灰色模式 */
+    isEnableGray: false
 };
 
 

@@ -33,7 +33,7 @@ const emit = defineEmits<{
 }>();
 
 const layoutStore = useLayoutStore();
-const { layoutConfig, isShowTab, tabStyle, isShowIcon, isShowHeader, isShowFooter, companyName, companyHomepage, date, icp, icpLink } = storeToRefs(layoutStore);
+const { layoutConfig, isShowTab, tabStyle, isShowIcon, isShowHeader, isShowFooter, companyName, companyHomepage, date, icp, icpLink,isEnableColorWeak,isEnableGray } = storeToRefs(layoutStore);
 
 // 使用 VueUse 的 useClipboard
 const { copy, copied } = useClipboard();
@@ -356,6 +356,20 @@ watch(
                     <div class="flex  items-center justify-between gap-2">
                         <span class="font-bold">ICP网站链接</span>
                         <InputText v-model="icpLink" placeholder="请输入ICP网站链接" />
+                    </div>
+                </div>
+            </AppConfigCard>
+            <AppConfigCard title="其他">
+                <!-- 是否显示 -->
+                <div class="flex flex-col  gap-4">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold">色弱模式</span>
+                        <ToggleSwitch v-model="isEnableColorWeak" />
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold">灰色模式</span>
+                        <ToggleSwitch v-model="isEnableGray" />
                     </div>
                 </div>
             </AppConfigCard>

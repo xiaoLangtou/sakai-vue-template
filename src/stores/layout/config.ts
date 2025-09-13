@@ -4,7 +4,7 @@ import type { LayoutConfig, LayoutState } from '@/types/layout.ts';
 /**
  * 布局配置状态管理
  */
-export function useConfig(layoutConfig:Ref<LayoutConfig>, layoutState: Ref<LayoutState>) {
+export function useConfig(layoutConfig: Ref<LayoutConfig>, layoutState: Ref<LayoutState>) {
     // ==================== 标签页和布局配置变量 ====================
 
     /** 是否显示标签页 */
@@ -37,12 +37,25 @@ export function useConfig(layoutConfig:Ref<LayoutConfig>, layoutState: Ref<Layou
     /** ICP网站链接 */
     const icpLink = ref<string>(layoutConfig.value.icpLink);
 
+    /** 是否显示水印 */
+    const isShowWatermark = ref<boolean>(layoutConfig.value.isShowWatermark);
+
+    /** 水印文字 */
+    const watermarkText = ref<string>(layoutConfig.value.watermarkText);
+
+    /** 色弱模式 */
+    const isEnableColorWeak = ref<boolean>(layoutConfig.value.isEnableColorWeak);
+
+    /** 灰色模式 */
+    const isEnableGray = ref<boolean>(layoutConfig.value.isEnableGray);
+
 
     /**
      * 打开配置抽屉
      */
     const openConfigDrawer = () => {
         layoutState.value.configSidebarVisible = true;
+        console.log(layoutState.value.configSidebarVisible);
     };
 
     /**
@@ -108,9 +121,32 @@ export function useConfig(layoutConfig:Ref<LayoutConfig>, layoutState: Ref<Layou
     /** 是否显示水印 */
     isShowWatermark: ${ config.isShowWatermark },
     /** 水印文字 */
-    watermarkText: '${ config.watermarkText }'
+    watermarkText: '${ config.watermarkText }',
+    /** 色弱模式 */
+    isEnableColorWeak: ${ isEnableColorWeak.value },
+    /** 灰色模式 */
+    isEnableGray: ${ isEnableGray.value }
 };`;
     };
+
+
+    watch(() => isEnableColorWeak.value, (value: boolean) => {
+        if ( value ) {
+            //给html添加类名
+            document.documentElement.classList.add('color-weak');
+        } else {
+            document.documentElement.classList.remove('color-weak');
+        }
+    },{immediate:true});
+    watch(() => isEnableGray.value, (value: boolean) => {
+        if ( value ) {
+            //给html添加类名
+            document.documentElement.classList.add('color-gray');
+        } else {
+            document.documentElement.classList.remove('color-gray');
+        }
+    },{immediate:true});
+
 
     return {
         // 基础状态
@@ -124,6 +160,8 @@ export function useConfig(layoutConfig:Ref<LayoutConfig>, layoutState: Ref<Layou
         date,
         icp,
         icpLink,
+        isEnableColorWeak,
+        isEnableGray,
 
         // 方法
         openConfigDrawer,

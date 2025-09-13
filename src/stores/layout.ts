@@ -184,6 +184,8 @@ export const useLayoutStore = defineStore('layout', () => {
         date: configModule.date,
         icp: configModule.icp,
         icpLink: configModule.icpLink,
+        isEnableColorWeak: configModule.isEnableColorWeak,
+        isEnableGray: configModule.isEnableGray,
 
 
         // ==================== 响应式处理方法 ====================

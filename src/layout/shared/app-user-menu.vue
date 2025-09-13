@@ -22,7 +22,7 @@ const items = ref([
     {
         label: '系统设置',
         icon: 'Settings',
-        command: () => openConfigDrawer
+        command: () =>openConfigDrawer()
     },
     {
         label: '消息通知',
