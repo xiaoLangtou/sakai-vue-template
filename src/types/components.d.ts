@@ -8,6 +8,10 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Accordion: typeof import('primevue/accordion')['default']
+    AccordionContent: typeof import('primevue/accordioncontent')['default']
+    AccordionHeader: typeof import('primevue/accordionheader')['default']
+    AccordionPanel: typeof import('primevue/accordionpanel')['default']
     AppTabs: typeof import('./../components/app-tabs/index.vue')['default']
     Avatar: typeof import('primevue/avatar')['default']
     Badge: typeof import('primevue/badge')['default']
@@ -54,6 +58,8 @@ declare module 'vue' {
     SelectButton: typeof import('primevue/selectbutton')['default']
     SmartFormField: typeof import('./../components/smart-form-field/index.vue')['default']
     SplitPane: typeof import('./../components/split-pane/index.vue')['default']
+    Splitter: typeof import('primevue/splitter')['default']
+    SplitterPanel: typeof import('primevue/splitterpanel')['default']
     Tab: typeof import('primevue/tab')['default']
     TableColumnSettings: typeof import('./../components/table-column-settings/index.vue')['default']
     TabList: typeof import('primevue/tablist')['default']

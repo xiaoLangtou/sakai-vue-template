@@ -2,7 +2,7 @@
     <div class="base-container">
         <Toast />
         <ConfirmDialog />
-        <div class="card !px-1 !py-0 !bg-transparent">
+        <div v-if="$slots.header" class="card !px-1 !py-0 !bg-transparent">
             <slot name="header"></slot>
         </div>
         <div class="card h-full flex-1">

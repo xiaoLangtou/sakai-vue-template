@@ -106,7 +106,7 @@ const tabsTopStyle = computed(() => {
 
             <!-- 内容区域渐变遮罩 -->
             <div :class="[
-                'absolute left-0 right-0 h-8 pointer-events-none z-10',
+                'absolute left-0 right-0 h-2 pointer-events-none z-10',
                 'bg-gradient-to-b from-surface-50 to-surface-100',
                 'dark:from-surface-900 dark:to-transparent',
                 gradientMaskForTheContentArea

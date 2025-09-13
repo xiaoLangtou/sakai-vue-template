@@ -21,3 +21,5 @@ export { default as TableColumnSettings } from './table-column-settings/index.vu
 export { default as UserProfile } from './user-profile/index.vue';
 export { default as LoginDialog } from './login-dialog/index.vue';
 export { default as NotificationDrawer } from './notification-drawer/index.vue';
+
+export { default as SplitPane } from './split-pane/index.vue';

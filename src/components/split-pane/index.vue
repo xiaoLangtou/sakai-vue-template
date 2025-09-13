@@ -184,7 +184,7 @@ onMounted(() => {
         flex-direction: row;
         flex-shrink: 0;
         flex: 1;
-        background: var(--color-bg-1);
+        @apply bg-white dark:bg-gray-900;
         overflow: hidden;
         transition:
             transform 0.5s ease,
@@ -196,7 +196,7 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        background: var(--color-bg-1);
+        @apply bg-white dark:bg-gray-900;
         padding: 10px;
         z-index: 1;
     }
@@ -240,7 +240,7 @@ onMounted(() => {
         .ca-split-panel__side {
             height: 100%;
             width: 100%;
-            background: var(--color-bg-1);
+            @apply bg-white dark:bg-gray-900;
             z-index: 2;
         }
 
