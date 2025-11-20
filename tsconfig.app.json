@@ -16,6 +16,7 @@
         "resolveJsonModule": true,
         // 允许导入 JSON 模块
         "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         // 使 CommonJS 模块兼容 ES 模块
         "baseUrl": ".",
         // 基本路径是项目根目录

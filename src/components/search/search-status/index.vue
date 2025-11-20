@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { SearchParams } from '@/types/search';
-import { SearchHelpers } from '@/utils/search-helpers';
+import type { SearchParams } from '@types/search.ts';
+import { SearchHelpers } from '@/utils/search-helpers.ts';
 import Tag from 'primevue/tag';
 import { computed, withDefaults } from 'vue';
 

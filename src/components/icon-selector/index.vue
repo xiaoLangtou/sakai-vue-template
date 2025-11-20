@@ -137,7 +137,7 @@ const primeVueIcons: IconItem[] = [
     { name: 'pi pi-users', label: 'users', library: 'primevue', category: 'general' },
     { name: 'pi pi-cog', label: 'cog', library: 'primevue', category: 'general' },
     { name: 'pi pi-list', label: 'list', library: 'primevue', category: 'general' },
-    { name: 'pi pi-table', label: 'table', library: 'primevue', category: 'general' },
+    { name: 'pi pi-custom-table', label: 'table', library: 'primevue', category: 'general' },
     { name: 'pi pi-chart-bar', label: 'chart-bar', library: 'primevue', category: 'charts' },
     { name: 'pi pi-chart-line', label: 'chart-line', library: 'primevue', category: 'charts' },
     { name: 'pi pi-chart-pie', label: 'chart-pie', library: 'primevue', category: 'charts' },

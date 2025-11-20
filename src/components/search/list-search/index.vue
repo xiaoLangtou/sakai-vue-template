@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useDebounce } from '@/composables/useDebounce';
-import type { FilterConfig, SearchParams } from '@/types/search';
+import { useDebounce } from '@/composables/useDebounce.ts';
+import type { FilterConfig, SearchParams } from '@types/search.ts';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';

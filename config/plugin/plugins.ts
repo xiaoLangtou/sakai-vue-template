@@ -21,7 +21,7 @@ export const createPluginsTs = () => {
             }),
             Components({
                 dts: './src/types/components.d.ts',
-                globs: ['src/components/**/**/index.vue'],
+                globs: ['src/components/**/**/CustomTableSettings.vue'],
                 resolvers: [
                     PrimeVueResolver(),
                 ],

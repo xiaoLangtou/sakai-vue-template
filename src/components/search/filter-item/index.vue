@@ -5,7 +5,7 @@ import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import Calendar from 'primevue/calendar';
 import InputNumber from 'primevue/inputnumber';
-import type { FilterConfig, FilterValue } from '@/types/search';
+import type { FilterConfig, FilterValue } from '@types/search.ts';
 
 interface Props {
     /** 筛选配置 */

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ConfigurableTable, PageContainer } from '@/components';
+import { CustomTable, PageContainer } from '@/components';
 import type { IDictType } from '@/services/types/dict';
 import { useToast } from 'primevue/usetoast';
 import DictTypeForm from './component/dict-type-form.vue';
+import DictItemsDrawer from './component/dict-items-drawer.vue';
 import { useDict } from './composables/useDict';
 import type { TableColumns } from '@/composables';
 import { CircleCheck, CircleX } from 'lucide-vue-next';
@@ -13,7 +14,20 @@ import { h } from 'vue';
 const title = ref('字典管理');
 const toast = useToast();
 const { copy, isSupported } = useClipboard();
-const { tableConfig, viewDictItems, handlePageChange, handleFilterChange, handleRefresh, dictTypeForm } = useDict();
+const { tableConfig, handlePageChange, handleFilterChange, handleRefresh, dictTypeForm,getMoreActions, } = useDict();
+
+// 字典项抽屉状态管理
+const dictItemsDrawerVisible = ref(false);
+const selectedDictType = ref<IDictType>();
+
+/**
+ * 打开字典项抽屉
+ * @param dictType - 字典类型数据
+ */
+const openDictItemsDrawer = (dictType: IDictType) => {
+    selectedDictType.value = dictType;
+    dictItemsDrawerVisible.value = true;
+};
 // 导入字典数据
 const importDict = () => {
     toast.add({ severity: 'info', summary: '提示', detail: '字典数据导入功能已触发', life: 3000 });
@@ -74,15 +88,15 @@ const formatterDictType = (value: string) => {
     }[value];
 };
 
+const handleCloseDictItem = () => {
+    dictItemsDrawerVisible.value = false;
+    selectedDictType.value = undefined;
+};
 
 </script>
 
 <template>
     <PageContainer>
-
-
-
-
 
         <template #header>
             <div class="flex justify-between items-center">
@@ -93,13 +107,12 @@ const formatterDictType = (value: string) => {
                 </div>
             </div>
         </template>
-        <ConfigurableTable v-bind="tableConfig" @page="handlePageChange"
+        <CustomTable v-bind="tableConfig" @page="handlePageChange"
                            @refresh="handleRefresh" @update:columns="handleColumnsChange"
                            @filter-change="handleFilterChange">
             <!-- 字典名称列 -->
-
             <template #column-dictName="{ data }">
-                <Button :label="data.dictName" variant="link" @click="viewDictItems(data)" />
+                <Button :label="data.dictName" variant="link" @click="openDictItemsDrawer(data)" />
             </template>
             <!-- 字典编码 -->
             <template #column-dictCode="{ data }">
@@ -122,8 +135,14 @@ const formatterDictType = (value: string) => {
                     <span>{{ data.status == 1 ? '启用' : '停用' }}</span>
                 </div>
             </template>
-        </ConfigurableTable>
+        </CustomTable>
         <DictTypeForm ref="dictTypeForm" @success="handleRefresh" />
+        <Menu ref="menu" :model="getMoreActions()" popup></Menu>
+        <DictItemsDrawer
+            v-model:visible="dictItemsDrawerVisible"
+            :dict-type="selectedDictType"
+            @close="handleCloseDictItem"
+        />
     </PageContainer>
 </template>
 

@@ -1,7 +1,5 @@
 <template>
     <div class="base-container">
-        <Toast />
-        <ConfirmDialog />
         <div v-if="$slots.header" class="card !px-1 !py-0 !bg-transparent">
             <slot name="header"></slot>
         </div>
@@ -19,6 +17,6 @@ defineOptions({
 
 <style lang="scss" scoped>
 .base-container {
-    @apply flex flex-col w-full box-border  min-h-full gap-2;
+    @apply flex flex-col w-full box-border  min-h-full gap-2 pb-3;
 }
 </style>

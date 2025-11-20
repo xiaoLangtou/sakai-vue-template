@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { TableColumn } from '@/types/table'
+import type { TableColumn } from '@/types/custom-table'
 
 const tableData = ref([])
 const loading = ref(false)

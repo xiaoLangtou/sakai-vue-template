@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ConfigurableTable, PageContainer, PageHeader } from '@/components';
+import { CustomTable, PageContainer, PageHeader } from '@/components';
+import type { IDictData, IDictType } from '@/services/types/dict';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref } from 'vue';
@@ -7,7 +8,6 @@ import { useRoute, useRouter } from 'vue-router';
 import BatchAddDialog from './component/batch-add-dialog.vue';
 import DictItemDialog from './component/dict-item-dialog.vue';
 import { useDictItems } from './composables/useDictItems';
-import type { IDictData, IDictType } from '@/services/types/dict';
 
 // 路由实例
 const route = useRoute();
@@ -15,7 +15,9 @@ const router = useRouter();
 
 // 获取字典类型ID
 const dictTypeId = computed(() => Number(route.params.id));
-const { tableColumns, filterConfigs, searchParams, tableData,dictDetail, isLoading, handlePageChange, handleColumnsChange, handleFilterChange, handleRefresh } = useDictItems(+dictTypeId.value)
+
+
+const { tableColumns, filterConfigs, searchParams, tableData, dictDetail, isLoading, handlePageChange, handleColumnsChange, handleFilterChange, handleRefresh } = useDictItems(+dictTypeId.value)
 
     ;
 
@@ -224,13 +226,13 @@ const openRowMenu = (event: Event, id: number) => {
 <template>
     <PageContainer>
         <template #header>
-            <PageHeader :title="`${dictDetail?.dictName} - ${title}`" :description="dictDetail?.dictDesc" @back="goBack">
+            <PageHeader :title="`${dictDetail?.dictName} - ${title}`" :description="dictDetail?.dictDesc"
+                @back="goBack">
                 <!-- 操作按钮 -->
                 <template #actions>
                     <Button label="新增" icon="pi pi-plus" class="mr-2" @click="openNewDictItem" />
                     <Button label="批量添加" icon="pi pi-plus-circle" class="mr-2" @click="openBatchAddDialog" />
-                    <Button
-label="批量删除" icon="pi pi-trash" severity="danger" class="mr-2"
+                    <Button label="批量删除" icon="pi pi-trash" severity="danger" class="mr-2"
                         :disabled="!selectedDictItems || selectedDictItems.length === 0"
                         @click="confirmDeleteSelectedItems" />
                     <Button label="导出" icon="pi pi-download" class="mr-2" @click="exportDict" />
@@ -238,9 +240,8 @@ label="批量删除" icon="pi pi-trash" severity="danger" class="mr-2"
                 </template>
             </PageHeader>
         </template>
-        <ConfigurableTable
-v-model:selection="selectedDictItems" :value="tableData" :columns="tableColumns" data-key="id"
-            :loading="isLoading" :search-params="searchParams" :filter-configs="filterConfigs"
+        <CustomTable v-model:selection="selectedDictItems" :value="tableData" :columns="tableColumns"
+            data-key="id" :loading="isLoading" :search-params="searchParams" :filter-configs="filterConfigs"
             selection-mode="multiple" @update:columns="handleColumnsChange" @page="handlePageChange"
             @filter-change="handleFilterChange" @refresh="handleRefresh">
             <!-- 字典标签列 -->
@@ -270,27 +271,22 @@ v-model:selection="selectedDictItems" :value="tableData" :columns="tableColumns"
             <!-- 操作列 -->
             <template #column-actions="slotProps">
                 <div class="flex items-center justify-center gap-1">
-                    <Button
-icon="pi pi-pen-to-square" label="编辑" variant="text" size="small"
+                    <Button icon="pi pi-pen-to-square" label="编辑" variant="text" size="small"
                         @click="editDictItem(slotProps.data)" />
-                    <Button
-icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
+                    <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
                         @click="(event) => openRowMenu(event, slotProps.data.id)" />
                     <!-- 每行一个 Menu -->
-                    <Menu
-:ref="(el) => setMenuRef(el, slotProps.data.id)" :model="getItemMoreActions(slotProps.data)"
+                    <Menu :ref="(el) => setMenuRef(el, slotProps.data.id)" :model="getItemMoreActions(slotProps.data)"
                         popup />
                 </div>
             </template>
-        </ConfigurableTable>
+        </CustomTable>
         <!-- 字典项对话框 -->
-        <DictItemDialog
-v-model:visible="dictItemDialog" :dict-type-id="dictTypeId" :edit-item="currentEditItem"
+        <DictItemDialog v-model:visible="dictItemDialog" :dict-type-id="dictTypeId" :edit-item="currentEditItem"
             :existing-items="dictItems" @save="handleDictItemSave" />
 
         <!-- 批量添加字典项对话框 -->
-        <BatchAddDialog
-v-model:visible="batchAddDialog" :dict-type-id="dictTypeId" :existing-items="dictItems"
+        <BatchAddDialog v-model:visible="batchAddDialog" :dict-type-id="dictTypeId" :existing-items="dictItems"
             @save="handleBatchSave" />
     </PageContainer>
 </template>

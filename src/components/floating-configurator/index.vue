@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import AppConfigurator from '@/layout/shared/app-configurator.vue';
-import { useLayoutStore } from '@/stores/layout';
+import AppConfigurator from '../../layout/shared/app-configurator.vue';
+import { useLayoutStore } from '@/stores/layout.ts';
 import { storeToRefs } from 'pinia';
 
 const layoutStore = useLayoutStore();

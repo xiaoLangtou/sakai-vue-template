@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDebounce } from '@/composables/useDebounce';
+import { useDebounce } from '@/composables/useDebounce.ts';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
@@ -150,13 +150,13 @@ const performSearch = async (query: string) => {
   try {
     // 模拟API搜索
     await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const results = mockSearchData.filter(item => 
+
+    const results = mockSearchData.filter(item =>
       item.title.toLowerCase().includes(query.toLowerCase()) ||
       item.description?.toLowerCase().includes(query.toLowerCase()) ||
       item.category?.toLowerCase().includes(query.toLowerCase())
     );
-    
+
     searchResults.value = results;
     emit('search', query);
   } catch (error) {
@@ -180,12 +180,12 @@ const handleSearchInput = () => {
 const selectResult = (result: SearchResult) => {
   // 添加到搜索历史
   addToHistory(result.title);
-  
+
   // 导航到目标页面
   if (result.path) {
     router.push(result.path);
   }
-  
+
   emit('select', result);
   closeDialog();
 };
@@ -199,14 +199,14 @@ const selectResult = (result: SearchResult) => {
  */
 const addToHistory = (query: string) => {
   if (!query.trim()) return;
-  
+
   // 移除重复项
   const filtered = searchHistory.value.filter(item => item !== query);
   // 添加到开头
   filtered.unshift(query);
   // 限制数量
   searchHistory.value = filtered.slice(0, props.maxHistory);
-  
+
   // 保存到本地存储
   localStorage.setItem('global-search-history', JSON.stringify(searchHistory.value));
 };
@@ -245,9 +245,9 @@ const resetSearch = () => {
  */
 const handleKeydown = (event: KeyboardEvent) => {
   if (!props.visible) return;
-  
+
   const resultCount = searchResults.value.length;
-  
+
   switch (event.key) {
     case 'ArrowDown':
       event.preventDefault();
@@ -297,7 +297,7 @@ onMounted(() => {
   } catch (error) {
     console.error('加载搜索历史失败:', error);
   }
-  
+
   // 添加键盘事件监听
   document.addEventListener('keydown', handleKeydown);
 });
@@ -320,7 +320,7 @@ onUnmounted(() => {
     @hide="closeDialog"
   >
     <div class="global-search-container">
-      <!-- 搜索框 -->  
+      <!-- 搜索框 -->
       <div class="search-input-section">
         <div class="search-input-wrapper">
           <Search class="search-icon" :size="18" />
@@ -359,7 +359,7 @@ onUnmounted(() => {
                 <span class="ml-2 text-surface-600">搜索中...</span>
               </div>
             </div>
-            
+
             <!-- 搜索结果列表 -->
             <div v-else-if="hasResults" class="results-list">
               <div
@@ -385,7 +385,7 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-            
+
             <!-- 无结果 -->
             <div v-else class="no-results">
               <div class="flex flex-col items-center justify-center py-8">
@@ -395,7 +395,7 @@ onUnmounted(() => {
               </div>
             </div>
           </div>
-          
+
           <!-- 默认内容（分组菜单） -->
           <div v-else class="default-content">
             <!-- Go to 分组 -->
@@ -429,7 +429,7 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-            
+
             <!-- Code 分组 -->
             <div class="menu-section">
               <div class="section-title">Code</div>
@@ -440,7 +440,7 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-            
+
             <!-- Theme 分组 -->
             <div class="menu-section">
               <div class="section-title">Theme</div>
@@ -458,7 +458,7 @@ onUnmounted(() => {
           </div>
         </ScrollPanel>
       </div>
-      
+
       <!-- 底部提示 -->
       <div v-if="hasResults || hasSearchQuery" class="search-footer">
         <div class="keyboard-hints">
@@ -484,7 +484,7 @@ onUnmounted(() => {
     box-shadow: 0 16px 70px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--p-surface-border);
   }
-  
+
   :deep(.p-dialog-content) {
     padding: 0;
     border-radius: 8px;
@@ -526,12 +526,12 @@ onUnmounted(() => {
   border-radius: 6px;
   font-size: 14px;
   height: 40px;
-  
+
   &:focus {
     background: var(--p-surface-0) !important;
     box-shadow: 0 0 0 1px var(--p-primary-color) !important;
   }
-  
+
   &::placeholder {
     color: var(--p-surface-500);
     font-size: 14px;
@@ -587,11 +587,11 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background-color 0.15s ease;
   border-left: 2px solid transparent;
-  
+
   &:hover {
     background-color: var(--p-surface-50);
   }
-  
+
   &.selected {
     background-color: var(--p-primary-50);
     border-left-color: var(--p-primary-color);
@@ -656,7 +656,7 @@ onUnmounted(() => {
   font-family: monospace;
   opacity: 0;
   transition: opacity 0.15s ease;
-  
+
   .result-item.selected & {
     opacity: 1;
   }
@@ -735,7 +735,7 @@ onUnmounted(() => {
   color: var(--p-surface-400);
   font-size: 12px;
   padding: 4px 8px;
-  
+
   &:hover {
     color: var(--p-surface-600);
   }
@@ -755,7 +755,7 @@ onUnmounted(() => {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  
+
   &:hover {
     background-color: var(--p-surface-50);
   }
@@ -785,7 +785,7 @@ onUnmounted(() => {
   transition: all 0.15s ease;
   font-size: 12px;
   padding: 4px 8px;
-  
+
   &:hover {
     background-color: var(--p-surface-100);
     transform: translateY(-1px);
@@ -811,7 +811,7 @@ onUnmounted(() => {
   gap: 4px;
   font-size: 11px;
   color: var(--p-surface-500);
-  
+
   kbd {
     padding: 1px 4px;
     background-color: var(--p-surface-100);
@@ -835,40 +835,40 @@ onUnmounted(() => {
   .flex {
     display: flex;
   }
-  
+
   .flex-col {
     flex-direction: column;
   }
-  
+
   .items-center {
     align-items: center;
   }
-  
+
   .justify-center {
     justify-content: center;
   }
-  
+
   .py-8 {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
-  
+
   .mb-3 {
     margin-bottom: 0.75rem;
   }
-  
+
   .mb-2 {
     margin-bottom: 0.5rem;
   }
-  
+
   .text-lg {
     font-size: 1.125rem;
   }
-  
+
   .text-sm {
     font-size: 0.875rem;
   }
-  
+
   .font-medium {
     font-weight: 500;
   }

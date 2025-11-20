@@ -225,14 +225,14 @@ const tabsTopStyle = computed(() => {
 
 @include bp.tablet-only {
     .content-wrapper {
-        padding: 0.75rem;
+        padding: 0.55rem;
         margin-left: 0;
     }
 }
 
 @include bp.desktop-up {
     .content-wrapper {
-        padding: 1rem;
+        padding: 0.5rem;
     }
 }
 

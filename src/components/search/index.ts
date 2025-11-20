@@ -9,16 +9,16 @@ export { default as SearchStatus } from './search-status/index.vue';
 export type {
   FilterConfig, FilterValue,
   SearchEvents, SearchFunction, SearchHook, SearchParams, SearchResult
-} from '@/types/search';
+} from '@types/search.ts';
 
 // 工具函数导出
 export {
   SearchHelpers, buildQueryParams, cleanSearchParams, formatFilterValue,
   getActiveFilters,
   hasSearchConditions, hasValue, isSearchParamsEqual, parseQueryParams, validateSearchParams
-} from '@/utils/search-helpers';
+} from '@/utils/search-helpers.ts';
 
 // Composables导出
-export { useDebounce } from '@/composables/useDebounce';
-export { useSearch } from '@/composables/useSearch';
+export { useDebounce } from '@/composables/useDebounce.ts';
+export { useSearch } from '@/composables/useSearch.ts';
 

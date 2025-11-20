@@ -2,7 +2,7 @@
 export { default as AppTabs } from './index.vue';
 
 // 工具函数导出
-export * from './utils';
+export * from './utils.ts';
 
 // 类型导出
-export type { TabItem } from '@/stores/tabs';
+export type { TabItem } from '@/stores/tabs.ts';

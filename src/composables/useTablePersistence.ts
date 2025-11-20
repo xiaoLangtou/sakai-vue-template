@@ -1,5 +1,5 @@
 import { ref, watch, nextTick } from 'vue';
-import type { 
+import type {
     TablePersistenceProps,
     TablePersistenceState,
     TableState
@@ -10,7 +10,7 @@ export function useTablePersistence(
     state: TablePersistenceState
 ) {
     const isRestoring = ref(false);
-    const storageKey = ref(props.persistStateKey || 'table-state');
+    const storageKey = ref(props.persistStateKey || 'custom-table-state');
 
     // 防抖保存状态
     const saveStateDebounced = (() => {
@@ -97,7 +97,7 @@ export function useTablePersistence(
                 state.emit('state-save', stateWithMeta);
             }
         } catch (error) {
-            console.warn('Failed to save table state:', error);
+            console.warn('Failed to save custom-table state:', error);
         }
     };
 
@@ -195,7 +195,7 @@ export function useTablePersistence(
                 state.emit('state-restore', parsedState);
             }
         } catch (error) {
-            console.warn('Failed to restore table state:', error);
+            console.warn('Failed to restore custom-table state:', error);
         } finally {
             isRestoring.value = false;
         }
@@ -208,7 +208,7 @@ export function useTablePersistence(
         try {
             localStorage.removeItem(storageKey.value);
         } catch (error) {
-            console.warn('Failed to clear table state:', error);
+            console.warn('Failed to clear custom-table state:', error);
         }
     };
 
@@ -220,7 +220,7 @@ export function useTablePersistence(
             const savedState = localStorage.getItem(storageKey.value);
             return savedState ? JSON.parse(savedState) : null;
         } catch (error) {
-            console.warn('Failed to get saved table state:', error);
+            console.warn('Failed to get saved custom-table state:', error);
             return null;
         }
     };
@@ -295,7 +295,7 @@ export function useTablePersistence(
             restoreState();
             return true;
         } catch (error) {
-            console.warn('Failed to import table state:', error);
+            console.warn('Failed to import custom-table state:', error);
             return false;
         }
     };

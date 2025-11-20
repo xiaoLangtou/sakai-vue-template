@@ -1,5 +1,5 @@
 import type { RouteLocationNormalized } from 'vue-router';
-import type { TabItem } from '@/stores/tabs';
+import type { TabItem } from '@/stores/tabs.ts';
 
 /**
  * 生成标签页唯一键
@@ -8,10 +8,10 @@ import type { TabItem } from '@/stores/tabs';
  */
 export function generateTabKey(route: RouteLocationNormalized): string {
   const { path, params, query } = route;
-  
+
   // 基础路径
   let key = path;
-  
+
   // 添加参数
   if (params && Object.keys(params).length > 0) {
     const paramStr = Object.entries(params)
@@ -20,7 +20,7 @@ export function generateTabKey(route: RouteLocationNormalized): string {
       .join('&');
     key += `?${paramStr}`;
   }
-  
+
   // 添加查询参数
   if (query && Object.keys(query).length > 0) {
     const queryStr = Object.entries(query)
@@ -29,7 +29,7 @@ export function generateTabKey(route: RouteLocationNormalized): string {
       .join('&');
     key += key.includes('?') ? `&${queryStr}` : `?${queryStr}`;
   }
-  
+
   return key;
 }
 
@@ -43,9 +43,9 @@ export function createTabFromRoute(route: RouteLocationNormalized): TabItem {
   const title = (route.meta?.title as string) || route.name?.toString() || '未命名页面';
   const icon = route.meta?.icon as string;
   const closable = route.meta?.closable !== false; // 默认可关闭
-  
+
   const isHome = route.path === '/' || route.path === '/dashboard' || route.path === '/home';
-  
+
   return {
     key,
     title,
@@ -79,7 +79,7 @@ export function getTabDisplayTitle(tab: TabItem, maxLength: number = 12): string
   if (tab.title.length <= maxLength) {
     return tab.title;
   }
-  
+
   return `${tab.title.slice(0, maxLength - 3)}...`;
 }
 
@@ -218,19 +218,19 @@ export function isExceedMaxTabs(tabs: TabItem[], maxTabs: number): boolean {
  */
 export function getNextActiveTab(tabs: TabItem[], currentTab: TabItem): TabItem | null {
   if (tabs.length <= 1) return null;
-  
+
   const currentIndex = getTabIndex(tabs, currentTab);
   if (currentIndex === -1) return tabs[0];
-  
+
   // 优先选择右侧标签
   if (currentIndex < tabs.length - 1) {
     return tabs[currentIndex + 1];
   }
-  
+
   // 否则选择左侧标签
   if (currentIndex > 0) {
     return tabs[currentIndex - 1];
   }
-  
+
   return null;
 }

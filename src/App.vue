@@ -25,6 +25,7 @@ const { isLoginDialogVisible } = useLoginDialog();
         v-model:visible="isLoginDialogVisible"
         @login-success="() => {}"
     />
+
 </template>
 
 <style scoped></style>

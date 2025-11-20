@@ -1,17 +1,29 @@
-import type { TableColumns } from "@/composables";
-import { dictDataService } from "@/services/modules/dict-data";
-import { dictTypeService } from "@/services/modules/dict-type";
+import type { TableColumns } from '@/composables';
+import { dictDataService } from '@/services/modules/dict-data';
+import { dictTypeService } from '@/services/modules/dict-type';
 
-import type { IDictData, IDictDataQuery, IDictType } from "@/services/types/dict";
-import type { IPageResult } from "@/services/types/types";
-import type { FilterConfig, SearchParams } from "@/types/search";
-import { to } from "@/utils/result-handler";
-import { useQuery } from "@tanstack/vue-query";
+import type { IDictData, IDictDataQuery, IDictType } from '@/services/types/dict';
+import type { IPageResult } from '@/services/types/types';
+import type { SearchParams } from '@/types/search';
+import { to } from '@/utils/result-handler';
+import { useQuery } from '@tanstack/vue-query';
+import type { TTableConfig } from '@/types/table.ts';
+import Button from 'primevue/button';
+import Menu from 'primevue/menu';
+import type { MenuItem } from 'primevue/menuitem';
+import { usePrimeConfirm } from '@/composables/usePrimeConfirm.ts';
+import { computed, type ComputedRef, h, ref, watch } from 'vue';
 
 
+export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined>) => {
+    const { confirmDelete } = usePrimeConfirm();
+    const enabled = ref(false);
+
+    watch(() => dictTypeId.value, (newVal) => {
+        enabled.value = !!dictTypeId.value;
+    }, { immediate: true });
 
 
-export const useDictItems = (dictTypeId: number) => {
     // 表格列配置
     const tableColumns = ref<TableColumns<IDictData>>([
         {
@@ -51,132 +63,184 @@ export const useDictItems = (dictTypeId: number) => {
             key: 'createTime',
             field: 'createTime',
             header: '创建时间'
-        },
-        {
-            key: 'actions',
-            header: '操作',
-            style: {
-                width: '300px'
-            },
-            headerStyle: {
-                display: 'flex',
-                justifyContent: 'center'
-            },
-            frozen: true,
-            alignFrozen: 'right'
         }
     ]);
 
 
     // 搜索和过滤配置
-    const filterConfigs: FilterConfig[] = [
-        {
-            key: 'status',
-            label: '状态',
-            type: 'select',
-            options: [
-                { label: '全部', value: '' },
-                { label: '启用', value: 'active' },
-                { label: '禁用', value: 'inactive' }
-            ]
-        },
-        {
-            key: 'isDefault',
-            label: '默认值',
-            type: 'select',
-            options: [
-                { label: '全部', value: '' },
-                { label: '是', value: 'true' },
-                { label: '否', value: 'false' }
-            ]
-        }
-    ];
 
     const searchParams = ref<SearchParams<IDictDataQuery>>({
-        keyword: ''
+        keyword: '',
+        filters: {}
     });
 
     const pageInfo = ref({
         current: 1,
         size: 10,
         total: 0
-    })
-
+    });
     const { data: tableData, isLoading, refetch } = useQuery({
-        queryKey: ['dictItems', pageInfo.value.current],
+        queryKey: [ 'dictItems', dictTypeId.value, pageInfo.value.current, pageInfo.value.size, searchParams.value.keyword, searchParams.value.filters, pageInfo.value.total ],
         queryFn: async () => {
             const result = await to<IPageResult<IDictData>>(dictDataService.getDictDataList({
-                typeId: dictTypeId,
+                typeId: dictTypeId.value as unknown as number,
                 current: pageInfo.value.current,
                 size: pageInfo.value.size,
                 dictName: searchParams.value.keyword,
                 ...searchParams.value.filters
             }));
 
-            if (!result.ok) {
+            if ( !result.ok ) {
                 pageInfo.value.total = 0;
-                return []
+                return [];
             }
 
             // 更新总记录数和表格数据
             pageInfo.value.total = result.value.pager.total;
             return result.value.records ?? [];
-        }
-    })
+        },
+        enabled: enabled
+    });
 
     const { data: dictDetail } = useQuery({
-        queryKey: [`dictDetail|${dictTypeId}`],
+        queryKey: [ `dictDetail|${ dictTypeId.value }` ],
         queryFn: async () => {
-            const result = await to<IDictType>(dictTypeService.getDictTypeDetail(dictTypeId as unknown as string))
+            const result = await to<IDictType>(dictTypeService.getDictTypeDetail(dictTypeId.value as unknown as string));
 
-            if (!result.ok) return {}
-            console.log(result.value)
+            if ( !result.ok ) return {};
+            console.log(result.value);
             return result.value;
-        }
-    })
-
-
+        },
+        enabled: enabled
+    });
 
 
     function handleColumnsChange(columns: TableColumns<IDictData>): void {
         tableColumns.value = columns;
     }
-    const handlePageChange = (page: any) => {
+
+    const handlePageChange = async (page: any) => {
         pageInfo.value.current = page.page + 1; // PrimeVue 分页从 0 开始
         pageInfo.value.size = page.rows;
-        refetch();
-    }
-
-    const handleFilterChange = (params: SearchParams) => {
-        searchParams.value = params;
-        pageInfo.value.current = 1; // 重置到第一页
-        refetch();
+        await refetch();
     };
 
-    const handleRefresh = () => {
+    const handleFilterChange = async (params: SearchParams) => {
+        searchParams.value = params;
+        pageInfo.value.current = 1; // 重置到第一页
+        await refetch();
+    };
+
+    const handleRefresh = async () => {
         pageInfo.value.current = 1; // 重置到第一页
         searchParams.value = {
             keyword: '',
-            filters: {
-                dictCode: '',
-                dictType: '',
-                status: '',
-                systemFlag: ''
+            filters: {}
+        };
+        await refetch();
+    };
+    /**
+     * 获取更多操作菜单项
+     * @param data - 字典类型数据
+     */
+    const getMoreActions = (data: IDictData): MenuItem[] => {
+        return [
+            {
+                label: data.status ? '停用' : '启用',
+                icon: data.status ? 'pi pi-times' : 'pi pi-check',
+                disabled: data.systemFlag === 'SYSTEM'
+                // command: () => toggleTypeStatus(data)
+            },
+            {
+                label: '删除',
+                icon: 'pi pi-trash',
+                disabled: data.systemFlag === 'SYSTEM',
+                command: () => {
+                    confirmDelete({
+                        message: `确定要删除字典类型 "${ data.dictName }(${ data.dictCode })" 吗？`,
+                        header: '确认删除',
+                        accept: () => deleteDictType(data)
+                    });
+                }
             }
+        ];
+    };
+
+    // 每行菜单的 ref 对象
+    const menuRefs = ref<Record<number | string, any>>({});
+    /**
+     * 设置 Menu ref 实例
+     */
+    const setMenuRef = (el: any, id: number | string | undefined) => {
+        if ( el && id ) {
+            menuRefs.value[id] = el;
         }
-        refetch();
-    }
+    };
+    /**
+     * 打开对应行的菜单
+     */
+    const openRowMenu = (event: Event, id: number | string | undefined) => {
+        if ( !id ) return;
+        menuRefs.value[id]?.toggle(event);
+    };
+
+    const editDictType = (item: IDictData) => {
+        // TODO: 实现编辑字典项功能
+        console.log('编辑字典项:', item);
+    };
+    /**
+     * 表格配置对象
+     * 使用 computed 确保响应式更新
+     */
+    const tableConfig = computed<TTableConfig<IDictData>>(() => {
+        return {
+            dataKey: 'id',
+            loading: isLoading.value,
+            // 分页配置
+            rows: pageInfo.value.size,
+            totalRecords: pageInfo.value.total,
+            current: pageInfo.value.current,
+            // 列配置
+            columns: tableColumns.value,
+            tableSettings: {
+                showGridlines: false
+            },
+            actions: {
+                frozen: true, alignFrozen: 'right', width: 200, render: (item: IDictData) => {
+                    return h('div', {
+                        class: 'flex justify-center items-center'
+                    }, [
+                        h(Button, {
+                            icon: 'pi pi-pen-to-square',
+                            label: '编辑',
+                            variant: 'text',
+                            onClick: () => editDictType(item)
+                        }),
+
+                        h(Button, {
+                            icon: 'pi pi-ellipsis-h',
+                            variant: 'text',
+                            onClick: (event: Event) => openRowMenu(event, item.id)
+                        }),
+                        h(Menu, {
+                            ref: (el) => setMenuRef(el, item.id),
+                            model: getMoreActions(item),
+                            popup: true
+                        })
+
+                    ]);
+                }
+            },
+            // 额外配置
+            searchParams: searchParams.value,
+            data: tableData.value ?? []
+        };
+    });
 
     return {
-        tableColumns,
-        filterConfigs,
-        searchParams,
-        pageInfo,
-        tableData,
-        dictDetail,
-        isLoading,
+        tableConfig,
         handlePageChange,
         handleFilterChange,
-        handleRefresh, handleColumnsChange
-    }
-}
+        handleRefresh
+    };
+};

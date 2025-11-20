@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useLucideIcon } from '@/composables';
-import type { TabItem } from '@/stores/tabs';
-import { useTabsStore } from '@/stores/tabs';
+import type { TabItem } from '@/stores/tabs.ts';
+import { useTabsStore } from '@/stores/tabs.ts';
 import { ChevronDown, X } from 'lucide-vue-next';
 import ContextMenu from 'primevue/contextmenu';
 import { useConfirm } from 'primevue/useconfirm';

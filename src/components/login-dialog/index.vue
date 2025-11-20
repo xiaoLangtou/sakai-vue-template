@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { CAPTCHA_EXPIRE_TIME } from '@/global/constants';
-import { loginService } from '@/services/modules/login';
-import type { ICaptcha, ILoginAccount } from '@/services/types/login';
-import { to } from '@/utils/result-handler';
-import globalToast from '@/services/core/toast';
-import { useAuthStore } from '@/stores/auth';
+import { CAPTCHA_EXPIRE_TIME } from '@/global/constants.ts';
+import { loginService } from '@/services/modules/login.ts';
+import type { ICaptcha, ILoginAccount } from '@/services/types/login.ts';
+import { to } from '@/utils/result-handler.ts';
+import globalToast from '@/services/core/toast.ts';
+import { useAuthStore } from '@/stores/auth.ts';
 import { onUnmounted, ref, watch } from 'vue';
 import router from '@/router';
 

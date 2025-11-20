@@ -10,7 +10,7 @@
             </div>
         </template>
 
-        <ConfigurableTable
+        <CustomTable
             :value="roles"
             :columns="tableColumns"
             data-key="id"
@@ -88,7 +88,7 @@ icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
                     <Menu :ref="(el) => setMenuRef(el, data.id)" :model="getMoreActions(data)" popup />
                 </div>
             </template>
-        </ConfigurableTable>
+        </CustomTable>
 
         <!-- 角色表单对话框 -->
         <RoleForm
@@ -104,7 +104,7 @@ icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
 </template>
 
 <script setup lang="ts">
-import { ConfigurableTable, PageContainer } from '@/components';
+import { CustomTable, PageContainer } from '@/components';
 import type { TableColumns } from '@/composables/useColumns';
 import { FilterConfig, SearchParams } from '@/types/search';
 import type { Role, RoleType } from '@/types/role';

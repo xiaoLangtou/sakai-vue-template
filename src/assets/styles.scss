@@ -4,7 +4,6 @@
 @use '@/assets/layout/layout.scss';
 
 
-
 /* 全局滚动条样式优化 */
 /* Webkit 浏览器 (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
@@ -42,7 +41,6 @@
 }
 
 
-
 /* 细滚动条变体（用于小区域） */
 .scrollbar-thin::-webkit-scrollbar {
     width: 3px;
@@ -68,12 +66,12 @@
     --p-datatable-header-cell-padding: 1rem;
 }
 
-.p-datatable .p-datatable-thead>tr>th {
+.p-datatable .p-datatable-thead > tr > th {
     @apply bg-surface-50 dark:bg-surface-900 text-surface-700 dark:text-surface-300;
     font-weight: 600;
 }
 
-.p-datatable .p-datatable-thead>tr>th:hover {
+.p-datatable .p-datatable-thead > tr > th:hover {
     background-color: #f1f5f9;
 }
 
@@ -84,4 +82,9 @@
 
 .p-drawer-mask {
     z-index: 999;
+}
+
+
+.custom-table__border {
+    @apply border border-surface-200 dark:border-surface-700 rounded-md overflow-hidden;
 }

@@ -7,7 +7,7 @@
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
 
-import eslint from '@eslint/js';
+import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
@@ -31,7 +31,7 @@ export default typescriptEslint.config(
 
     {
         extends: [
-            eslint.configs.recommended,
+            js.configs.recommended,
             ...typescriptEslint.configs.recommended,
             ...pluginQuery.configs['flat/recommended'],
             ...eslintPluginVue.configs['flat/recommended'],

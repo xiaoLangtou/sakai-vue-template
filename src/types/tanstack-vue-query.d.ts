@@ -17,7 +17,7 @@ declare module '@tanstack/vue-query' {
   export interface UseQueryOptions<TData = unknown, TError = unknown> {
     queryKey: any[];
     queryFn: () => Promise<TData>;
-    enabled?: boolean;
+    enabled?: boolean | Ref<boolean> | (() => boolean);
     staleTime?: number;
     cacheTime?: number;
     refetchOnWindowFocus?: boolean;

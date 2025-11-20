@@ -1,4 +1,4 @@
-import type { FilterConfig, SearchParams } from "./search";
+import type { FilterConfig, SearchParams } from './search';
 
 /**
  * 表格列对齐方式
@@ -72,7 +72,7 @@ export interface TableBaseColumn<T = any> {
     /** 是否显示该列 */
     visible?: boolean;
     /** 是否禁用该列 */
-    disabled?: boolean | Ref<boolean> | ((row: T, index: number) => boolean);
+    disabled?: boolean | Ref<boolean> | ( (row: T, index: number) => boolean );
     /** 水平对齐方式 */
     align?: TableColumnAlign;
     /** 垂直对齐方式 */
@@ -92,7 +92,7 @@ export interface TableBaseColumn<T = any> {
     /** 排序顺序 */
     order?: number;
     /** 自定义文本内容 */
-    text?: string | ((row: T, index: number) => string);
+    text?: string | ( (row: T, index: number) => string );
     /** 自定义渲染函数 */
     render?: (row: T, index: number) => any;
     /** 插槽名称 */
@@ -116,13 +116,13 @@ export interface TableBaseColumn<T = any> {
     /** tooltip显示的字段名（默认使用field字段） */
     tooltipField?: string;
     /** 自定义tooltip内容 */
-    tooltipContent?: string | ((row: T, index: number) => string);
+    tooltipContent?: string | ( (row: T, index: number) => string );
     /** tooltip配置选项 */
     tooltipOptions?: {
         /** 是否启用提示 */
         enabled?: boolean;
         /** 提示内容 */
-        content?: string | ((row: T) => string);
+        content?: string | ( (row: T) => string );
         /** 提示位置 */
         position?: 'top' | 'bottom' | 'left' | 'right';
         /** 显示延迟 */
@@ -138,6 +138,7 @@ export interface TableBaseColumn<T = any> {
     };
     /** 额外属性 */
     props?: Record<string, any>;
+
     /** 其他扩展属性 */
     [key: string]: any;
 }
@@ -193,7 +194,7 @@ export interface TableColumnGroup<T = any> {
     /** tooltip显示的字段名（默认使用field字段） */
     tooltipField?: string;
     /** 自定义tooltip内容 */
-    tooltipContent?: string | ((row: T, index: number) => string);
+    tooltipContent?: string | ( (row: T, index: number) => string );
     /** tooltip配置选项 */
     tooltipOptions?: TableBaseColumn<T>['tooltipOptions'];
     /** 插槽名称 */
@@ -312,27 +313,26 @@ export interface TableSettings {
  * 表格事件发射器类型
  */
 export interface TableEventsEmits<T = any> {
-    'row-click': [event: { originalEvent: Event; data: T; index: number }];
-    'row-dblclick': [event: { originalEvent: Event; data: T; index: number }];
-    'selection-change': [selection: T[]];
-    'filter-change': [params: SearchParams];
-    'state-restore': [state: any];
-    'state-save': [state: any];
+    'row-click': [ event: { originalEvent: Event; data: T; index: number } ];
+    'row-dblclick': [ event: { originalEvent: Event; data: T; index: number } ];
+    'selection-change': [ selection: T[] ];
+    'filter-change': [ params: SearchParams ];
+    'state-restore': [ state: any ];
+    'state-save': [ state: any ];
     refresh: [];
-    page: [event: any];
-    sort: [event: any];
-    filter: [event: any];
-    'update:selection': [selection: T | T[]];
-    'update:columns': [columns: TableColumns<T>];
-    'cell-edit-complete': [event: any];
-    'cell-edit-cancel': [event: any];
-    'row-expand': [event: any];
-    'row-collapse': [event: any];
-    'column-resize-end': [event: any];
-    'column-reorder': [event: any];
-    'column-change': [column: TableColumn<T>, type: 'visibility' | 'frozen' | 'order'];
+    page: [ event: any ];
+    sort: [ event: any ];
+    filter: [ event: any ];
+    'update:selection': [ selection: T | T[] ];
+    'update:columns': [ columns: TableColumns<T> ];
+    'cell-edit-complete': [ event: any ];
+    'cell-edit-cancel': [ event: any ];
+    'row-expand': [ event: any ];
+    'row-collapse': [ event: any ];
+    'column-resize-end': [ event: any ];
+    'column-reorder': [ event: any ];
+    'column-change': [ column: TableColumn<T>, type: 'visibility' | 'frozen' | 'order' ];
 }
-
 
 
 /**
@@ -458,11 +458,10 @@ export interface TableState {
 }
 
 
-
 /**
- * Configurable Table 组件属性接口
+ * Custom Table 组件属性接口
  */
-export interface ConfigurableTableProps<T = any> {
+export interface CustomTableProps<T = any> {
     /** 表格数据 */
     data: T[];
     /** 列配置 */
@@ -592,25 +591,24 @@ export interface ConfigurableTableProps<T = any> {
 }
 
 /**
- * Configurable Table 组件事件接口
+ * Custom Table 组件事件接口
  */
-export interface ConfigurableTableEmits<T = any> extends TableEventsEmits<T> {
+export interface CustomTableEmits<T = any> extends TableEventsEmits<T> {
     /** 更新选择 */
-    'update:selection': [selection: T | T[]];
+    'update:selection': [ selection: T | T[] ];
     /** 更新列配置 */
-    'update:columns': [columns: TableColumns<T>];
+    'update:columns': [ columns: TableColumns<T> ];
     /** 更新第一条记录索引 */
-    'update:first': [first: number];
+    'update:first': [ first: number ];
     /** 更新每页显示条数 */
-    'update:rows': [rows: number];
+    'update:rows': [ rows: number ];
     /** 更新展开的行 */
-    'update:expandedRows': [expandedRows: T[]];
+    'update:expandedRows': [ expandedRows: T[] ];
     /** 更新筛选器 */
-    'update:filters': [filters: any];
+    'update:filters': [ filters: any ];
     /** 导出数据 */
-    'export-data': [data: T[]];
+    'export-data': [ data: T[] ];
 }
-
 
 
 /**
@@ -640,3 +638,17 @@ export interface TableInstance {
     /** 滚动到底部 */
     scrollToBottom: () => void;
 }
+
+
+export type TTableConfig<T> = {
+    columns?: TableColumns<T>;
+    filterConfigs?: FilterConfig[];
+    searchParams?: SearchParams<T>;
+} & CustomTableProps<T>
+
+// 向后兼容：保留旧的类型名
+/** @deprecated 请使用 CustomTableProps 替代 */
+export type ConfigurableTableProps<T = any> = CustomTableProps<T>;
+
+/** @deprecated 请使用 CustomTableEmits 替代 */
+export type ConfigurableTableEmits<T = any> = CustomTableEmits<T>;

@@ -6,6 +6,7 @@ export const usePrimeConfirm = () => {
     const confirm = useConfirm();
 
     const confirmDelete = async (options: ConfirmationOptions) => {
+        console.log('confirmDelete', options);
         const {
             message = '确定要删除吗？',
             header = '删除',

@@ -132,7 +132,7 @@ const props = withDefaults(defineProps<Props>(), {
     position: 'right',
     header: '',
     modal: true,
-    dismissable: true,
+    dismissable: false,
     showCloseIcon: true,
     showContent: true,
     showDefaultFooter: false,
@@ -279,9 +279,13 @@ const handleConfirm = () => {
 };
 </script>
 
-<style lang="scss">
+<style  lang="scss">
 .drawer-content {
     @apply flex-1;
+}
+
+.custom-drawer__header{
+    @apply w-full;
 }
 
 

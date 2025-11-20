@@ -4,12 +4,11 @@ import { useLayoutStore } from '@/stores/layout';
 import { storeToRefs } from 'pinia';
 import Drawer from 'primevue/drawer';
 import OverlayPanel from 'primevue/overlaypanel';
-import Badge from 'primevue/badge';
 import Button from 'primevue/button';
-import { UserProfile, NotificationDrawer } from '@/components';
+import { NotificationDrawer, UserProfile } from '@/components';
 import { useAuthStore } from '@/stores';
 import { AVATAR_SIZES } from '@/global/layout-sizes';
-import { Bell, CalendarDays, MoonIcon, Sun, SwatchBook, Check, Trash2, MoreHorizontal } from 'lucide-vue-next';
+import { Bell, CalendarDays, MoonIcon, Sun, SwatchBook } from 'lucide-vue-next';
 // ==================== Store 状态管理 ====================
 const layoutStore = useLayoutStore();
 const { isDarkTheme } = storeToRefs(layoutStore);
@@ -26,56 +25,56 @@ const notificationDrawerVisible = ref<boolean>(false);
 // ==================== 消息通知数据 ====================
 /** 消息通知列表 */
 const notifications = ref([
-  {
-    id: 1,
-    title: '系统更新通知',
-    message: '系统将于今晚 22:00 进行维护更新，预计耗时 2 小时',
-    time: '2 分钟前',
-    type: 'system',
-    isRead: false,
-    avatar: null
-  },
-  {
-    id: 2,
-    title: '新消息',
-    message: '张三给您发送了一条新消息',
-    time: '5 分钟前',
-    type: 'message',
-    isRead: false,
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face'
-  },
-  {
-    id: 3,
-    title: '任务提醒',
-    message: '您有一个任务即将到期，请及时处理',
-    time: '1 小时前',
-    type: 'task',
-    isRead: true,
-    avatar: null
-  },
-  {
-    id: 4,
-    title: '审批通知',
-    message: '您的请假申请已通过审批',
-    time: '2 小时前',
-    type: 'approval',
-    isRead: false,
-    avatar: null
-  },
-  {
-    id: 5,
-    title: '会议提醒',
-    message: '项目评审会议将于明天上午 10:00 开始',
-    time: '3 小时前',
-    type: 'meeting',
-    isRead: true,
-    avatar: null
-  }
+    {
+        id: 1,
+        title: '系统更新通知',
+        message: '系统将于今晚 22:00 进行维护更新，预计耗时 2 小时',
+        time: '2 分钟前',
+        type: 'system',
+        isRead: false,
+        avatar: null
+    },
+    {
+        id: 2,
+        title: '新消息',
+        message: '张三给您发送了一条新消息',
+        time: '5 分钟前',
+        type: 'message',
+        isRead: false,
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face'
+    },
+    {
+        id: 3,
+        title: '任务提醒',
+        message: '您有一个任务即将到期，请及时处理',
+        time: '1 小时前',
+        type: 'task',
+        isRead: true,
+        avatar: null
+    },
+    {
+        id: 4,
+        title: '审批通知',
+        message: '您的请假申请已通过审批',
+        time: '2 小时前',
+        type: 'approval',
+        isRead: false,
+        avatar: null
+    },
+    {
+        id: 5,
+        title: '会议提醒',
+        message: '项目评审会议将于明天上午 10:00 开始',
+        time: '3 小时前',
+        type: 'meeting',
+        isRead: true,
+        avatar: null
+    }
 ]);
 
 /** 未读消息数量 */
 const unreadCount = computed(() => {
-  return notifications.value.filter(n => !n.isRead).length;
+    return notifications.value.filter(n => !n.isRead).length;
 });
 
 // ==================== 事件处理方法 ====================
@@ -115,7 +114,7 @@ const openNotificationDrawer = (): void => {
  */
 const markAsRead = (notificationId: number): void => {
     const notification = notifications.value.find(n => n.id === notificationId);
-    if (notification) {
+    if ( notification ) {
         notification.isRead = true;
     }
 };
@@ -132,7 +131,7 @@ const markAllAsRead = (): void => {
  */
 const deleteNotification = (notificationId: number): void => {
     const index = notifications.value.findIndex(n => n.id === notificationId);
-    if (index > -1) {
+    if ( index > -1 ) {
         notifications.value.splice(index, 1);
     }
 };
@@ -249,13 +248,13 @@ const getNotificationColor = (type: string): string => {
                         </OverlayBadge>
                     </div>
 
-                    <div class="layout-topbar-action hidden lg:block" @click="openNotificationDrawer">
+                    <div v-tooltip.bottom="'站内信'" class="layout-topbar-action hidden lg:block"
+                         @click="openNotificationDrawer">
                         <OverlayBadge>
                             <Bell :size="18" class="bell-animation" />
                         </OverlayBadge>
 
                     </div>
-
                     <div
                         class=" hidden lg:block ml-1"
                         @click="openProfileDrawer">
@@ -272,8 +271,8 @@ const getNotificationColor = (type: string): string => {
     <NotificationDrawer
         v-model:visible="notificationDrawerVisible"
         :notifications="notifications"
-        @mark-read="markAsRead"
         @delete="deleteNotification"
+        @mark-read="markAsRead"
         @mark-all-read="markAllAsRead"
         @clear-all="clearAllNotifications"
         @view-all="viewAllMessages" />
@@ -290,202 +289,202 @@ const getNotificationColor = (type: string): string => {
 
 <style lang="scss" scoped>
 .bell-animation {
-  transition: transform 0.15s ease;
+    transition: transform 0.15s ease;
 
-  &:hover {
-    transform: scale(1.05);
-  }
+    &:hover {
+        transform: scale(1.05);
+    }
 }
 
 // 消息通知抽屉样式
 .notification-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
 }
 
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 40px 20px;
 }
 
 .empty-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--surface-100);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-color-secondary);
-  margin-bottom: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-secondary);
+    margin-bottom: 12px;
 }
 
 .empty-text {
-  color: var(--text-color-secondary);
-  font-size: 14px;
-  margin: 0;
+    color: var(--text-color-secondary);
+    font-size: 14px;
+    margin: 0;
 }
 
 .message-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0;
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
 }
 
 .message-item {
-  display: flex;
-  align-items: flex-start;
-  padding: 12px 20px;
-  margin: 0 8px 4px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 20px;
+    margin: 0 8px 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
 
-  &:hover {
-    background: var(--surface-hover);
+    &:hover {
+        background: var(--surface-hover);
 
-    .message-actions {
-      opacity: 1;
-    }
-  }
-
-  &.is-unread {
-    background: var(--surface-50);
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--primary-color);
+        .message-actions {
+            opacity: 1;
+        }
     }
 
-    .message-title {
-      font-weight: 600;
+    &.is-unread {
+        background: var(--surface-50);
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+
+        .message-title {
+            font-weight: 600;
+        }
     }
-  }
 }
 
 .message-main {
-  flex: 1;
-  min-width: 0;
-  padding-left: 12px;
+    flex: 1;
+    min-width: 0;
+    padding-left: 12px;
 }
 
 .message-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
 }
 
 .message-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-color);
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
 }
 
 .message-time {
-  font-size: 11px;
-  color: var(--text-color-secondary);
-  margin-left: 12px;
-  flex-shrink: 0;
+    font-size: 11px;
+    color: var(--text-color-secondary);
+    margin-left: 12px;
+    flex-shrink: 0;
 }
 
 .message-text {
-  font-size: 13px;
-  color: var(--text-color-secondary);
-  line-height: 1.4;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+    font-size: 13px;
+    color: var(--text-color-secondary);
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .message-actions {
-  display: flex;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  margin-left: 8px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    margin-left: 8px;
 }
 
 .btn-action {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 
-  &.btn-read {
-    color: var(--green-500);
+    &.btn-read {
+        color: var(--green-500);
 
-    &:hover {
-      background: var(--green-50);
-      color: var(--green-600);
+        &:hover {
+            background: var(--green-50);
+            color: var(--green-600);
+        }
     }
-  }
 
-  &.btn-delete {
-    color: var(--text-color-secondary);
+    &.btn-delete {
+        color: var(--text-color-secondary);
 
-    &:hover {
-      background: var(--red-50);
-      color: var(--red-500);
+        &:hover {
+            background: var(--red-50);
+            color: var(--red-500);
+        }
     }
-  }
 }
 
 // 移动端适配
 @media (max-width: 640px) {
-  .message-actions {
-    opacity: 1;
-  }
+    .message-actions {
+        opacity: 1;
+    }
 
-  .message-item {
-    margin: 0 4px 4px;
-    padding: 12px 16px;
-  }
+    .message-item {
+        margin: 0 4px 4px;
+        padding: 12px 16px;
+    }
 }
 
 // 暗色主题适配
 :global(.dark) {
-  .empty-icon {
-    background: var(--surface-800);
-  }
+    .empty-icon {
+        background: var(--surface-800);
+    }
 
-  .message-item.is-unread {
-    background: rgba(var(--primary-400), 0.1);
-  }
+    .message-item.is-unread {
+        background: rgba(var(--primary-400), 0.1);
+    }
 
-  .btn-action.btn-read:hover {
-    background: rgba(var(--green-400), 0.2);
-  }
+    .btn-action.btn-read:hover {
+        background: rgba(var(--green-400), 0.2);
+    }
 
-  .btn-action.btn-delete:hover {
-    background: rgba(var(--red-400), 0.2);
-  }
+    .btn-action.btn-delete:hover {
+        background: rgba(var(--red-400), 0.2);
+    }
 }
 </style>

@@ -1,86 +1,26 @@
 <script setup lang="ts">
-import type { TableColumns } from '@/composables/useColumns';
-import { reorderColumns } from '@/composables/useColumns';
-import { computed, defineEmits, defineProps, ref, watch, withDefaults } from 'vue';
+import { computed, ref, watch, withDefaults } from 'vue';
+import type { TableColumns } from '@/composables/useColumns.ts';
+import { reorderColumns } from '@/composables/useColumns.ts';
+import type { CustomTableSettingsProps, CustomTableSettingsEmits, CustomTableColumn } from '../types/types.ts';
+import {
+    DEFAULT_TABLE_SETTINGS,
+    STYLE_OPTIONS,
+    TABLE_SETTINGS_OPTIONS,
+} from '../const/constants.ts';
 
-// Props 定义
-interface Props {
-    columns: TableColumns;
-    title?: string;
-    showStyleOptions?: boolean;
-    showTableSettings?: boolean;
-    enableDrag?: boolean;
-    selectedStyle?: string;
-    tableSettings?: Record<string, any>;
-    styleOptions?: Array<{
-        name: string;
-        label: string;
-        preview: {
-            header: string;
-            row: string;
-        };
-    }>;
-    tableSettingsOptions?: Array<{
-        key: string;
-        label: string;
-    }>;
-}
-
-// Emits 定义
-interface Emits {
-    'update:columns': [columns: TableColumns];
-    'column-change': [column: any, type: 'visibility' | 'frozen' | 'order'];
-    'style-change': [styleName: string];
-    'setting-change': [key: string, value: any];
-    'update:selectedStyle': [styleName: string];
-    'update:tableSettings': [settings: Record<string, any>];
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<CustomTableSettingsProps>(), {
     title: '表格设置',
     showStyleOptions: true,
     showTableSettings: true,
     enableDrag: true,
     selectedStyle: 'normal',
-    tableSettings: () => ({
-        showRowDivider: true,
-        stripedRows: true,
-        showShadow: false,
-        showBorder: true
-    }),
-    styleOptions: () => [
-        {
-            name: 'small',
-            label: '紧凑',
-            preview: {
-                header: 'width: 70%',
-                row: 'width: 60%'
-            }
-        },
-        {
-            name: 'normal',
-            label: '标准',
-            preview: {
-                header: 'width: 80%',
-                row: 'width: 75%'
-            }
-        },
-        {
-            name: 'large',
-            label: '宽松',
-            preview: {
-                header: 'width: 85%',
-                row: 'width: 80%'
-            }
-        }
-    ],
-    tableSettingsOptions: () => [
-        { key: 'stripedRows', label: '斑马纹填充' },
-        { key: 'showBorder', label: '显示边框' }
-    ]
+    tableSettings: () => ({ ...DEFAULT_TABLE_SETTINGS }),
+    styleOptions: () => [...STYLE_OPTIONS],
+    tableSettingsOptions: () => [...TABLE_SETTINGS_OPTIONS],
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<CustomTableSettingsEmits>();
 
 // 组件引用
 const popoverRef = ref();
@@ -204,7 +144,7 @@ function toggle(event: Event): void {
 /**
  * 处理样式变化
  */
-function handleStyleChange(styleName: string): void {
+function handleStyleChange(styleName: 'small' | 'normal' | 'large'): void {
     emit('update:selectedStyle', styleName);
     emit('style-change', styleName);
 }
@@ -221,33 +161,32 @@ function handleTableSettingChange(key: string, value: any): void {
 /**
  * 获取列的唯一标识
  */
-function getColumnKey(column: any): string {
+function getColumnKey(column: CustomTableColumn): string {
     return column.key || column.field || '';
 }
 
 /**
  * 获取列的显示文本
  */
-function getColumnDisplayText(column: any): string {
+function getColumnDisplayText(column: CustomTableColumn): string {
     return column.header || column.title || column.text || column.field || column.key || '';
 }
 
 /**
  * 获取列的冻结状态
  */
-function getColumnFrozen(column: any): boolean | undefined {
-    return (column as any).frozen;
+function getColumnFrozen(column: CustomTableColumn): boolean | undefined {
+    return column.frozen;
 }
 
 /**
  * 获取列的固定方向
  */
-function getColumnFrozenDirection(column: any): string {
-    const col = column as any;
-    if (!col.frozen) {
+function getColumnFrozenDirection(column: CustomTableColumn): 'left' | 'right' | 'none' {
+    if (!column.frozen) {
         return 'none';
     }
-    return col.alignFrozen || 'left';
+    return column.alignFrozen || 'left';
 }
 
 /**
@@ -261,12 +200,12 @@ function isColumnVisible(columnKey: string): boolean {
 /**
  * 处理列可见性切换
  */
-function handleToggleVisibility(column: any): void {
+function handleToggleVisibility(column: CustomTableColumn): void {
     const columnKey = getColumnKey(column);
     const targetColumn = internalColumns.value.find((col) => getColumnKey(col) === columnKey);
 
     if (targetColumn) {
-        (targetColumn as any).disabled = !(targetColumn as any).disabled;
+        targetColumn.disabled = !targetColumn.disabled;
         emit('update:columns', [...internalColumns.value]);
         emit('column-change', targetColumn, 'visibility');
     }
@@ -275,18 +214,16 @@ function handleToggleVisibility(column: any): void {
 /**
  * 处理固定方向变化
  */
-function handleFrozenDirectionChange(columnKey: string, direction: string): void {
+function handleFrozenDirectionChange(columnKey: string, direction: 'left' | 'right' | 'none'): void {
     const targetColumn = internalColumns.value.find((col) => getColumnKey(col) === columnKey);
 
     if (targetColumn) {
-        const col = targetColumn as any;
-
         if (direction === 'none') {
-            col.frozen = false;
-            col.alignFrozen = undefined;
+            targetColumn.frozen = false;
+            targetColumn.alignFrozen = undefined;
         } else {
-            col.frozen = true;
-            col.alignFrozen = direction;
+            targetColumn.frozen = true;
+            targetColumn.alignFrozen = direction;
         }
 
         emit('update:columns', [...internalColumns.value]);

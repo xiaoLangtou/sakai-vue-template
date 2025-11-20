@@ -1,13 +1,12 @@
 // 管理表格配置逻辑
 import { watch, shallowRef, computed } from 'vue';
 import { useColumns } from './useColumns';
-import type { TableColumns, TableColumn, ConfigurableTableProps } from '@/types/table';
+import type { TableColumns, TableColumn, CustomTableProps } from '@/types/table';
 
 export function useTableConfiguration<T = any>(
-    props: ConfigurableTableProps<T>,
+    props: CustomTableProps<T>,
     emit: (event: string, ...args: any[]) => void
 ) {
-    // 使用 shallowRef 减少深度响应式开销
     const internalColumns = shallowRef([...props.columns]);
     const processedColumns = useColumns(internalColumns);
     const actionColumn = computed(() => {
