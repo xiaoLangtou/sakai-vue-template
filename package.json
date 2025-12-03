@@ -27,6 +27,7 @@
         "nprogress": "^0.2.0",
         "pinia": "^2.1.7",
         "pinia-plugin-persistedstate": "^4.4.1",
+        "pinyin-pro": "^3.27.0",
         "preline": "^3.2.3",
         "primeicons": "^7.0.0",
         "primevue": "^4.3.6",

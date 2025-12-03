@@ -2,7 +2,7 @@ export enum LogLevel {
     DEBUG = 0,
     INFO = 1,
     WARN = 2,
-    ERROR = 3,
+    ERROR = 3
 }
 
 interface LogContext {
@@ -45,7 +45,7 @@ class Logger {
             data,
             stack: new Error().stack,
             userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-            url: typeof window !== 'undefined' ? window.location.href : undefined,
+            url: typeof window !== 'undefined' ? window.location.href : undefined
         };
     }
 
@@ -85,7 +85,7 @@ class Logger {
                 window.gtag('event', 'log', {
                     level: context.level,
                     message: context.message,
-                    custom_parameter: context.data,
+                    custom_parameter: context.data
                 });
             }
 
@@ -94,12 +94,12 @@ class Logger {
                 fetch('/api/logs/error', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(context),
+                    body: JSON.stringify(context)
                 }).catch(() => {
                     // 静默处理日志发送失败
                 });
             }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             // 静默处理监控系统错误，避免日志系统本身导致问题
         }
@@ -145,7 +145,7 @@ class Logger {
             errorData = {
                 name: error.name,
                 message: error.message,
-                stack: error.stack,
+                stack: error.stack
             };
         }
 

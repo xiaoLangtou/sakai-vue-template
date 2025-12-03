@@ -9,9 +9,6 @@ useGlobalToast();
 
 // 获取登录弹窗状态
 const { isLoginDialogVisible } = useLoginDialog();
-
-
-
 </script>
 
 <template>
@@ -21,11 +18,7 @@ const { isLoginDialogVisible } = useLoginDialog();
     <PageLoading />
 
     <!-- 全局登录弹窗 -->
-    <LoginDialog
-        v-model:visible="isLoginDialogVisible"
-        @login-success="() => {}"
-    />
-
+    <LoginDialog v-model:visible="isLoginDialogVisible" @login-success="() => {}" />
 </template>
 
 <style scoped></style>

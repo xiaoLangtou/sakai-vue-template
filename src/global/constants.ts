@@ -10,12 +10,10 @@
 // 全局storage的前缀
 export const GLOBAL_STORAGE_PREFIX = 'xlt_';
 
-export const LOGIN_URL = '/login'
-
+export const LOGIN_URL = '/login';
 
 // 验证码过期时间
 export const CAPTCHA_EXPIRE_TIME = 1000 * 60 * 2;
-
 
 export const LAYOUT_CONSTANTS = {
     BREAKPOINTS: {
@@ -26,4 +24,3 @@ export const LAYOUT_CONSTANTS = {
     DEBOUNCE_DELAY: 150,
     RESIZE_THRESHOLD: 50
 } as const;
-

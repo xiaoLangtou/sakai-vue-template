@@ -19,12 +19,7 @@
 
 ```vue
 <template>
-  <OrgSelector
-    :data="orgData"
-    :multiple="true"
-    :only-select-person="false"
-    @change="handleSelectionChange"
-  />
+    <OrgSelector :data="orgData" :multiple="true" :only-select-person="false" @change="handleSelectionChange" />
 </template>
 
 <script setup lang="ts">
@@ -33,29 +28,25 @@ import OrgSelector from '@/components/org-selector/index.vue';
 import type { OrgData } from '@/utils/org-tree';
 
 const orgData = ref<OrgData>({
-  children: [
-    {
-      id: 'dept-001',
-      name: '技术研发部',
-      children: [
+    children: [
         {
-          id: 'dept-001-001',
-          name: '前端开发组',
-          children: [],
-          staffs: [
-            { idStaff: 'staff-001', staffName: '张三', position: '前端工程师' }
-          ]
+            id: 'dept-001',
+            name: '技术研发部',
+            children: [
+                {
+                    id: 'dept-001-001',
+                    name: '前端开发组',
+                    children: [],
+                    staffs: [{ idStaff: 'staff-001', staffName: '张三', position: '前端工程师' }]
+                }
+            ],
+            staffs: [{ idStaff: 'staff-002', staffName: '技术总监', position: '技术总监' }]
         }
-      ],
-      staffs: [
-        { idStaff: 'staff-002', staffName: '技术总监', position: '技术总监' }
-      ]
-    }
-  ]
+    ]
 });
 
 const handleSelectionChange = (selectedItems) => {
-  console.log('选中的项目:', selectedItems);
+    console.log('选中的项目:', selectedItems);
 };
 </script>
 ```
@@ -64,35 +55,20 @@ const handleSelectionChange = (selectedItems) => {
 
 ```vue
 <template>
-  <div class="org-selector-container">
-    <!-- 单选模式 -->
-    <OrgSelector
-      :data="orgData"
-      :multiple="false"
-      @change="handleSingleSelection"
-    />
+    <div class="org-selector-container">
+        <!-- 单选模式 -->
+        <OrgSelector :data="orgData" :multiple="false" @change="handleSingleSelection" />
 
-    <!-- 仅选人员模式 -->
-    <OrgSelector
-      :data="orgData"
-      :only-select-person="true"
-      @change="handlePersonSelection"
-    />
-  </div>
+        <!-- 仅选人员模式 -->
+        <OrgSelector :data="orgData" :only-select-person="true" @change="handlePersonSelection" />
+    </div>
 </template>
 ```
 
 ### 使用工具函数
 
 ```typescript
-import {
-  initializeOrgData,
-  collectAllStaff,
-  searchOrgData,
-  getParentPath,
-  getOrgStatistics,
-  exportSelectedData
-} from '@/utils/org-tree';
+import { initializeOrgData, collectAllStaff, searchOrgData, getParentPath, getOrgStatistics, exportSelectedData } from '@/utils/org-tree';
 
 // 初始化数据
 const processedData = initializeOrgData(rawOrgData);
@@ -112,16 +88,16 @@ const exportData = exportSelectedData(orgData);
 
 ### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `data` | `OrgData` | `{}` | 组织架构数据 |
-| `multiple` | `boolean` | `true` | 是否支持多选 |
+| 属性               | 类型      | 默认值  | 说明             |
+| ------------------ | --------- | ------- | ---------------- |
+| `data`             | `OrgData` | `{}`    | 组织架构数据     |
+| `multiple`         | `boolean` | `true`  | 是否支持多选     |
 | `onlySelectPerson` | `boolean` | `false` | 是否只能选择人员 |
 
 ### Events
 
-| 事件 | 参数 | 说明 |
-|------|------|------|
+| 事件     | 参数                                     | 说明                 |
+| -------- | ---------------------------------------- | -------------------- |
 | `change` | `selectedItems: (Staff \| Department)[]` | 选择项发生变化时触发 |
 
 ### 数据结构
@@ -130,8 +106,8 @@ const exportData = exportSelectedData(orgData);
 
 ```typescript
 interface OrgData {
-  children: Department[];
-  staffs?: Staff[];
+    children: Department[];
+    staffs?: Staff[];
 }
 ```
 
@@ -139,14 +115,14 @@ interface OrgData {
 
 ```typescript
 interface Department {
-  id: string;
-  name: string;
-  children?: Department[];
-  staffs?: Staff[];
-  isChecked?: boolean;
-  type?: 'department';
-  parent?: string;
-  level?: number;
+    id: string;
+    name: string;
+    children?: Department[];
+    staffs?: Staff[];
+    isChecked?: boolean;
+    type?: 'department';
+    parent?: string;
+    level?: number;
 }
 ```
 
@@ -154,12 +130,12 @@ interface Department {
 
 ```typescript
 interface Staff {
-  idStaff: string;
-  staffName: string;
-  position?: string;
-  isChecked?: boolean;
-  type?: 'staff';
-  parent?: string;
+    idStaff: string;
+    staffName: string;
+    position?: string;
+    isChecked?: boolean;
+    type?: 'staff';
+    parent?: string;
 }
 ```
 
@@ -241,10 +217,10 @@ exportSelectedData(orgData: OrgData): Array<{
 
 ```scss
 .org-selector {
-  --org-primary-color: #1890ff;
-  --org-border-color: #d9d9d9;
-  --org-hover-bg: #f5f5f5;
-  --org-selected-bg: #e6f7ff;
+    --org-primary-color: #1890ff;
+    --org-border-color: #d9d9d9;
+    --org-hover-bg: #f5f5f5;
+    --org-selected-bg: #e6f7ff;
 }
 ```
 
@@ -252,18 +228,18 @@ exportSelectedData(orgData: OrgData): Array<{
 
 ```scss
 .org-selector {
-  // 自定义组件整体样式
-  .org-tree {
-    // 自定义树结构样式
-  }
-  
-  .selected-panel {
-    // 自定义选中面板样式
-  }
-  
-  .search-results {
-    // 自定义搜索结果样式
-  }
+    // 自定义组件整体样式
+    .org-tree {
+        // 自定义树结构样式
+    }
+
+    .selected-panel {
+        // 自定义选中面板样式
+    }
+
+    .search-results {
+        // 自定义搜索结果样式
+    }
 }
 ```
 
@@ -320,32 +296,37 @@ const pagedData = usePagination(orgData, 100);
 // 缓存搜索结果
 const searchCache = new Map();
 const cachedSearch = (keyword: string) => {
-  if (searchCache.has(keyword)) {
-    return searchCache.get(keyword);
-  }
-  const result = searchOrgData(keyword, orgData);
-  searchCache.set(keyword, result);
-  return result;
+    if (searchCache.has(keyword)) {
+        return searchCache.get(keyword);
+    }
+    const result = searchOrgData(keyword, orgData);
+    searchCache.set(keyword, result);
+    return result;
 };
 ```
 
 ## 🐛 常见问题
 
 ### Q: 如何处理大量数据？
+
 A: 可以使用虚拟滚动或分页加载来优化性能。
 
 ### Q: 如何自定义搜索逻辑？
+
 A: 可以重写 `searchOrgData` 函数或传入自定义搜索函数。
 
 ### Q: 如何实现权限控制？
+
 A: 在数据处理阶段过滤掉无权限的部门和人员。
 
 ### Q: 如何支持多选限制？
+
 A: 可以在 `handleCheckChange` 中添加数量限制逻辑。
 
 ## 🔄 更新日志
 
 ### v1.0.0 (2024-01-01)
+
 - ✨ 初始版本发布
 - 🌲 支持多层级部门结构
 - 🔍 实现搜索功能
@@ -377,4 +358,4 @@ MIT License
 
 ---
 
-**基于飞书组织架构选人功能的现代化Vue 3实现** 🚀 
+**基于飞书组织架构选人功能的现代化Vue 3实现** 🚀

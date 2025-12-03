@@ -557,7 +557,7 @@ export function useMenuManagement() {
             accept: async () => {
                 try {
                     // 获取选中菜单的ID数组
-                    const menuIds = selectedMenus.value.map(menu => menu.id);
+                    const menuIds = selectedMenus.value.map((menu) => menu.id);
 
                     // 调用批量删除菜单API
                     await menuApi.batchDeleteMenus(menuIds);

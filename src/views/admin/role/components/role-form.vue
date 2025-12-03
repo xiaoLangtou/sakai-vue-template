@@ -9,7 +9,6 @@ import { useToast } from 'primevue/usetoast';
 import { computed, ref, watch } from 'vue';
 import { z } from 'zod';
 
-
 // 常量定义
 const TYPE_ICONS = {
     system: 'pi pi-cog',
@@ -60,68 +59,62 @@ const orgSelectorVisible = ref(false);
 
 // 模拟组织架构数据
 const orgData = ref({
-  children: [
-    {
-      id: '1',
-      name: '总公司',
-      type: 'department' as const,
-      isChecked: false,
-      level: 0,
-      children: [
+    children: [
         {
-          id: '1-1',
-          name: '技术部',
-          type: 'department' as const,
-          isChecked: false,
-          level: 1,
-          parent: '1',
-          staffs: [
-            {
-              idStaff: 'staff-1',
-              staffName: '张三',
-              position: '前端工程师',
-              type: 'staff' as const,
-              isChecked: false,
-              parent: '1-1'
-            },
-            {
-              idStaff: 'staff-2',
-              staffName: '李四',
-              position: '后端工程师',
-              type: 'staff' as const,
-              isChecked: false,
-              parent: '1-1'
-            }
-          ]
-        },
-        {
-          id: '1-2',
-          name: '市场部',
-          type: 'department' as const,
-          isChecked: false,
-          level: 1,
-          parent: '1',
-          staffs: [
-            {
-              idStaff: 'staff-3',
-              staffName: '王五',
-              position: '市场专员',
-              type: 'staff' as const,
-              isChecked: false,
-              parent: '1-2'
-            }
-          ]
+            id: '1',
+            name: '总公司',
+            type: 'department' as const,
+            isChecked: false,
+            level: 0,
+            children: [
+                {
+                    id: '1-1',
+                    name: '技术部',
+                    type: 'department' as const,
+                    isChecked: false,
+                    level: 1,
+                    parent: '1',
+                    staffs: [
+                        {
+                            idStaff: 'staff-1',
+                            staffName: '张三',
+                            position: '前端工程师',
+                            type: 'staff' as const,
+                            isChecked: false,
+                            parent: '1-1'
+                        },
+                        {
+                            idStaff: 'staff-2',
+                            staffName: '李四',
+                            position: '后端工程师',
+                            type: 'staff' as const,
+                            isChecked: false,
+                            parent: '1-1'
+                        }
+                    ]
+                },
+                {
+                    id: '1-2',
+                    name: '市场部',
+                    type: 'department' as const,
+                    isChecked: false,
+                    level: 1,
+                    parent: '1',
+                    staffs: [
+                        {
+                            idStaff: 'staff-3',
+                            staffName: '王五',
+                            position: '市场专员',
+                            type: 'staff' as const,
+                            isChecked: false,
+                            parent: '1-2'
+                        }
+                    ]
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 });
-
-
-
-
-
-
 
 // 计算属性
 const drawerVisible = computed({
@@ -197,15 +190,18 @@ const getScopeIcon = (scope: string) => SCOPE_ICONS[scope as keyof typeof SCOPE_
 
 const getDataScopeSeverity = (scope: string) => {
     switch (scope) {
-        case 'all': return 'success';
-        case 'dept': return 'info';
-        case 'user': return 'warning';
-        case 'custom': return 'secondary';
-        default: return 'secondary';
+        case 'all':
+            return 'success';
+        case 'dept':
+            return 'info';
+        case 'user':
+            return 'warning';
+        case 'custom':
+            return 'secondary';
+        default:
+            return 'secondary';
     }
 };
-
-
 
 const getStatusSeverity = (status: number) => {
     return status === 1 ? 'success' : 'danger';
@@ -227,7 +223,7 @@ const handleCodeInput = (value: string, onInput: Function) => {
     // 自动转换为小写并过滤非法字符
     const cleanValue = value.toLowerCase().replace(/[^a-z0-9_]/g, '');
     onInput({ target: { value: cleanValue } });
-}
+};
 
 // 自定义数据权限相关处理函数
 const handleDataScopeChange = (event: any) => {
@@ -253,9 +249,9 @@ const handleCustomDataScopeTypeChange = (type: 'dept' | 'user') => {
 
 const handleOrgSelectorChange = (selectedItems: any[]) => {
     if (customDataScopeType.value === 'dept') {
-        selectedDepts.value = selectedItems.filter(item => item.type === 'department');
+        selectedDepts.value = selectedItems.filter((item) => item.type === 'department');
     } else {
-        selectedUsers.value = selectedItems.filter(item => item.type === 'staff');
+        selectedUsers.value = selectedItems.filter((item) => item.type === 'staff');
     }
 };
 
@@ -274,8 +270,6 @@ const removeOrgItem = (index: number) => {
         selectedUsers.value.splice(index, 1);
     }
 };
-
-
 
 // 监听属性变化
 watch(
@@ -404,13 +398,9 @@ const handleFormSubmit = () => {
 </script>
 
 <template>
-    <CustomDrawer
-v-model:visible="drawerVisible" :header="formData.id ? '编辑角色' : '新增角色'" :modal="true" :dismissable="!isSubmitting"
-        position="right" class="!w-[800px]" @hide="closeDrawer">
+    <CustomDrawer v-model:visible="drawerVisible" :header="formData.id ? '编辑角色' : '新增角色'" :modal="true" :dismissable="!isSubmitting" position="right" class="!w-[800px]" @hide="closeDrawer">
         <div class="flex-1 overflow-y-auto">
-            <Form
-ref="formRef" :resolver="zodResolver(roleSchema)" :default-values="getInitialValues()"
-                class="space-y-6" @submit="onFormSubmit">
+            <Form ref="formRef" :resolver="zodResolver(roleSchema)" :default-values="getInitialValues()" class="space-y-6" @submit="onFormSubmit">
                 <!-- 基本信息 -->
                 <Fieldset legend="基本信息" :toggleable="true" class="mb-4">
                     <template #legend="{ toggleCallback }">
@@ -421,53 +411,54 @@ ref="formRef" :resolver="zodResolver(roleSchema)" :default-values="getInitialVal
                     </template>
 
                     <div class="space-y-3 pt-4 pb-4">
-                         <!-- 角色名称 -->
-                         <SmartFormField name="name" label="角色名称" required>
-                             <template #default="{ field }">
-                                 <InputText
-v-model="field.value" placeholder="请输入角色名称，如：系统管理员"
-                                     class="w-full" :invalid="field.invalid" />
-                             </template>
-                         </SmartFormField>
+                        <!-- 角色名称 -->
+                        <SmartFormField name="name" label="角色名称" required>
+                            <template #default="{ field }">
+                                <InputText v-model="field.value" placeholder="请输入角色名称，如：系统管理员" class="w-full" :invalid="field.invalid" />
+                            </template>
+                        </SmartFormField>
 
-                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                             <!-- 角色编码 -->
-                             <SmartFormField
-name="code" label="角色编码" required
-                                 description="编码将用于系统内部标识，建议使用英文字母">
-                                 <template #default="{ field }">
-                                     <div class="p-inputgroup">
-                                         <InputText
-v-model="field.value" placeholder="请输入角色编码，如：admin"
-                                             class="w-full" :invalid="field.invalid"
-                                             @input="(e) => handleCodeInput((e.target as HTMLInputElement)?.value || '', (val) => field.value = val.target.value)" />
-                                         <Button
-v-tooltip.top="'根据角色名称生成编码'" type="button" icon="pi pi-refresh" severity="secondary"
-                                             outlined
-                                             :disabled="!field.value" @click="generateCode(field.value ?? '', (val) => field.value = val.target.value)" />
-                                     </div>
-                                 </template>
-                             </SmartFormField>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- 角色编码 -->
+                            <SmartFormField name="code" label="角色编码" required description="编码将用于系统内部标识，建议使用英文字母">
+                                <template #default="{ field }">
+                                    <div class="p-inputgroup">
+                                        <InputText
+                                            v-model="field.value"
+                                            placeholder="请输入角色编码，如：admin"
+                                            class="w-full"
+                                            :invalid="field.invalid"
+                                            @input="(e) => handleCodeInput((e.target as HTMLInputElement)?.value || '', (val) => (field.value = val.target.value))"
+                                        />
+                                        <Button
+                                            v-tooltip.top="'根据角色名称生成编码'"
+                                            type="button"
+                                            icon="pi pi-refresh"
+                                            severity="secondary"
+                                            outlined
+                                            :disabled="!field.value"
+                                            @click="generateCode(field.value ?? '', (val) => (field.value = val.target.value))"
+                                        />
+                                    </div>
+                                </template>
+                            </SmartFormField>
 
-                             <!-- 角色类型 -->
-                             <SmartFormField name="type" label="角色类型">
-                                 <template #default="{ field }">
-                                     <Select
-v-model="field.value" :options="typeOptions" option-label="label"
-                                         option-value="value" placeholder="请选择角色类型" class="w-full"
-                                         :invalid="field.invalid">
-                                         <template #option="slotProps">
-                                             <div class="flex items-center gap-2">
-                                                 <i :class="getTypeIcon(slotProps.option.value)" class="text-sm"></i>
-                                                 <span>{{ slotProps.option.label }}</span>
-                                             </div>
-                                         </template>
-                                     </Select>
-                                 </template>
-                             </SmartFormField>
-                         </div>
-                     </div>
-                 </Fieldset>
+                            <!-- 角色类型 -->
+                            <SmartFormField name="type" label="角色类型">
+                                <template #default="{ field }">
+                                    <Select v-model="field.value" :options="typeOptions" option-label="label" option-value="value" placeholder="请选择角色类型" class="w-full" :invalid="field.invalid">
+                                        <template #option="slotProps">
+                                            <div class="flex items-center gap-2">
+                                                <i :class="getTypeIcon(slotProps.option.value)" class="text-sm"></i>
+                                                <span>{{ slotProps.option.label }}</span>
+                                            </div>
+                                        </template>
+                                    </Select>
+                                </template>
+                            </SmartFormField>
+                        </div>
+                    </div>
+                </Fieldset>
 
                 <!-- 权限配置 -->
                 <Fieldset legend="权限配置" :toggleable="true" class="mb-4">
@@ -479,169 +470,124 @@ v-model="field.value" :options="typeOptions" option-label="label"
                     </template>
 
                     <div class="space-y-3 pt-4 pb-4">
-                         <!-- 数据权限 -->
-                         <SmartFormField name="dataScope" label="数据权限" description="选择角色可访问的数据范围">
-                             <template #default="{ field }">
-                                 <div class="space-y-4">
-                                     <!-- 数据权限选择器 -->
-                                     <Select
-v-model="field.value" :options="dataScopeOptions" option-label="label"
-                                         option-value="value" placeholder="请选择数据权限范围" class="w-full"
-                                         :invalid="field.invalid" @change="handleDataScopeChange">
-                                         <template #value="slotProps">
-                                             <div v-if="slotProps.value" class="flex items-center gap-2">
-                                                 <i :class="getScopeIcon(slotProps.value)" class="text-sm"></i>
-                                                 <span>{{ dataScopeOptions.find(opt => opt.value === slotProps.value)?.label }}</span>
-                                                 <Tag :value="slotProps.value" :severity="getDataScopeSeverity(slotProps.value)" class="ml-auto" />
-                                             </div>
-                                         </template>
-                                         <template #option="slotProps">
-                                             <div class="flex flex-col gap-1 py-2">
-                                                 <div class="flex items-center justify-between">
-                                                     <div class="flex items-center gap-2">
-                                                         <i :class="getScopeIcon(slotProps.option.value)" class="text-sm"></i>
-                                                         <span class="font-medium">{{ slotProps.option.label }}</span>
-                                                     </div>
-                                                     <Tag :value="slotProps.option.value" :severity="getDataScopeSeverity(slotProps.option.value)" />
-                                                 </div>
-                                                 <small class="text-gray-500 ml-5">{{ slotProps.option.description }}</small>
-                                             </div>
-                                         </template>
-                                     </Select>
+                        <!-- 数据权限 -->
+                        <SmartFormField name="dataScope" label="数据权限" description="选择角色可访问的数据范围">
+                            <template #default="{ field }">
+                                <div class="space-y-4">
+                                    <!-- 数据权限选择器 -->
+                                    <Select v-model="field.value" :options="dataScopeOptions" option-label="label" option-value="value" placeholder="请选择数据权限范围" class="w-full" :invalid="field.invalid" @change="handleDataScopeChange">
+                                        <template #value="slotProps">
+                                            <div v-if="slotProps.value" class="flex items-center gap-2">
+                                                <i :class="getScopeIcon(slotProps.value)" class="text-sm"></i>
+                                                <span>{{ dataScopeOptions.find((opt) => opt.value === slotProps.value)?.label }}</span>
+                                                <Tag :value="slotProps.value" :severity="getDataScopeSeverity(slotProps.value)" class="ml-auto" />
+                                            </div>
+                                        </template>
+                                        <template #option="slotProps">
+                                            <div class="flex flex-col gap-1 py-2">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center gap-2">
+                                                        <i :class="getScopeIcon(slotProps.option.value)" class="text-sm"></i>
+                                                        <span class="font-medium">{{ slotProps.option.label }}</span>
+                                                    </div>
+                                                    <Tag :value="slotProps.option.value" :severity="getDataScopeSeverity(slotProps.option.value)" />
+                                                </div>
+                                                <small class="text-gray-500 ml-5">{{ slotProps.option.description }}</small>
+                                            </div>
+                                        </template>
+                                    </Select>
 
-                                     <!-- 自定义数据权限配置 -->
-                                     <div v-if="showCustomDataScope" class="custom-data-scope-config">
-                                         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                             <div class="mb-4">
-                                                 <h4 class="text-sm font-medium text-gray-700 mb-3">自定义数据权限配置</h4>
+                                    <!-- 自定义数据权限配置 -->
+                                    <div v-if="showCustomDataScope" class="custom-data-scope-config">
+                                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <div class="mb-4">
+                                                <h4 class="text-sm font-medium text-gray-700 mb-3">自定义数据权限配置</h4>
 
-                                                 <!-- 权限类型选择 -->
-                                                 <div class="flex gap-4 mb-4">
-                                                     <div class="flex items-center">
-                                                         <RadioButton
-                                                             v-model="customDataScopeType"
-                                                             input-id="dept-permission"
-                                                             value="dept"
-                                                             @change="() => handleCustomDataScopeTypeChange('dept')"
-                                                         />
-                                                         <label for="dept-permission" class="ml-2 text-sm text-gray-700">部门权限</label>
-                                                     </div>
-                                                     <div class="flex items-center">
-                                                         <RadioButton
-                                                             v-model="customDataScopeType"
-                                                             input-id="user-permission"
-                                                             value="user"
-                                                             @change="() => handleCustomDataScopeTypeChange('user')"
-                                                         />
-                                                         <label for="user-permission" class="ml-2 text-sm text-gray-700">用户权限</label>
-                                                     </div>
-                                                 </div>
+                                                <!-- 权限类型选择 -->
+                                                <div class="flex gap-4 mb-4">
+                                                    <div class="flex items-center">
+                                                        <RadioButton v-model="customDataScopeType" input-id="dept-permission" value="dept" @change="() => handleCustomDataScopeTypeChange('dept')" />
+                                                        <label for="dept-permission" class="ml-2 text-sm text-gray-700">部门权限</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <RadioButton v-model="customDataScopeType" input-id="user-permission" value="user" @change="() => handleCustomDataScopeTypeChange('user')" />
+                                                        <label for="user-permission" class="ml-2 text-sm text-gray-700">用户权限</label>
+                                                    </div>
+                                                </div>
 
-                                                 <!-- 组织架构选择器 -->
-                                                 <div class="mb-4">
-                                                     <div class="flex items-center justify-between mb-2">
-                                                         <label class="text-sm font-medium text-gray-700">
-                                                             {{ customDataScopeType === 'dept' ? '选择部门' : '选择用户' }}
-                                                         </label>
-                                                         <Button
-                                                             type="button"
-                                                             icon="pi pi-plus"
-                                                             label="选择"
-                                                             size="small"
-                                                             outlined
-                                                             @click="openOrgSelector"
-                                                         />
-                                                     </div>
+                                                <!-- 组织架构选择器 -->
+                                                <div class="mb-4">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <label class="text-sm font-medium text-gray-700">
+                                                            {{ customDataScopeType === 'dept' ? '选择部门' : '选择用户' }}
+                                                        </label>
+                                                        <Button type="button" icon="pi pi-plus" label="选择" size="small" outlined @click="openOrgSelector" />
+                                                    </div>
 
-                                                     <!-- 已选择的项目预览 -->
-                                                     <div class="min-h-[60px] border border-gray-200 rounded p-3 bg-white">
-                                                         <div
-v-if="(customDataScopeType === 'dept' ? selectedDepts : selectedUsers).length === 0"
-                                                              class="text-gray-400 text-sm text-center py-2">
-                                                             暂未选择任何{{ customDataScopeType === 'dept' ? '部门' : '用户' }}
-                                                         </div>
-                                                         <div v-else class="flex flex-wrap gap-2">
-                                                             <Chip
-                                                                 v-for="(item, index) in (customDataScopeType === 'dept' ? selectedDepts : selectedUsers)"
-                                                                 :key="index"
-                                                                 :label="getOrgItemName(item)"
-                                                                 removable
-                                                                 @remove="removeOrgItem(index)"
-                                                             />
-                                                         </div>
-                                                     </div>
-                                                 </div>
+                                                    <!-- 已选择的项目预览 -->
+                                                    <div class="min-h-[60px] border border-gray-200 rounded p-3 bg-white">
+                                                        <div v-if="(customDataScopeType === 'dept' ? selectedDepts : selectedUsers).length === 0" class="text-gray-400 text-sm text-center py-2">
+                                                            暂未选择任何{{ customDataScopeType === 'dept' ? '部门' : '用户' }}
+                                                        </div>
+                                                        <div v-else class="flex flex-wrap gap-2">
+                                                            <Chip v-for="(item, index) in customDataScopeType === 'dept' ? selectedDepts : selectedUsers" :key="index" :label="getOrgItemName(item)" removable @remove="removeOrgItem(index)" />
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                                 <!-- 权限预览 -->
-                                                 <div class="bg-blue-50 p-3 rounded border border-blue-200">
-                                                     <div class="flex items-start gap-2">
-                                                         <i class="pi pi-info-circle text-blue-600 mt-0.5"></i>
-                                                         <div>
-                                                             <div class="text-sm font-medium text-blue-700 mb-1">权限预览</div>
-                                                             <div class="text-xs text-blue-600">
-                                                                 <span v-if="customDataScopeType === 'dept' && selectedDepts.length > 0">
-                                                                     该角色可以访问 {{ selectedDepts.length }} 个部门的数据
-                                                                 </span>
-                                                                 <span v-else-if="customDataScopeType === 'user' && selectedUsers.length > 0">
-                                                                     该角色可以访问 {{ selectedUsers.length }} 个用户的数据
-                                                                 </span>
-                                                                 <span v-else>
-                                                                     请选择具体的{{ customDataScopeType === 'dept' ? '部门' : '用户' }}权限
-                                                                 </span>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </div>
-                                             </div>
-                                         </div>
-                                     </div>
+                                                <!-- 权限预览 -->
+                                                <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                                                    <div class="flex items-start gap-2">
+                                                        <i class="pi pi-info-circle text-blue-600 mt-0.5"></i>
+                                                        <div>
+                                                            <div class="text-sm font-medium text-blue-700 mb-1">权限预览</div>
+                                                            <div class="text-xs text-blue-600">
+                                                                <span v-if="customDataScopeType === 'dept' && selectedDepts.length > 0"> 该角色可以访问 {{ selectedDepts.length }} 个部门的数据 </span>
+                                                                <span v-else-if="customDataScopeType === 'user' && selectedUsers.length > 0"> 该角色可以访问 {{ selectedUsers.length }} 个用户的数据 </span>
+                                                                <span v-else> 请选择具体的{{ customDataScopeType === 'dept' ? '部门' : '用户' }}权限 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </SmartFormField>
 
-                                 </div>
-                             </template>
-                         </SmartFormField>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- 状态 -->
+                            <SmartFormField name="status" label="状态">
+                                <template #default="{ field }">
+                                    <Select v-model="field.value" :options="statusOptions" option-label="label" option-value="value" placeholder="请选择状态" class="w-full" :invalid="field.invalid">
+                                        <template #option="slotProps">
+                                            <div class="flex items-center gap-2">
+                                                <Tag :value="slotProps.option.label" :severity="getStatusSeverity(slotProps.option.value)" />
+                                            </div>
+                                        </template>
+                                    </Select>
+                                </template>
+                            </SmartFormField>
 
-                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                             <!-- 状态 -->
-                             <SmartFormField name="status" label="状态">
-                                 <template #default="{ field }">
-                                     <Select
-v-model="field.value" :options="statusOptions" option-label="label"
-                                          option-value="value" placeholder="请选择状态" class="w-full"
-                                          :invalid="field.invalid">
-                                          <template #option="slotProps">
-                                              <div class="flex items-center gap-2">
-                                                  <Tag
-:value="slotProps.option.label"
-                                                      :severity="getStatusSeverity(slotProps.option.value)" />
-                                              </div>
-                                          </template>
-                                      </Select>
-                                  </template>
-                              </SmartFormField>
+                            <!-- 排序 -->
+                            <SmartFormField name="sort" label="排序" description="数值越小排序越靠前">
+                                <template #default="{ field }">
+                                    <InputNumber v-model="field.value" :min="0" :max="999" placeholder="排序值" class="w-full" :invalid="field.invalid" show-buttons :step="1" />
+                                </template>
+                            </SmartFormField>
+                        </div>
 
-                              <!-- 排序 -->
-                              <SmartFormField name="sort" label="排序" description="数值越小排序越靠前">
-                                  <template #default="{ field }">
-                                      <InputNumber
-v-model="field.value" :min="0" :max="999"
-                                          placeholder="排序值" class="w-full" :invalid="field.invalid"
-                                          show-buttons :step="1" />
-                                  </template>
-                              </SmartFormField>
-                          </div>
-
-                          <!-- 设为默认角色 -->
-                          <div class="flex items-center gap-3">
-                              <SmartFormField
-name="isDefault" label="设为默认角色"
-                                  description="新用户注册时自动分配此角色">
-                                  <template #default="{ field }">
-                                      <InputSwitch v-model="field.value" />
-                                  </template>
-                              </SmartFormField>
-                          </div>
-                      </div>
-                  </Fieldset>
+                        <!-- 设为默认角色 -->
+                        <div class="flex items-center gap-3">
+                            <SmartFormField name="isDefault" label="设为默认角色" description="新用户注册时自动分配此角色">
+                                <template #default="{ field }">
+                                    <InputSwitch v-model="field.value" />
+                                </template>
+                            </SmartFormField>
+                        </div>
+                    </div>
+                </Fieldset>
 
                 <!-- 备注信息 -->
                 <Fieldset legend="备注信息" :toggleable="true" class="mb-4">
@@ -656,10 +602,7 @@ name="isDefault" label="设为默认角色"
                         <!-- 备注 -->
                         <SmartFormField name="remark" label="备注">
                             <template #default="{ field }">
-                                <Textarea
-v-model="field.value" rows="4" :auto-resize="true"
-                                    placeholder="请输入角色备注信息..." :maxlength="500"
-                                    class="w-full" :invalid="field.invalid" />
+                                <Textarea v-model="field.value" rows="4" :auto-resize="true" placeholder="请输入角色备注信息..." :maxlength="500" class="w-full" :invalid="field.invalid" />
                                 <div class="text-right mt-1">
                                     <small class="text-gray-500">{{ (field.value || '').length }}/500</small>
                                 </div>
@@ -672,29 +615,14 @@ v-model="field.value" rows="4" :auto-resize="true"
 
         <!-- 底部操作按钮 -->
         <template #footer>
-           <Button
-type="button" label="取消" icon="pi pi-times" severity="secondary" outlined
-                        :disabled="isSubmitting" class="action-button" @click="closeDrawer" />
-                    <Button
-type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined
-                        :disabled="isSubmitting" class="action-button" @click="resetForm" />
-                    <Button
-type="button" :label="submitButtonLabel"
-                        :icon="isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-                        :disabled="invalid || isSubmitting" :loading="isSubmitting" class="action-button primary-button"
-                        @click="handleFormSubmit" />
+            <Button type="button" label="取消" icon="pi pi-times" severity="secondary" outlined :disabled="isSubmitting" class="action-button" @click="closeDrawer" />
+            <Button type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined :disabled="isSubmitting" class="action-button" @click="resetForm" />
+            <Button type="button" :label="submitButtonLabel" :icon="isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'" :disabled="invalid || isSubmitting" :loading="isSubmitting" class="action-button primary-button" @click="handleFormSubmit" />
         </template>
     </CustomDrawer>
 
     <!-- 组织架构选择器弹窗 -->
-    <OrgSelector
-        v-model:visible="orgSelectorVisible"
-        :data="orgData"
-        :mode="'modal'"
-        :multiple="true"
-        :only-select-person="customDataScopeType === 'user'"
-        @change="handleOrgSelectorChange"
-    />
+    <OrgSelector v-model:visible="orgSelectorVisible" :data="orgData" :mode="'modal'" :multiple="true" :only-select-person="customDataScopeType === 'user'" @change="handleOrgSelectorChange" />
 </template>
 
 <style lang="scss" scoped>
@@ -741,8 +669,6 @@ type="button" :label="submitButtonLabel"
     font-size: 0.875rem;
     margin-top: 0.25rem;
 }
-
-
 
 /* 抽屉底部样式 */
 .drawer-footer {

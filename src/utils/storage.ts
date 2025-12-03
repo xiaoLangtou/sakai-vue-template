@@ -39,17 +39,12 @@ export class StorageUtil {
      * @param [expireSeconds] 过期时间（秒），可选
      * @param useSession 是否使用sessionStorage，默认使用localStorage
      */
-    public static set<T>(
-        key: string,
-        value: T,
-        expireSeconds: number = StorageUtil.defaultExpire!,
-        useSession = false,
-    ) {
+    public static set<T>(key: string, value: T, expireSeconds: number = StorageUtil.defaultExpire!, useSession = false) {
         const fullKey = StorageUtil.getKey(key);
         const storage = StorageUtil.getStorage(useSession);
         const data = {
             value,
-            expire: expireSeconds ? Date.now() + expireSeconds * 1000 : null,
+            expire: expireSeconds ? Date.now() + expireSeconds * 1000 : null
         };
 
         if (StorageUtil.isStorageFull()) {

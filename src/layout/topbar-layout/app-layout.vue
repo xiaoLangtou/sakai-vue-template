@@ -10,7 +10,6 @@ import AppMegaMenu from './app-mega-menu.vue';
 const layoutStore = useLayoutStore();
 const { layoutConfig, layoutState } = storeToRefs(layoutStore);
 
-
 import { getCurrentLayoutSizes, HEADER_HEIGHTS, MENU_HEIGHTS } from '@/global/layout-sizes';
 
 // 头部和菜单栏高度 - 使用配置化管理
@@ -40,19 +39,15 @@ onMounted(() => {
         window.removeEventListener('resize', updateLayoutSizes);
     });
 });
-
-
 </script>
 
 <template>
     <div class="app-layout-topbar">
         <!-- 固定顶部区域：Logo和工具栏 -->
-        <div
-            class="topbar-header fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="topbar-header fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="flex items-center justify-between h-16 px-6 max-w-screen-2xl mx-auto">
                 <!-- Logo区域 -->
                 <app-header-logo />
-
 
                 <!-- 中间菜单区域 -->
                 <div class="flex-1 flex mx-8">
@@ -65,7 +60,6 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-
 
         <!-- 可滚动的主内容区域 -->
         <div class="layout-main-container !p-0" :style="{ marginTop: headerHeight + 'px' }">
@@ -155,7 +149,6 @@ html {
 
 /* 确保固定元素在移动设备上正常工作 */
 @supports (-webkit-touch-callout: none) {
-
     .topbar-header,
     .topbar-menu {
         position: -webkit-sticky;

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { BestSellingWidget, NotificationsWidget, RecentSalesWidget, RevenueStreamWidget, StatsWidget } from './components';
-
 </script>
 
 <template>

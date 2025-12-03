@@ -9,8 +9,6 @@ import AppConfigurator from './shared/app-configurator.vue';
 const layoutStore = useLayoutStore();
 const { layoutConfig, layoutState } = storeToRefs(layoutStore);
 
-
-
 const currentLayout = computed(() => {
     switch (layoutConfig.value.layoutMode) {
         case 'topbar':
@@ -23,6 +21,6 @@ const currentLayout = computed(() => {
 
 <template>
     <component :is="currentLayout" />
-     <!-- 系统配置抽屉 -->
+    <!-- 系统配置抽屉 -->
     <AppConfigurator v-model:visible="layoutState.configSidebarVisible" />
 </template>

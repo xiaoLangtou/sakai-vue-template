@@ -246,30 +246,22 @@ onMounted(() => {
                 <h5 class="m-0">菜单管理</h5>
                 <div>
                     <Button label="新增" icon="pi pi-plus" class="mr-2" @click="handleCreate" />
-                    <Button
-label="批量删除" icon="pi pi-trash" severity="danger" :disabled="selectedMenus.length === 0"
-                        @click="batchDeleteMenus" />
+                    <Button label="批量删除" icon="pi pi-trash" severity="danger" :disabled="selectedMenus.length === 0" @click="batchDeleteMenus" />
                 </div>
             </div>
         </template>
 
         <!-- 搜索区域 -->
-        <ListSearch
-v-model="searchParams" :filter-configs="filterConfigs" placeholder="请输入搜索内容" :loading="loading"
-            @search="handleSearch">
+        <ListSearch v-model="searchParams" :filter-configs="filterConfigs" placeholder="请输入搜索内容" :loading="loading" @search="handleSearch">
             <template #actions>
-                <Button
-icon="pi pi-refresh" class="mr-2" severity="secondary" outlined :disabled="loading"
-                    @click="refreshMenus" />
+                <Button icon="pi pi-refresh" class="mr-2" severity="secondary" outlined :disabled="loading" @click="refreshMenus" />
             </template>
         </ListSearch>
 
         <!-- 分割线 -->
         <Divider type="dashed" />
         <!-- TreeTable -->
-        <TreeTable
-v-model:selection="selectedMenus" :value="treeData" size="normal" :resizable-columns="true"
-            show-gridlines :loading="loading" data-key="key" :scrollable="true" scroll-height="600px">
+        <TreeTable v-model:selection="selectedMenus" :value="treeData" size="normal" :resizable-columns="true" show-gridlines :loading="loading" data-key="key" :scrollable="true" scroll-height="600px">
             <!-- 菜单名称列 -->
             <Column field="name" header="菜单名称" :expander="true" style="width: 250px">
                 <template #body="{ node }">
@@ -283,18 +275,14 @@ v-model:selection="selectedMenus" :value="treeData" size="normal" :resizable-col
             <!-- 类型列 -->
             <Column field="type" header="类型" style="width: 120px">
                 <template #body="{ node }">
-                    <Tag
-:value="getTypeConfig(node.data.type).label"
-                        :severity="getTypeConfig(node.data.type).severity" />
+                    <Tag :value="getTypeConfig(node.data.type).label" :severity="getTypeConfig(node.data.type).severity" />
                 </template>
             </Column>
 
             <!-- 路由路径列 -->
             <Column field="path" header="路由路径" style="width: 200px">
                 <template #body="{ node }">
-                    <a
-v-if="node.data.isExternal && node.data.externalUrl" :href="node.data.externalUrl"
-                        target="_blank" class="text-blue-500 hover:underline">
+                    <a v-if="node.data.isExternal && node.data.externalUrl" :href="node.data.externalUrl" target="_blank" class="text-blue-500 hover:underline">
                         {{ node.data.externalUrl }}
                     </a>
                     <span v-else>{{ node.data.path || '-' }}</span>
@@ -318,18 +306,14 @@ v-if="node.data.isExternal && node.data.externalUrl" :href="node.data.externalUr
             <!-- 状态列 -->
             <Column field="status" header="状态" style="width: 100px; text-align: center">
                 <template #body="{ node }">
-                    <Tag
-:value="node.data.status === 1 ? '启用' : '禁用'"
-                        :severity="node.data.status === 1 ? 'success' : 'danger'" />
+                    <Tag :value="node.data.status === 1 ? '启用' : '禁用'" :severity="node.data.status === 1 ? 'success' : 'danger'" />
                 </template>
             </Column>
 
             <!-- 显示列 -->
             <Column field="visible" header="显示" style="width: 80px; text-align: center">
                 <template #body="{ node }">
-                    <Tag
-:value="node.data.visible ? '是' : '否'"
-                        :severity="node.data.visible ? 'success' : 'secondary'" />
+                    <Tag :value="node.data.visible ? '是' : '否'" :severity="node.data.visible ? 'success' : 'secondary'" />
                 </template>
             </Column>
 
@@ -344,15 +328,9 @@ v-if="node.data.isExternal && node.data.externalUrl" :href="node.data.externalUr
             <Column header="操作" style="width: 200px">
                 <template #body="{ node }">
                     <div class="flex gap-2">
-                        <Button
-v-tooltip="'添加子菜单'" icon="pi pi-plus" size="small"
-                            class="p-button-text p-button-success" @click="handleAddChild(node.data.id)" />
-                        <Button
-v-tooltip="'编辑'" icon="pi pi-pencil" size="small" class="p-button-text"
-                            @click="handleEdit(node.data.id)" />
-                        <Button
-v-tooltip="'删除'" icon="pi pi-trash" size="small" class="p-button-text p-button-danger"
-                            @click="handleDelete(node.data.id)" />
+                        <Button v-tooltip="'添加子菜单'" icon="pi pi-plus" size="small" class="p-button-text p-button-success" @click="handleAddChild(node.data.id)" />
+                        <Button v-tooltip="'编辑'" icon="pi pi-pencil" size="small" class="p-button-text" @click="handleEdit(node.data.id)" />
+                        <Button v-tooltip="'删除'" icon="pi pi-trash" size="small" class="p-button-text p-button-danger" @click="handleDelete(node.data.id)" />
                     </div>
                 </template>
             </Column>
@@ -369,9 +347,15 @@ v-tooltip="'删除'" icon="pi pi-trash" size="small" class="p-button-text p-butt
 
         <!-- 菜单表单弹窗 -->
         <MenuForm
-v-model:visible="dialogVisible" v-model:form-data="formData" :title="dialogTitle"
-            :parent-menu-options="parentMenuOptions" :loading="loading" @submit="handleFormSubmit"
-            @close="handleFormClose" @batch-add-buttons="handleBatchAddButtons" />
+            v-model:visible="dialogVisible"
+            v-model:form-data="formData"
+            :title="dialogTitle"
+            :parent-menu-options="parentMenuOptions"
+            :loading="loading"
+            @submit="handleFormSubmit"
+            @close="handleFormClose"
+            @batch-add-buttons="handleBatchAddButtons"
+        />
 
         <!-- 确认对话框 -->
         <ConfirmDialog />

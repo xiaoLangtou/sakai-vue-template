@@ -74,13 +74,13 @@ const notifications = ref([
 
 /** 未读消息数量 */
 const unreadCount = computed(() => {
-    return notifications.value.filter(n => !n.isRead).length;
+    return notifications.value.filter((n) => !n.isRead).length;
 });
 
 // ==================== 事件处理方法 ====================
 const avatarProps = computed(() => {
     const props: Record<string, any> = {};
-    if ( authStore.userInfo?.headPic ) {
+    if (authStore.userInfo?.headPic) {
         props.image = authStore.userInfo?.headPic;
     } else {
         props.icon = 'pi pi-user';
@@ -113,8 +113,8 @@ const openNotificationDrawer = (): void => {
  * 标记消息为已读
  */
 const markAsRead = (notificationId: number): void => {
-    const notification = notifications.value.find(n => n.id === notificationId);
-    if ( notification ) {
+    const notification = notifications.value.find((n) => n.id === notificationId);
+    if (notification) {
         notification.isRead = true;
     }
 };
@@ -123,15 +123,15 @@ const markAsRead = (notificationId: number): void => {
  * 标记所有消息为已读
  */
 const markAllAsRead = (): void => {
-    notifications.value.forEach(n => n.isRead = true);
+    notifications.value.forEach((n) => (n.isRead = true));
 };
 
 /**
  * 删除消息
  */
 const deleteNotification = (notificationId: number): void => {
-    const index = notifications.value.findIndex(n => n.id === notificationId);
-    if ( index > -1 ) {
+    const index = notifications.value.findIndex((n) => n.id === notificationId);
+    if (index > -1) {
         notifications.value.splice(index, 1);
     }
 };
@@ -184,13 +184,15 @@ const getNotificationColor = (type: string): string => {
 </script>
 
 <template>
-    <div :class="[
-        'layout-topbar',
-        {
-            'mobile-topbar': layoutStore.isMobile,
-            'desktop-topbar': !layoutStore.isMobile
-        }
-    ]">
+    <div
+        :class="[
+            'layout-topbar',
+            {
+                'mobile-topbar': layoutStore.isMobile,
+                'desktop-topbar': !layoutStore.isMobile
+            }
+        ]"
+    >
         <div class="layout-topbar-actions">
             <!-- 移动端布局 -->
             <template v-if="layoutStore.isMobile">
@@ -235,32 +237,23 @@ const getNotificationColor = (type: string): string => {
                         <Sun v-if="!isDarkTheme" :size="18" />
                         <MoonIcon v-else :size="18" />
                     </div>
-                    <div class="layout-topbar-action"
-                         @click="openConfigDrawer">
+                    <div class="layout-topbar-action" @click="openConfigDrawer">
                         <SwatchBook :size="18"></SwatchBook>
                     </div>
 
-                    <div
-                        class="layout-topbar-action  hidden lg:block"
-                        @click="openProfileDrawer">
+                    <div class="layout-topbar-action hidden lg:block" @click="openProfileDrawer">
                         <OverlayBadge>
                             <CalendarDays :size="18" />
                         </OverlayBadge>
                     </div>
 
-                    <div v-tooltip.bottom="'站内信'" class="layout-topbar-action hidden lg:block"
-                         @click="openNotificationDrawer">
+                    <div v-tooltip.bottom="'站内信'" class="layout-topbar-action hidden lg:block" @click="openNotificationDrawer">
                         <OverlayBadge>
                             <Bell :size="18" class="bell-animation" />
                         </OverlayBadge>
-
                     </div>
-                    <div
-                        class=" hidden lg:block ml-1"
-                        @click="openProfileDrawer">
-                        <Avatar :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }"
-                                class="overflow-hidden rounded-sm"
-                                v-bind="avatarProps" />
+                    <div class="hidden lg:block ml-1" @click="openProfileDrawer">
+                        <Avatar :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }" class="overflow-hidden rounded-sm" v-bind="avatarProps" />
                     </div>
                 </div>
             </template>
@@ -268,24 +261,13 @@ const getNotificationColor = (type: string): string => {
     </div>
 
     <!-- 极简消息通知抽屉 -->
-    <NotificationDrawer
-        v-model:visible="notificationDrawerVisible"
-        :notifications="notifications"
-        @delete="deleteNotification"
-        @mark-read="markAsRead"
-        @mark-all-read="markAllAsRead"
-        @clear-all="clearAllNotifications"
-        @view-all="viewAllMessages" />
+    <NotificationDrawer v-model:visible="notificationDrawerVisible" :notifications="notifications" @delete="deleteNotification" @mark-read="markAsRead" @mark-all-read="markAllAsRead" @clear-all="clearAllNotifications" @view-all="viewAllMessages" />
 
     <!-- 用户资料抽屉 -->
-    <Drawer v-model:visible="profileDrawerVisible" :style="{ width: layoutStore.isMobile ? '100vw' : '50rem' }"
-            class="profile-drawer" header="Profile"
-            position="right">
+    <Drawer v-model:visible="profileDrawerVisible" :style="{ width: layoutStore.isMobile ? '100vw' : '50rem' }" class="profile-drawer" header="Profile" position="right">
         <UserProfile />
     </Drawer>
-
 </template>
-
 
 <style lang="scss" scoped>
 .bell-animation {

@@ -15,78 +15,52 @@ const { companyName, companyHomepage, date, icp, icpLink } = storeToRefs(layoutS
 
 <template>
     <footer
-class="layout-footer" :class="{
-        'mobile-footer': isMobile,
-        'desktop-footer': !isMobile
-    }">
+        class="layout-footer"
+        :class="{
+            'mobile-footer': isMobile,
+            'desktop-footer': !isMobile
+        }"
+    >
         <div class="footer-content">
             <!-- 桌面端布局 -->
             <div v-if="!isMobile" class="desktop-layout">
                 <div class="footer-center">
                     <span v-if="companyName" class="footer-text">
-                        © {{ date || new Date().getFullYear() }} 
-                        <a 
-                            v-if="companyHomepage" 
-                            :href="companyHomepage" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="footer-link"
-                        >
+                        © {{ date || new Date().getFullYear() }}
+                        <a v-if="companyHomepage" :href="companyHomepage" target="_blank" rel="noopener noreferrer" class="footer-link">
                             {{ companyName }}
                         </a>
                         <span v-else>{{ companyName }}</span>
                         版权所有
                     </span>
-                    <span v-else class="footer-text">
-                        © {{ date || new Date().getFullYear() }} 版权所有
-                    </span>
-                    
+                    <span v-else class="footer-text"> © {{ date || new Date().getFullYear() }} 版权所有 </span>
+
                     <span v-if="icp" class="footer-separator">|</span>
-                    
+
                     <span v-if="icp" class="footer-text">
-                        <a 
-                            v-if="icpLink" 
-                            :href="icpLink" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="footer-link"
-                        >
+                        <a v-if="icpLink" :href="icpLink" target="_blank" rel="noopener noreferrer" class="footer-link">
                             {{ icp }}
                         </a>
                         <span v-else>{{ icp }}</span>
                     </span>
                 </div>
             </div>
-            
+
             <!-- 移动端布局 -->
             <div v-else class="mobile-layout">
                 <div class="footer-main">
                     <span v-if="companyName" class="footer-text">
-                        © {{ date || new Date().getFullYear() }} 
-                        <a 
-                            v-if="companyHomepage" 
-                            :href="companyHomepage" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="footer-link"
-                        >
+                        © {{ date || new Date().getFullYear() }}
+                        <a v-if="companyHomepage" :href="companyHomepage" target="_blank" rel="noopener noreferrer" class="footer-link">
                             {{ companyName }}
                         </a>
                         <span v-else>{{ companyName }}</span>
                     </span>
-                    <span v-else class="footer-text">
-                        © {{ date || new Date().getFullYear() }}
-                    </span>
+                    <span v-else class="footer-text"> © {{ date || new Date().getFullYear() }} </span>
                 </div>
-                
+
                 <div v-if="icp" class="footer-icp">
-                    <a 
-                        v-if="icpLink" 
-                        :href="icpLink" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        class="footer-link"
-                    >
+                    <a v-if="icpLink" :href="icpLink" target="_blank" rel="noopener noreferrer" class="footer-link">
                         {{ icp }}
                     </a>
                     <span v-else>{{ icp }}</span>
@@ -96,7 +70,8 @@ class="layout-footer" :class="{
     </footer>
 </template>
 
-<style lang="scss" scoped>/* 响应式适配 */
+<style lang="scss" scoped>
+/* 响应式适配 */
 @use '@/assets/layout/breakpoints' as bp;
 
 .layout-footer {
@@ -138,7 +113,7 @@ class="layout-footer" :class="{
 }
 
 .footer-text {
-    @apply flex items-center gap-1
+    @apply flex items-center gap-1;
 }
 
 .footer-link {
@@ -176,8 +151,6 @@ class="layout-footer" :class="{
 .desktop-footer {
     padding: 1rem 1.5rem;
 }
-
-
 
 @include bp.mobile-only {
     .layout-footer {

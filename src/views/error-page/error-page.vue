@@ -8,9 +8,7 @@
                 </div>
 
                 <!-- 错误代码 -->
-                <h1
-                    class="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-                >
+                <h1 class="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     {{ errorCode }}
                 </h1>
 
@@ -46,24 +44,24 @@ import ServiceUnavailable from '@/assets/images/503.svg';
 const props = defineProps({
     errorCode: {
         type: String,
-        required: true,
+        required: true
     },
     title: {
         type: String,
-        required: true,
+        required: true
     },
     message: {
         type: String,
-        required: true,
+        required: true
     },
     icon: {
         type: String,
-        required: true,
+        required: true
     },
     type: {
         type: String,
-        default: 'error',
-    },
+        default: 'error'
+    }
 });
 
 const router = useRouter();
@@ -73,7 +71,7 @@ const iconBgColor = computed(() => {
     const colors: Record<string, string> = {
         error: NotFound,
         forbidden: Forbidden,
-        unavailable: ServiceUnavailable,
+        unavailable: ServiceUnavailable
     };
     return colors[props.type] || colors.error;
 });
@@ -83,7 +81,7 @@ const iconTextColor = computed(() => {
     const colors: Record<string, string> = {
         error: 'text-red-600',
         forbidden: 'text-yellow-600',
-        unavailable: 'text-blue-600',
+        unavailable: 'text-blue-600'
     };
     return colors[props.type] || colors.error;
 });

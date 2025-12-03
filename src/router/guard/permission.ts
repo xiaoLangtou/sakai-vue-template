@@ -1,11 +1,11 @@
-import { useAuthStore } from "@/stores";
-import nProgress from "nprogress";
-import { nextTick } from "vue";
-import type { LocationQueryRaw, Router } from "vue-router";
+import { useAuthStore } from '@/stores';
+import nProgress from 'nprogress';
+import { nextTick } from 'vue';
+import type { LocationQueryRaw, Router } from 'vue-router';
 
 export default function setupPermissionGuard(router: Router) {
     router.beforeEach(async (to, from, next) => {
-        const { isLogin } = useAuthStore()
+        const { isLogin } = useAuthStore();
         nProgress.start();
 
         if (!isLogin) {
@@ -21,8 +21,8 @@ export default function setupPermissionGuard(router: Router) {
                 name: 'Login',
                 query: {
                     redirect: to.name as string,
-                    ...to.query,
-                },
+                    ...to.query
+                }
             } as unknown as LocationQueryRaw);
             nProgress.done();
         } else {

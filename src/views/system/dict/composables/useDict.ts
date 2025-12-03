@@ -15,59 +15,47 @@ import Menu from 'primevue/menu';
 import type { MenuItem } from 'primevue/menuitem';
 import { computed, ref } from 'vue';
 
-
 export const useDict = () => {
     const { confirmDelete } = usePrimeConfirm();
     const tableColumns = ref<TableColumns<IDictType>>([
         {
-
             field: 'dictName',
             header: '字典名称',
             frozen: true,
             alignFrozen: 'left'
-
         },
         {
-
             field: 'dictCode',
             header: '字典编码'
-
         },
         {
-
             field: 'systemFlag',
             header: '字典类型'
         },
         {
-
             field: 'status',
             header: '状态'
-
         },
         {
-
             field: 'dataCount',
             header: '字典项数量'
-
         },
         {
-
             field: 'dictDesc',
             header: '字典描述',
 
             width: 200,
-            ellipsis: true,           // 启用文本省略号
-            showTooltip: true,        // 显示tooltip
+            ellipsis: true, // 启用文本省略号
+            showTooltip: true, // 显示tooltip
             tooltipOptions: {
-                position: 'bottom',     // tooltip位置
-                showDelay: 500         // 显示延迟
+                position: 'bottom', // tooltip位置
+                showDelay: 500 // 显示延迟
             }
         },
         {
             key: 'createTime',
             field: 'createTime',
             header: '创建时间'
-
         },
         {
             key: 'createBy',
@@ -116,7 +104,6 @@ export const useDict = () => {
         }
     ]);
 
-
     const searchParams = ref<SearchParams<IDictTypeQuery>>({
         keyword: '',
         filters: {
@@ -133,17 +120,23 @@ export const useDict = () => {
         total: 0
     });
 
-    const { data: tableData, isLoading, refetch } = useQuery({
-        queryKey: [ 'dictTypes', pageInfo.value.current ],
+    const {
+        data: tableData,
+        isLoading,
+        refetch
+    } = useQuery({
+        queryKey: ['dictTypes', pageInfo.value.current],
         queryFn: async () => {
-            const result = await to<IPageResult<IDictType>>(dictTypeService.getDictList({
-                current: pageInfo.value.current,
-                size: pageInfo.value.size,
-                dictName: searchParams.value.keyword,
-                ...searchParams.value.filters
-            }));
+            const result = await to<IPageResult<IDictType>>(
+                dictTypeService.getDictList({
+                    current: pageInfo.value.current,
+                    size: pageInfo.value.size,
+                    dictName: searchParams.value.keyword,
+                    ...searchParams.value.filters
+                })
+            );
 
-            if ( !result.ok ) {
+            if (!result.ok) {
                 pageInfo.value.total = 0;
                 return [];
             }
@@ -153,7 +146,6 @@ export const useDict = () => {
             return result.value.records ?? [];
         }
     });
-
 
     const handlePageChange = (page: any) => {
         pageInfo.value.current = page.page + 1; // PrimeVue 分页从 0 开始
@@ -184,25 +176,25 @@ export const useDict = () => {
         refetch();
     };
     const deleteDictType = async (dictType: IDictType) => {
-        if ( !dictType.id ) return globalToast.error('字典类型ID不能为空');
+        if (!dictType.id) return globalToast.error('字典类型ID不能为空');
 
         // 调用删除接口
         const result = await to(dictTypeService.removeDictType(dictType.id));
-        if ( result.ok ) {
+        if (result.ok) {
             globalToast.success('删除成功');
             handleRefresh();
         }
     };
 
     // 每行菜单的 ref 对象
-    const menuRef = useTemplateRef<typeof Menu>("menu");
+    const menuRef = useTemplateRef<typeof Menu>('menu');
     const activeDict = ref<IDictType>();
     /**
      * 打开对应行的菜单
      */
     const openRowMenu = async (event: Event, dictType: IDictType) => {
         activeDict.value = dictType;
-        await nextTick()
+        await nextTick();
         menuRef.value?.toggle(event);
     };
     /**
@@ -225,19 +217,19 @@ export const useDict = () => {
         // 创建菜单项
         const menuItems: MenuItem[] = [
             {
-                label: "字典项",
-                icon: 'pi pi-list',
+                label: '字典项',
+                icon: 'pi pi-list'
             },
             {
                 label: '删除',
                 icon: 'pi pi-trash',
                 disabled: activeDict.value?.systemFlag === 'SYSTEM',
                 command: async () => {
-                    console.log("删除字典类型", activeDict.value);
+                    console.log('删除字典类型', activeDict.value);
                     await confirmDelete({
-                        message: `确定要删除字典类型 "${ activeDict.value?.dictName }(${ activeDict.value?.dictCode })" 吗？`,
+                        message: `确定要删除字典类型 "${activeDict.value?.dictName}(${activeDict.value?.dictCode})" 吗？`,
                         header: '确认删除',
-                        accept: () => deleteDictType(activeDict.value!),
+                        accept: () => deleteDictType(activeDict.value!)
                     });
                 }
             }
@@ -255,7 +247,7 @@ export const useDict = () => {
      * 表格配置对象
      * 使用 computed 确保响应式更新
      */
-    const tableConfig = computed<TTableConfig<IDictType>>(() =>({
+    const tableConfig = computed<TTableConfig<IDictType>>(() => ({
         // 表格基本配置
         dataKey: 'id',
         loading: isLoading.value,
@@ -266,23 +258,30 @@ export const useDict = () => {
         // 列配置
         columns: tableColumns.value,
         actions: {
-            frozen: true, alignFrozen: 'right', width: 180, render: (item: IDictType) => {
-                return h('div', {
-                    class: 'flex justify-center items-center'
-                }, [
-                    h(Button, {
-                        icon: 'pi pi-pen-to-square',
-                        label: '编辑',
-                        variant: 'text',
-                        onClick: () => editDictType(item)
-                    }),
+            frozen: true,
+            alignFrozen: 'right',
+            width: 180,
+            render: (item: IDictType) => {
+                return h(
+                    'div',
+                    {
+                        class: 'flex justify-center items-center'
+                    },
+                    [
+                        h(Button, {
+                            icon: 'pi pi-pen-to-square',
+                            label: '编辑',
+                            variant: 'text',
+                            onClick: () => editDictType(item)
+                        }),
 
-                    h(Button, {
-                        icon: 'pi pi-ellipsis-h',
-                        variant: 'text',
-                        onClick: (event: Event) => openRowMenu(event, item)
-                    }),
-                ]);
+                        h(Button, {
+                            icon: 'pi pi-ellipsis-h',
+                            variant: 'text',
+                            onClick: (event: Event) => openRowMenu(event, item)
+                        })
+                    ]
+                );
             }
         },
         // 额外配置
@@ -297,6 +296,6 @@ export const useDict = () => {
         handlePageChange,
         handleFilterChange,
         handleRefresh,
-        getMoreActions,
+        getMoreActions
     };
 };

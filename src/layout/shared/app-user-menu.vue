@@ -22,7 +22,7 @@ const items = ref([
     {
         label: '系统设置',
         icon: 'Settings',
-        command: () =>openConfigDrawer()
+        command: () => openConfigDrawer()
     },
     {
         label: '消息通知',
@@ -39,7 +39,7 @@ const items = ref([
                 label: '暗黑',
                 icon: 'Moon',
                 command: () => {
-                    if ( !isDarkTheme.value ) {
+                    if (!isDarkTheme.value) {
                         toggleDarkMode();
                     }
                 }
@@ -48,7 +48,7 @@ const items = ref([
                 label: '明亮',
                 icon: 'Sun',
                 command: () => {
-                    if ( isDarkTheme.value ) {
+                    if (isDarkTheme.value) {
                         toggleDarkMode();
                     }
                 }
@@ -73,27 +73,20 @@ const toggle = (event: MouseEvent) => {
     menu.value.toggle(event);
 };
 
-
 const avatarProps = computed(() => {
     const props: Record<string, any> = {};
-    if ( authStore.userInfo?.headPic ) {
+    if (authStore.userInfo?.headPic) {
         props.image = authStore.userInfo?.headPic;
     } else {
         props.icon = 'pi pi-user';
     }
     return props;
 });
-
 </script>
 <template>
-    <div
-        :class="[' flex items-center  p-2 bg-zinc-50 dark:bg-zinc-800 rounded-md cursor-pointer', layoutStore.isCollapsed ? 'justify-center ' : 'justify-between']"
-        @click="toggle">
+    <div :class="[' flex items-center  p-2 bg-zinc-50 dark:bg-zinc-800 rounded-md cursor-pointer', layoutStore.isCollapsed ? 'justify-center ' : 'justify-between']" @click="toggle">
         <div class="flex items-center gap-4">
-            <Avatar
-                :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }"
-                class="overflow-hidden rounded-sm"
-                v-bind="avatarProps" />
+            <Avatar :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }" class="overflow-hidden rounded-sm" v-bind="avatarProps" />
             <div v-if="!layoutStore.isCollapsed" class="flex flex-col">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-50">{{ authStore.userInfo?.nickname }}</span>
                 <span class="text-xs text-surface-500 dark:text-surface-400">{{ authStore.userInfo?.email }}</span>
@@ -106,10 +99,7 @@ const avatarProps = computed(() => {
     <TieredMenu id="overlay_menu" ref="menu" :model="items" :popup="true" class="w-full md:w-60">
         <template #start>
             <div class="flex items-center gap-4 w-full p-2">
-                <Avatar
-                    :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }"
-                    class="overflow-hidden rounded-sm"
-                    v-bind="avatarProps" />
+                <Avatar :style="{ width: AVATAR_SIZES.MEDIUM + 'px', height: AVATAR_SIZES.MEDIUM + 'px' }" class="overflow-hidden rounded-sm" v-bind="avatarProps" />
                 <div class="flex flex-col">
                     <span class="text-sm font-medium text-surface-900 dark:text-surface-50">{{ authStore.userInfo?.nickname }}</span>
                     <span class="text-xs text-surface-500 dark:text-surface-400">{{ authStore.userInfo?.email }}</span>
@@ -122,10 +112,7 @@ const avatarProps = computed(() => {
                     <component :is="lucideIconName(item.icon)" :size="16"></component>
                     <span>{{ item.label }}</span>
                     <Badge v-if="item.badge" :value="item.badge" class="ml-auto" />
-                    <span
-                        v-if="item.shortcut"
-                        class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
-                            item.shortcut }}</span>
+                    <span v-if="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
                 </div>
                 <i v-if="hasSubmenu" class="pi pi-angle-right ml-auto"></i>
                 <Check v-if="isDarkTheme && item.icon == 'Moon'" :size="16" />
@@ -134,6 +121,5 @@ const avatarProps = computed(() => {
         </template>
     </TieredMenu>
 </template>
-
 
 <style scoped></style>

@@ -3,11 +3,7 @@ import { computed, ref, watch, withDefaults } from 'vue';
 import type { TableColumns } from '@/composables/useColumns.ts';
 import { reorderColumns } from '@/composables/useColumns.ts';
 import type { CustomTableSettingsProps, CustomTableSettingsEmits, CustomTableColumn } from '../types/types.ts';
-import {
-    DEFAULT_TABLE_SETTINGS,
-    STYLE_OPTIONS,
-    TABLE_SETTINGS_OPTIONS,
-} from '../const/constants.ts';
+import { DEFAULT_TABLE_SETTINGS, STYLE_OPTIONS, TABLE_SETTINGS_OPTIONS } from '../const/constants.ts';
 
 const props = withDefaults(defineProps<CustomTableSettingsProps>(), {
     title: '表格设置',
@@ -17,7 +13,7 @@ const props = withDefaults(defineProps<CustomTableSettingsProps>(), {
     selectedStyle: 'normal',
     tableSettings: () => ({ ...DEFAULT_TABLE_SETTINGS }),
     styleOptions: () => [...STYLE_OPTIONS],
-    tableSettingsOptions: () => [...TABLE_SETTINGS_OPTIONS],
+    tableSettingsOptions: () => [...TABLE_SETTINGS_OPTIONS]
 });
 
 const emit = defineEmits<CustomTableSettingsEmits>();

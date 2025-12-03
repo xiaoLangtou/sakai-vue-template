@@ -1,5 +1,3 @@
-
-
 export interface IDictType {
     id?: string | number;
     dictName: string;
@@ -13,7 +11,6 @@ export interface IDictType {
     [key: string]: any;
 }
 
-
 export interface IDictTypeQuery {
     dictName?: string;
     dictCode?: string;
@@ -22,7 +19,6 @@ export interface IDictTypeQuery {
 
     [key: string]: any;
 }
-
 
 export interface IDictData {
     id?: string | number;
@@ -39,7 +35,6 @@ export interface IDictData {
 
     [key: string]: any;
 }
-
 
 export interface IDictDataQuery {
     dictValue?: string;

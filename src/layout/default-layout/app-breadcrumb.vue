@@ -1,16 +1,29 @@
-<script setup>
+<script setup lang="ts">
 import Breadcrumb from 'primevue/breadcrumb';
 import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
+
+/**
+ * 面包屑导航项接口
+ */
+interface BreadcrumbItem {
+    /** 显示标签 */
+    label: string;
+    /** 路由路径 */
+    to: string;
+    /** 图标类名 */
+    icon?: string;
+    /** 是否禁用 */
+    disabled?: boolean;
+}
 
 const route = useRoute();
-const router = useRouter();
 
 /**
  * 计算面包屑导航项
  * @returns {Array} 面包屑项数组
  */
-const breadcrumbItems = computed(() => {
+const breadcrumbItems = computed((): BreadcrumbItem[] => {
     const matched = route.matched.filter((item) => item.meta?.title);
 
     // 如果当前路由就是首页，返回空数组（只显示 home）
@@ -21,12 +34,14 @@ const breadcrumbItems = computed(() => {
     // 过滤掉首页路由，避免重复显示
     const filteredMatched = matched.filter((item) => item.path !== '/');
 
-    return filteredMatched.map((item, index) => ({
-        label: item.meta.title,
-        to: item.path,
-        icon: index === filteredMatched.length - 1 ? undefined : item.meta?.icon, // 最后一级不显示图标
-        disabled: index === filteredMatched.length - 1 // 最后一项禁用链接
-    }));
+    return filteredMatched.map(
+        (item, index): BreadcrumbItem => ({
+            label: item.meta.title as string,
+            to: item.path,
+            icon: index === filteredMatched.length - 1 ? undefined : (item.meta?.icon as string), // 最后一级不显示图标
+            disabled: index === filteredMatched.length - 1 // 最后一项禁用链接
+        })
+    );
 });
 
 /**
@@ -48,9 +63,7 @@ const home = computed(() => {
     <div class="app-breadcrumb">
         <Breadcrumb :model="breadcrumbItems" :home="home">
             <template #item="{ item, props }">
-                <router-link
-v-if="item.to && !item.disabled" v-bind="props.action" :to="item.to"
-                    class="breadcrumb-link">
+                <router-link v-if="item.to && !item.disabled" v-bind="props.action" :to="item.to" class="breadcrumb-link">
                     <i v-if="item.icon" :class="item.icon" class="breadcrumb-icon"></i>
                     <span>{{ item.label }}</span>
                 </router-link>

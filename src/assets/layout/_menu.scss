@@ -41,7 +41,7 @@
 
 /*展开样式 */
 .expanded-menu {
-    @apply p-4;
+    @apply p-2;
 }
 
 
@@ -148,6 +148,16 @@
     letter-spacing: 0.01em;
 }
 
+/* 收藏菜单项标题样式 */
+.favorite-item-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
 /* 箭头样式 */
 .menu-item-arrow {
     flex-shrink: 0;
@@ -189,29 +199,40 @@
     margin-top: 0.125rem;
     margin-bottom: 0.125rem;
     position: relative;
-    overflow: hidden;
 }
 
 .submenu-container {
     position: relative;
     padding-left: 1rem;
     margin-left: 0.75rem;
-    animation: slideDown 0.2s ease-out;
     @apply flex flex-col gap-1;
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-        max-height: 0;
-    }
+/* 子菜单过渡动画 - 配合 v-show 使用 */
+.submenu-enter-active,
+.submenu-leave-active {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-        max-height: 500px;
-    }
+.submenu-enter-from {
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.submenu-enter-to {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.submenu-leave-from {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.submenu-leave-to {
+    opacity: 0;
+    transform: translateY(-4px);
 }
 
 /* 垂直连线 */

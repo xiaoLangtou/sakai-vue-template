@@ -7,7 +7,7 @@
             'is-resizing': resizing,
             'is-collapse': isCollapse,
             'is-responsive': isResponsive,
-            'is-mobile': isMobile,
+            'is-mobile': isMobile
         }"
         :style="customStyle"
     >
@@ -25,7 +25,7 @@
                     class="ca-split-panel__collapse-trigger"
                     :class="{
                         'is-collapse': isCollapse,
-                        'is-mobile': isMobile,
+                        'is-mobile': isMobile
                     }"
                     @click="toggleCollapse"
                 >
@@ -49,7 +49,7 @@
 import { LucideChevronLeft, LucideChevronRight } from 'lucide-vue-next';
 
 defineOptions({
-    name: 'SplitPane',
+    name: 'SplitPane'
 });
 
 /**
@@ -78,8 +78,8 @@ const props = withDefaults(
         collapse: false,
         vertical: false,
         reverse: false,
-        responsive: true,
-    },
+        responsive: true
+    }
 );
 
 const emit = defineEmits(['update:collapse']);
@@ -106,20 +106,16 @@ const normalizedSize = computed(() => {
 
 // 计算侧边栏样式
 const sideStyle = computed(() => ({
-    [props.vertical ? 'height' : 'width']: isCollapse.value
-        ? '0'
-        : isMobile.value
-          ? '100%'
-          : resizedSize.value || normalizedSize.value,
+    [props.vertical ? 'height' : 'width']: isCollapse.value ? '0' : isMobile.value ? '100%' : resizedSize.value || normalizedSize.value,
     transition: 'all 0.5s ease',
     position: isMobile.value ? 'absolute' : 'relative',
-    zIndex: isMobile.value ? 10 : 3,
+    zIndex: isMobile.value ? 10 : 3
 }));
 
 // 计算主内容区域样式
 const mainStyle = computed(() => ({
     transition: 'padding 0.5s ease',
-    flex: 1,
+    flex: 1
 }));
 
 // 判断是否启用响应式布局

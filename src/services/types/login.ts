@@ -1,4 +1,3 @@
-
 /**
  * 登录账号
  */
@@ -78,8 +77,6 @@ export interface ILoginResponse {
 
     [key: string]: any;
 }
-
-
 
 /**
  * 验证码

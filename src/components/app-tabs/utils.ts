@@ -7,30 +7,30 @@ import type { TabItem } from '@/stores/tabs.ts';
  * @returns 唯一键
  */
 export function generateTabKey(route: RouteLocationNormalized): string {
-  const { path, params, query } = route;
+    const { path, params, query } = route;
 
-  // 基础路径
-  let key = path;
+    // 基础路径
+    let key = path;
 
-  // 添加参数
-  if (params && Object.keys(params).length > 0) {
-    const paramStr = Object.entries(params)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${k}=${v}`)
-      .join('&');
-    key += `?${paramStr}`;
-  }
+    // 添加参数
+    if (params && Object.keys(params).length > 0) {
+        const paramStr = Object.entries(params)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([k, v]) => `${k}=${v}`)
+            .join('&');
+        key += `?${paramStr}`;
+    }
 
-  // 添加查询参数
-  if (query && Object.keys(query).length > 0) {
-    const queryStr = Object.entries(query)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${k}=${v}`)
-      .join('&');
-    key += key.includes('?') ? `&${queryStr}` : `?${queryStr}`;
-  }
+    // 添加查询参数
+    if (query && Object.keys(query).length > 0) {
+        const queryStr = Object.entries(query)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([k, v]) => `${k}=${v}`)
+            .join('&');
+        key += key.includes('?') ? `&${queryStr}` : `?${queryStr}`;
+    }
 
-  return key;
+    return key;
 }
 
 /**
@@ -39,25 +39,25 @@ export function generateTabKey(route: RouteLocationNormalized): string {
  * @returns 标签页对象
  */
 export function createTabFromRoute(route: RouteLocationNormalized): TabItem {
-  const key = generateTabKey(route);
-  const title = (route.meta?.title as string) || route.name?.toString() || '未命名页面';
-  const icon = route.meta?.icon as string;
-  const closable = route.meta?.closable !== false; // 默认可关闭
+    const key = generateTabKey(route);
+    const title = (route.meta?.title as string) || route.name?.toString() || '未命名页面';
+    const icon = route.meta?.icon as string;
+    const closable = route.meta?.closable !== false; // 默认可关闭
 
-  const isHome = route.path === '/' || route.path === '/dashboard' || route.path === '/home';
+    const isHome = route.path === '/' || route.path === '/dashboard' || route.path === '/home';
 
-  return {
-    key,
-    title,
-    icon,
-    path: route.path,
-    params: route.params,
-    query: route.query,
-    closable,
-    loading: false,
-    error: false,
-    isHome
-  };
+    return {
+        key,
+        title,
+        icon,
+        path: route.path,
+        params: route.params,
+        query: route.query,
+        closable,
+        loading: false,
+        error: false,
+        isHome
+    };
 }
 
 /**
@@ -66,7 +66,7 @@ export function createTabFromRoute(route: RouteLocationNormalized): TabItem {
  * @returns 是否为首页
  */
 export function isHomeTab(tab: TabItem): boolean {
-  return tab.path === '/' || tab.path === '/dashboard' || tab.path === '/home';
+    return tab.path === '/' || tab.path === '/dashboard' || tab.path === '/home';
 }
 
 /**
@@ -76,11 +76,11 @@ export function isHomeTab(tab: TabItem): boolean {
  * @returns 显示标题
  */
 export function getTabDisplayTitle(tab: TabItem, maxLength: number = 12): string {
-  if (tab.title.length <= maxLength) {
-    return tab.title;
-  }
+    if (tab.title.length <= maxLength) {
+        return tab.title;
+    }
 
-  return `${tab.title.slice(0, maxLength - 3)}...`;
+    return `${tab.title.slice(0, maxLength - 3)}...`;
 }
 
 /**
@@ -89,7 +89,7 @@ export function getTabDisplayTitle(tab: TabItem, maxLength: number = 12): string
  * @returns 验证结果
  */
 export function validateTab(tab: Partial<TabItem>): tab is TabItem {
-  return !!(tab.key && tab.title && tab.path);
+    return !!(tab.key && tab.title && tab.path);
 }
 
 /**
@@ -99,7 +99,7 @@ export function validateTab(tab: Partial<TabItem>): tab is TabItem {
  * @returns 是否相同
  */
 export function isSameTab(tab1: TabItem, tab2: TabItem): boolean {
-  return tab1.key === tab2.key;
+    return tab1.key === tab2.key;
 }
 
 /**
@@ -109,7 +109,7 @@ export function isSameTab(tab1: TabItem, tab2: TabItem): boolean {
  * @returns 索引位置，未找到返回-1
  */
 export function getTabIndex(tabs: TabItem[], targetTab: TabItem): number {
-  return tabs.findIndex(tab => isSameTab(tab, targetTab));
+    return tabs.findIndex((tab) => isSameTab(tab, targetTab));
 }
 
 /**
@@ -118,7 +118,7 @@ export function getTabIndex(tabs: TabItem[], targetTab: TabItem): number {
  * @returns 可关闭的标签页数组
  */
 export function getClosableTabs(tabs: TabItem[]): TabItem[] {
-  return tabs.filter(tab => tab.closable);
+    return tabs.filter((tab) => tab.closable);
 }
 
 /**
@@ -128,8 +128,8 @@ export function getClosableTabs(tabs: TabItem[]): TabItem[] {
  * @returns 左侧标签页数组
  */
 export function getLeftTabs(tabs: TabItem[], targetTab: TabItem): TabItem[] {
-  const index = getTabIndex(tabs, targetTab);
-  return index > 0 ? tabs.slice(0, index) : [];
+    const index = getTabIndex(tabs, targetTab);
+    return index > 0 ? tabs.slice(0, index) : [];
 }
 
 /**
@@ -139,8 +139,8 @@ export function getLeftTabs(tabs: TabItem[], targetTab: TabItem): TabItem[] {
  * @returns 右侧标签页数组
  */
 export function getRightTabs(tabs: TabItem[], targetTab: TabItem): TabItem[] {
-  const index = getTabIndex(tabs, targetTab);
-  return index >= 0 && index < tabs.length - 1 ? tabs.slice(index + 1) : [];
+    const index = getTabIndex(tabs, targetTab);
+    return index >= 0 && index < tabs.length - 1 ? tabs.slice(index + 1) : [];
 }
 
 /**
@@ -150,7 +150,7 @@ export function getRightTabs(tabs: TabItem[], targetTab: TabItem): TabItem[] {
  * @returns 其他标签页数组
  */
 export function getOtherTabs(tabs: TabItem[], targetTab: TabItem): TabItem[] {
-  return tabs.filter(tab => !isSameTab(tab, targetTab));
+    return tabs.filter((tab) => !isSameTab(tab, targetTab));
 }
 
 /**
@@ -159,12 +159,12 @@ export function getOtherTabs(tabs: TabItem[], targetTab: TabItem): TabItem[] {
  * @returns 序列化字符串
  */
 export function serializeTabs(tabs: TabItem[]): string {
-  try {
-    return JSON.stringify(tabs);
-  } catch (error) {
-    console.error('序列化标签页数据失败:', error);
-    return '[]';
-  }
+    try {
+        return JSON.stringify(tabs);
+    } catch (error) {
+        console.error('序列化标签页数据失败:', error);
+        return '[]';
+    }
 }
 
 /**
@@ -173,13 +173,13 @@ export function serializeTabs(tabs: TabItem[]): string {
  * @returns 标签页数组
  */
 export function deserializeTabs(data: string): TabItem[] {
-  try {
-    const tabs = JSON.parse(data);
-    return Array.isArray(tabs) ? tabs.filter(validateTab) : [];
-  } catch (error) {
-    console.error('反序列化标签页数据失败:', error);
-    return [];
-  }
+    try {
+        const tabs = JSON.parse(data);
+        return Array.isArray(tabs) ? tabs.filter(validateTab) : [];
+    } catch (error) {
+        console.error('反序列化标签页数据失败:', error);
+        return [];
+    }
 }
 
 /**
@@ -188,7 +188,7 @@ export function deserializeTabs(data: string): TabItem[] {
  * @returns 清理后的标签页数组
  */
 export function cleanupTabs(tabs: TabItem[]): TabItem[] {
-  return tabs.filter(validateTab);
+    return tabs.filter(validateTab);
 }
 
 /**
@@ -197,7 +197,7 @@ export function cleanupTabs(tabs: TabItem[]): TabItem[] {
  * @returns 存储键
  */
 export function getTabsStorageKey(userId?: string): string {
-  return userId ? `app_tabs_${userId}` : 'app_tabs';
+    return userId ? `app_tabs_${userId}` : 'app_tabs';
 }
 
 /**
@@ -207,7 +207,7 @@ export function getTabsStorageKey(userId?: string): string {
  * @returns 是否超过限制
  */
 export function isExceedMaxTabs(tabs: TabItem[], maxTabs: number): boolean {
-  return tabs.length >= maxTabs;
+    return tabs.length >= maxTabs;
 }
 
 /**
@@ -217,20 +217,20 @@ export function isExceedMaxTabs(tabs: TabItem[], maxTabs: number): boolean {
  * @returns 下一个激活的标签页
  */
 export function getNextActiveTab(tabs: TabItem[], currentTab: TabItem): TabItem | null {
-  if (tabs.length <= 1) return null;
+    if (tabs.length <= 1) return null;
 
-  const currentIndex = getTabIndex(tabs, currentTab);
-  if (currentIndex === -1) return tabs[0];
+    const currentIndex = getTabIndex(tabs, currentTab);
+    if (currentIndex === -1) return tabs[0];
 
-  // 优先选择右侧标签
-  if (currentIndex < tabs.length - 1) {
-    return tabs[currentIndex + 1];
-  }
+    // 优先选择右侧标签
+    if (currentIndex < tabs.length - 1) {
+        return tabs[currentIndex + 1];
+    }
 
-  // 否则选择左侧标签
-  if (currentIndex > 0) {
-    return tabs[currentIndex - 1];
-  }
+    // 否则选择左侧标签
+    if (currentIndex > 0) {
+        return tabs[currentIndex - 1];
+    }
 
-  return null;
+    return null;
 }

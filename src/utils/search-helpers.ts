@@ -9,10 +9,10 @@ export class SearchHelpers {
      * @param value 要检查的值
      */
     static hasValue(value: FilterValue): boolean {
-        if ( value === null || value === undefined || value === '' ) {
+        if (value === null || value === undefined || value === '') {
             return false;
         }
-        if ( Array.isArray(value) ) {
+        if (Array.isArray(value)) {
             return value.length > 0;
         }
         return true;
@@ -25,30 +25,30 @@ export class SearchHelpers {
      * @param maxLength 最大显示长度
      */
     static formatFilterValue(key: string, value: FilterValue, maxLength: number = 20): string {
-        if ( !this.hasValue(value) ) {
+        if (!this.hasValue(value)) {
             return '';
         }
 
         // 处理数组类型
-        if ( Array.isArray(value) ) {
-            if ( value.length <= 2 ) {
-                return `${ key }: ${ value.join(', ') }`;
+        if (Array.isArray(value)) {
+            if (value.length <= 2) {
+                return `${key}: ${value.join(', ')}`;
             }
-            return `${ key }: ${ value.slice(0, 2).join(', ') }等${ value.length }项`;
+            return `${key}: ${value.slice(0, 2).join(', ')}等${value.length}项`;
         }
 
         // 处理日期类型
-        if ( value instanceof Date ) {
-            return `${ key }: ${ value.toLocaleDateString() }`;
+        if (value instanceof Date) {
+            return `${key}: ${value.toLocaleDateString()}`;
         }
 
         // 处理字符串类型
         const strValue = String(value);
-        if ( strValue.length > maxLength ) {
-            return `${ key }: ${ strValue.substring(0, maxLength) }...`;
+        if (strValue.length > maxLength) {
+            return `${key}: ${strValue.substring(0, maxLength)}...`;
         }
 
-        return `${ key }: ${ strValue }`;
+        return `${key}: ${strValue}`;
     }
 
     /**
@@ -62,8 +62,8 @@ export class SearchHelpers {
             return activeFilters;
         }
 
-        Object.entries(filters).forEach(([ key, value ]) => {
-            if ( this.hasValue(value) ) {
+        Object.entries(filters).forEach(([key, value]) => {
+            if (this.hasValue(value)) {
                 activeFilters[key] = value;
             }
         });
@@ -77,7 +77,7 @@ export class SearchHelpers {
      */
     static hasSearchConditions(params: SearchParams): boolean {
         const hasKeyword = this.hasValue(params.keyword);
-        if ( !params.filters ) return false;
+        if (!params.filters) return false;
         const hasFilters = Object.keys(this.getActiveFilters(params.filters)).length > 0;
         return hasKeyword || hasFilters;
     }
@@ -88,7 +88,7 @@ export class SearchHelpers {
      */
     static cleanSearchParams(params: SearchParams): SearchParams {
         const cleanedParams = { ...params };
-        if ( !params.filters ) return cleanedParams;
+        if (!params.filters) return cleanedParams;
         cleanedParams.filters = this.getActiveFilters(params.filters);
         return cleanedParams;
     }
@@ -102,16 +102,16 @@ export class SearchHelpers {
         const cleanedParams = this.cleanSearchParams(params);
 
         // 添加关键词
-        if ( cleanedParams.keyword ) {
+        if (cleanedParams.keyword) {
             queryParams.set('keyword', cleanedParams.keyword);
         }
 
         // 添加筛选条件
         if (cleanedParams.filters) {
-            Object.entries(cleanedParams.filters).forEach(([ key, value ]) => {
-                if ( Array.isArray(value) ) {
+            Object.entries(cleanedParams.filters).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
                     queryParams.set(key, value.join(','));
-                } else if ( value instanceof Date ) {
+                } else if (value instanceof Date) {
                     queryParams.set(key, value.toISOString());
                 } else {
                     queryParams.set(key, String(value));
@@ -141,14 +141,14 @@ export class SearchHelpers {
 
         // 解析关键词
         const keyword = searchParams.get('keyword');
-        if ( keyword ) {
+        if (keyword) {
             params.keyword = keyword;
         }
 
         // 解析分页
         const page = searchParams.get('page');
         const size = searchParams.get('size');
-        if ( page || size ) {
+        if (page || size) {
             params.pagination = {
                 page: page ? parseInt(page, 10) : 1,
                 size: size ? parseInt(size, 10) : 20
@@ -158,7 +158,7 @@ export class SearchHelpers {
         // 解析排序
         const sortField = searchParams.get('sortField');
         const sortOrder = searchParams.get('sortOrder');
-        if ( sortField && sortOrder ) {
+        if (sortField && sortOrder) {
             params.sort = {
                 field: sortField,
                 order: sortOrder as 'asc' | 'desc'
@@ -167,9 +167,9 @@ export class SearchHelpers {
 
         // 解析其他筛选条件
         searchParams.forEach((value, key) => {
-            if ( ![ 'keyword', 'page', 'size', 'sortField', 'sortOrder' ].includes(key) ) {
+            if (!['keyword', 'page', 'size', 'sortField', 'sortOrder'].includes(key)) {
                 // 尝试解析为数组
-                if ( value.includes(',') ) {
+                if (value.includes(',')) {
                     params.filters![key] = value.split(',');
                 } else {
                     params.filters![key] = value;
@@ -186,8 +186,7 @@ export class SearchHelpers {
      * @param params2 搜索参数2
      */
     static isSearchParamsEqual(params1: SearchParams, params2: SearchParams): boolean {
-        return JSON.stringify(this.cleanSearchParams(params1)) ===
-            JSON.stringify(this.cleanSearchParams(params2));
+        return JSON.stringify(this.cleanSearchParams(params1)) === JSON.stringify(this.cleanSearchParams(params2));
     }
 
     /**
@@ -198,18 +197,18 @@ export class SearchHelpers {
         const errors: string[] = [];
 
         // 验证分页参数
-        if ( params.pagination.page < 1 ) {
+        if (params.pagination.page < 1) {
             errors.push('页码必须大于0');
         }
-        if ( params.pagination.size < 1 || params.pagination.size > 1000 ) {
+        if (params.pagination.size < 1 || params.pagination.size > 1000) {
             errors.push('每页大小必须在1-1000之间');
         }
 
         // 验证排序参数
-        if ( !params.sort.field ) {
+        if (!params.sort.field) {
             errors.push('排序字段不能为空');
         }
-        if ( ![ 'asc', 'desc' ].includes(params.sort.order) ) {
+        if (!['asc', 'desc'].includes(params.sort.order)) {
             errors.push('排序方向必须是asc或desc');
         }
 
@@ -223,14 +222,4 @@ export class SearchHelpers {
 /**
  * 导出常用的工具函数
  */
-export const {
-    hasValue,
-    formatFilterValue,
-    getActiveFilters,
-    hasSearchConditions,
-    cleanSearchParams,
-    buildQueryParams,
-    parseQueryParams,
-    isSearchParamsEqual,
-    validateSearchParams
-} = SearchHelpers;
+export const { hasValue, formatFilterValue, getActiveFilters, hasSearchConditions, cleanSearchParams, buildQueryParams, parseQueryParams, isSearchParamsEqual, validateSearchParams } = SearchHelpers;

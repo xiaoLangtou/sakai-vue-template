@@ -2,7 +2,7 @@
  * 搜索相关类型定义
  */
 
-import type { Ref } from "vue";
+import type { Ref } from 'vue';
 
 /** 搜索参数接口 */
 export interface SearchParams<T = Record<string, any>> {
@@ -12,7 +12,6 @@ export interface SearchParams<T = Record<string, any>> {
     filters?: T;
 
     [key: string]: any;
-
 }
 
 /** 筛选配置接口 */

@@ -4,10 +4,8 @@ defineProps({
         type: String,
         default: '配置'
     }
-})
+});
 </script>
-
-
 
 <template>
     <div class="section">
@@ -19,8 +17,6 @@ defineProps({
         <slot></slot>
     </div>
 </template>
-
-
 
 <style lang="scss" scoped>
 .section {

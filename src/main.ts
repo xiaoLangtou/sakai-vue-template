@@ -3,14 +3,13 @@ import App from './App.vue';
 import router from './router';
 
 import Aura from '@primeuix/themes/aura';
-import { Form as PrimeForm, FormField } from '@primevue/forms';
+import { FormField, Form as PrimeForm } from '@primevue/forms';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
 
 // 导入 TanStack Query 配置
-import { VueQueryPlugin } from '@tanstack/vue-query'
-
+import { VueQueryPlugin } from '@tanstack/vue-query';
 
 import '@/assets/styles.scss';
 import { createPinia } from 'pinia';

@@ -22,7 +22,6 @@
             @filter-change="handleFilterChange"
             @refresh="refreshRoles"
         >
-
             <!-- 角色名称列 -->
             <template #column-name="{ data }">
                 <span class="font-medium">{{ data.name }}</span>
@@ -32,18 +31,13 @@
             <template #column-code="{ data }">
                 <div class="flex items-center gap-1">
                     <Tag severity="secondary" :value="data.code"></Tag>
-                    <i
-class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
-                        title="复制角色编码" @click="copyRoleCode(data.code)"></i>
+                    <i class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors" title="复制角色编码" @click="copyRoleCode(data.code)"></i>
                 </div>
             </template>
 
             <!-- 角色类型列 -->
             <template #column-type="{ data }">
-                <Tag
-                    :value="getTypeLabel(data.type)"
-                    :severity="getTypeSeverity(data.type)"
-                />
+                <Tag :value="getTypeLabel(data.type)" :severity="getTypeSeverity(data.type)" />
             </template>
 
             <!-- 状态列 -->
@@ -60,10 +54,7 @@ class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-c
 
             <!-- 用户数列 -->
             <template #column-userCount="{ data }">
-                <Badge
-                    :value="data.userCount"
-                    :severity="data.userCount > 0 ? 'info' : 'secondary'"
-                />
+                <Badge :value="data.userCount" :severity="data.userCount > 0 ? 'info' : 'secondary'" />
             </template>
 
             <!-- 排序列 -->
@@ -81,9 +72,7 @@ class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-c
                 <div class="flex items-center justify-center">
                     <Button icon="pi pi-pen-to-square" label="编辑" variant="text" @click="openEditDialog(data)" />
                     <Button icon="pi pi-users" label="用户" variant="text" @click="assignUsers(data)" />
-                    <Button
-icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
-                        @click="(event) => openRowMenu(event, data.id)" />
+                    <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small" @click="(event) => openRowMenu(event, data.id)" />
                     <!-- 每行一个 Menu -->
                     <Menu :ref="(el) => setMenuRef(el, data.id)" :model="getMoreActions(data)" popup />
                 </div>
@@ -91,15 +80,7 @@ icon="pi pi-ellipsis-v" label="更多" variant="text" size="small"
         </CustomTable>
 
         <!-- 角色表单对话框 -->
-        <RoleForm
-            v-model:visible="roleDialog"
-            :form-data="roleForm"
-            :submitted="submitted"
-            :status-options="statusOptions"
-            :type-options="typeOptions"
-            :data-scope-options="dataScopeOptions"
-            @submit="saveRole"
-        />
+        <RoleForm v-model:visible="roleDialog" :form-data="roleForm" :submitted="submitted" :status-options="statusOptions" :type-options="typeOptions" :data-scope-options="dataScopeOptions" @submit="saveRole" />
     </PageContainer>
 </template>
 
@@ -125,29 +106,29 @@ const { copy, isSupported } = useClipboard();
 
 // 使用角色管理组合函数
 const {
-  // 响应式数据
-  roles,
-  loading,
-  roleDialog,
-  submitted,
-  roleForm,
+    // 响应式数据
+    roles,
+    loading,
+    roleDialog,
+    submitted,
+    roleForm,
 
-  // 选项数据
-  statusOptions,
-  typeOptions,
-  dataScopeOptions,
+    // 选项数据
+    statusOptions,
+    typeOptions,
+    dataScopeOptions,
 
-  // 方法
-  fetchRoles,
-  openCreateDialog,
-  openEditDialog,
-  saveRole,
-  confirmDeleteRole,
-  toggleRoleStatus,
-  assignPermissions,
-  assignUsers,
-  exportRoles,
-  refreshRoles
+    // 方法
+    fetchRoles,
+    openCreateDialog,
+    openEditDialog,
+    saveRole,
+    confirmDeleteRole,
+    toggleRoleStatus,
+    assignPermissions,
+    assignUsers,
+    exportRoles,
+    refreshRoles
 } = useRoleManagement();
 
 // 过滤器配置
@@ -204,7 +185,7 @@ const tableColumns = ref<TableColumns<Role>>([
         key: 'code',
         field: 'code',
         header: '角色编码',
-         frozen: true,
+        frozen: true,
         alignFrozen: 'left',
         minWidth: 120
     },
@@ -276,7 +257,7 @@ function handleColumnChange(column: any, type: 'visibility' | 'frozen' | 'order'
 
 // 获取角色类型标签
 const getTypeLabel = (type: RoleType) => {
-    const option = typeOptions.value.find(opt => opt.value === type);
+    const option = typeOptions.value.find((opt) => opt.value === type);
     return option?.label || type;
 };
 
@@ -296,7 +277,7 @@ const getTypeSeverity = (type: RoleType) => {
 
 // 获取数据权限标签
 const getDataScopeLabel = (dataScope: string) => {
-    const option = dataScopeOptions.value.find(opt => opt.value === dataScope);
+    const option = dataScopeOptions.value.find((opt) => opt.value === dataScope);
     return option?.label || dataScope;
 };
 
@@ -379,13 +360,11 @@ const copyRoleCode = async (code: string) => {
 
 // 组件挂载时获取数据
 onMounted(() => {
-  fetchRoles();
+    fetchRoles();
 });
 </script>
 
 <style scoped>
-
-
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.5rem;

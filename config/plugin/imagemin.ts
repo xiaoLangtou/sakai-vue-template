@@ -27,7 +27,7 @@ export default function configImageminPlugin() {
         },
         // 另一种 PNG 图片优化方式（与 optipng 类似，但更高效）
         pngquant: {
-            quality: [ 0.8, 0.9 ], // 设置 PNG 质量范围（0-1），保证图片质量在 80%-90% 之间
+            quality: [0.8, 0.9], // 设置 PNG 质量范围（0-1），保证图片质量在 80%-90% 之间
             speed: 4 // 压缩速度（1-11），数值越大速度越快但压缩率较低
         },
         // SVG 图片优化配置

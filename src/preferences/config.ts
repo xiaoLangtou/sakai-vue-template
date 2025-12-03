@@ -1,6 +1,5 @@
 import type { LayoutConfig } from '@/types/layout.ts';
 
-
 const defaultPreferences: LayoutConfig = {
     /** 主题预设 */
     preset: 'Aura',
@@ -15,7 +14,7 @@ const defaultPreferences: LayoutConfig = {
     /** 是否显示标签页 */
     showTab: true,
     /** 标签页样式 */
-    tabStyle: 'Fashion',
+    tabStyle: 'Square',
     /** 标签页是否显示图标 */
     isShowIcon: true,
     /** 标签页是否持久化*/
@@ -55,6 +54,5 @@ const defaultPreferences: LayoutConfig = {
     /** 灰色模式 */
     isEnableGray: false
 };
-
 
 export { defaultPreferences };

@@ -8,68 +8,68 @@ const activeFloatingMenuId = ref<string | null>(null);
 const floatingMenuInstances = ref<Map<string, { hide: () => void }>>(new Map());
 
 export function useFloatingMenu(menuId: string) {
-  const isActive = ref(false);
+    const isActive = ref(false);
 
-  /**
-   * 显示当前悬浮菜单
-   */
-  const show = () => {
-    // 如果有其他菜单正在显示，先隐藏它
-    if (activeFloatingMenuId.value && activeFloatingMenuId.value !== menuId) {
-      const activeInstance = floatingMenuInstances.value.get(activeFloatingMenuId.value);
-      if (activeInstance) {
-        activeInstance.hide();
-      }
-    }
-    
-    // 设置当前菜单为活跃状态
-    activeFloatingMenuId.value = menuId;
-    isActive.value = true;
-  };
+    /**
+     * 显示当前悬浮菜单
+     */
+    const show = () => {
+        // 如果有其他菜单正在显示，先隐藏它
+        if (activeFloatingMenuId.value && activeFloatingMenuId.value !== menuId) {
+            const activeInstance = floatingMenuInstances.value.get(activeFloatingMenuId.value);
+            if (activeInstance) {
+                activeInstance.hide();
+            }
+        }
 
-  /**
-   * 隐藏当前悬浮菜单
-   */
-  const hide = () => {
-    if (activeFloatingMenuId.value === menuId) {
-      activeFloatingMenuId.value = null;
-    }
-    isActive.value = false;
-  };
+        // 设置当前菜单为活跃状态
+        activeFloatingMenuId.value = menuId;
+        isActive.value = true;
+    };
 
-  /**
-   * 注册菜单实例
-   */
-  const register = () => {
-    floatingMenuInstances.value.set(menuId, { hide });
-  };
+    /**
+     * 隐藏当前悬浮菜单
+     */
+    const hide = () => {
+        if (activeFloatingMenuId.value === menuId) {
+            activeFloatingMenuId.value = null;
+        }
+        isActive.value = false;
+    };
 
-  /**
-   * 注销菜单实例
-   */
-  const unregister = () => {
-    floatingMenuInstances.value.delete(menuId);
-    if (activeFloatingMenuId.value === menuId) {
-      activeFloatingMenuId.value = null;
-    }
-  };
+    /**
+     * 注册菜单实例
+     */
+    const register = () => {
+        floatingMenuInstances.value.set(menuId, { hide });
+    };
 
-  /**
-   * 隐藏所有悬浮菜单
-   */
-  const hideAll = () => {
-    floatingMenuInstances.value.forEach(instance => {
-      instance.hide();
-    });
-    activeFloatingMenuId.value = null;
-  };
+    /**
+     * 注销菜单实例
+     */
+    const unregister = () => {
+        floatingMenuInstances.value.delete(menuId);
+        if (activeFloatingMenuId.value === menuId) {
+            activeFloatingMenuId.value = null;
+        }
+    };
 
-  return {
-    isActive,
-    show,
-    hide,
-    register,
-    unregister,
-    hideAll
-  };
+    /**
+     * 隐藏所有悬浮菜单
+     */
+    const hideAll = () => {
+        floatingMenuInstances.value.forEach((instance) => {
+            instance.hide();
+        });
+        activeFloatingMenuId.value = null;
+    };
+
+    return {
+        isActive,
+        show,
+        hide,
+        register,
+        unregister,
+        hideAll
+    };
 }

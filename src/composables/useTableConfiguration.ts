@@ -3,10 +3,7 @@ import { watch, shallowRef, computed } from 'vue';
 import { useColumns } from './useColumns';
 import type { TableColumns, TableColumn, CustomTableProps } from '@/types/table';
 
-export function useTableConfiguration<T = any>(
-    props: CustomTableProps<T>,
-    emit: (event: string, ...args: any[]) => void
-) {
+export function useTableConfiguration<T = any>(props: CustomTableProps<T>, emit: (event: string, ...args: any[]) => void) {
     const internalColumns = shallowRef([...props.columns]);
     const processedColumns = useColumns(internalColumns);
     const actionColumn = computed(() => {
@@ -19,10 +16,9 @@ export function useTableConfiguration<T = any>(
             },
             frozen: false,
             slotName: 'column-actions',
-            ...props.actions,
-        }
-    })
-
+            ...props.actions
+        };
+    });
 
     // 优化：使用浅层监听，只在数组引用变化时触发
     watch(

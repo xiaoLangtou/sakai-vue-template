@@ -29,7 +29,7 @@ const account = reactive<ILoginAccount>({
     username: '',
     password: '',
     captcha: '',
-    captchaId: '',
+    captchaId: ''
 });
 
 const captchaImage = ref('');
@@ -93,7 +93,7 @@ const handleLogin = async () => {
         }
 
         loading.value = true;
-        const name = router.currentRoute.value.name ?? ''
+        const name = router.currentRoute.value.name ?? '';
         await loginAction(account, name as string);
         globalToast.success(`${getGreeting()}，欢迎回来！`);
 
@@ -156,57 +156,34 @@ const getGreeting = () => {
 </script>
 
 <template>
-    <Dialog
-:visible="visible" modal header="重新登录" :style="{ width: '28rem' }" :closable="false" :draggable="false"
-        class="login-dialog">
+    <Dialog :visible="visible" modal header="重新登录" :style="{ width: '28rem' }" :closable="false" :draggable="false" class="login-dialog">
         <div class="flex flex-col gap-6">
             <div class="text-center">
-                <div class="text-surface-500 dark:text-surface-400 text-sm mb-4">
-                    登录已过期，请重新登录
-                </div>
+                <div class="text-surface-500 dark:text-surface-400 text-sm mb-4">登录已过期，请重新登录</div>
             </div>
 
             <div class="flex flex-col gap-4">
                 <div>
-                    <label for="dialog-username" class="block text-surface-900 dark:text-surface-0 font-medium mb-2">
-                        账号
-                    </label>
-                    <InputText
-id="dialog-username" v-model="account.username" type="text" placeholder="请输入账号"
-                        class="w-full" @keyup.enter="handleLogin" />
+                    <label for="dialog-username" class="block text-surface-900 dark:text-surface-0 font-medium mb-2"> 账号 </label>
+                    <InputText id="dialog-username" v-model="account.username" type="text" placeholder="请输入账号" class="w-full" @keyup.enter="handleLogin" />
                 </div>
 
                 <div>
-                    <label for="dialog-password" class="block text-surface-900 dark:text-surface-0 font-medium mb-2">
-                        密码
-                    </label>
-                    <Password
-id="dialog-password" v-model="account.password" placeholder="请输入密码" :toggle-mask="true"
-                        class="w-full" fluid :feedback="false" @keyup.enter="handleLogin" />
+                    <label for="dialog-password" class="block text-surface-900 dark:text-surface-0 font-medium mb-2"> 密码 </label>
+                    <Password id="dialog-password" v-model="account.password" placeholder="请输入密码" :toggle-mask="true" class="w-full" fluid :feedback="false" @keyup.enter="handleLogin" />
                 </div>
 
                 <div>
-                    <label for="dialog-captcha" class="block text-surface-900 dark:text-surface-0 font-medium mb-2">
-                        验证码
-                    </label>
+                    <label for="dialog-captcha" class="block text-surface-900 dark:text-surface-0 font-medium mb-2"> 验证码 </label>
                     <div class="flex items-center gap-3">
-                        <InputText
-id="dialog-captcha" v-model="account.captcha" type="text" placeholder="请输入验证码"
-                            class="flex-1" @keyup.enter="handleLogin" />
+                        <InputText id="dialog-captcha" v-model="account.captcha" type="text" placeholder="请输入验证码" class="flex-1" @keyup.enter="handleLogin" />
                         <!-- 验证码图片 -->
                         <div class="flex-shrink-0">
                             <div class="relative cursor-pointer" @click="getCaptcha">
                                 <img v-if="captchaImage" :src="captchaImage" alt="验证码" class="h-10 border rounded" />
-                                <div
-v-else
-                                    class="h-10 w-20 border rounded flex items-center justify-center text-xs text-muted-color">
-                                    点击获取
-                                </div>
+                                <div v-else class="h-10 w-20 border rounded flex items-center justify-center text-xs text-muted-color">点击获取</div>
                                 <!-- 验证码过期蒙层 -->
-                                <div
-v-if="isCaptchaExpired"
-                                    class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded cursor-pointer"
-                                    @click="closeCaptchaExpiredModal">
+                                <div v-if="isCaptchaExpired" class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded cursor-pointer" @click="closeCaptchaExpiredModal">
                                     <div class="text-white text-xs text-center px-2">
                                         <i class="pi pi-exclamation-triangle text-orange-400 mb-1 block"></i>
                                         <div class="text-xs opacity-80">点击刷新</div>

@@ -313,28 +313,26 @@ defineExpose({
                     <div class="search-input-wrapper">
                         <IconField class="w-full">
                             <InputIcon class="pi pi-search" />
-                            <InputText
-v-model="localParams.keyword" :placeholder="placeholder" class="w-full"
-                                @input="handleKeywordChange" @keyup.enter="handleImmediateSearch" />
-                            <InputIcon
-v-show="localParams.keyword" class="pi pi-times cursor-pointer"
-                                @click="clearKeyword" />
+                            <InputText v-model="localParams.keyword" :placeholder="placeholder" class="w-full" @input="handleKeywordChange" @keyup.enter="handleImmediateSearch" />
+                            <InputIcon v-show="localParams.keyword" class="pi pi-times cursor-pointer" @click="clearKeyword" />
                         </IconField>
                     </div>
-                    <Button
-label="搜索" icon="pi pi-search" class="search-btn" :loading="loading"
-                        @click="handleImmediateSearch" />
+                    <Button label="搜索" icon="pi pi-search" class="search-btn" :loading="loading" @click="handleImmediateSearch" />
                 </div>
 
                 <div class="search-actions">
                     <Button
-v-if="filterConfigs.length > 0" :label="showAdvanced ? '收起筛选' : '高级筛选'"
-                        :icon="showAdvanced ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" class="filter-toggle-btn"
-                        :badge="activeFilterCount > 0 ? `${activeFilterCount}` : ''" badge-severity="contrast" severity="secondary" outlined
-                        @click="toggleAdvanced" />
-                    <Button
-label="重置" icon="pi pi-refresh" class="reset-btn" severity="secondary" outlined
-                        @click="handleReset" />
+                        v-if="filterConfigs.length > 0"
+                        :label="showAdvanced ? '收起筛选' : '高级筛选'"
+                        :icon="showAdvanced ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                        class="filter-toggle-btn"
+                        :badge="activeFilterCount > 0 ? `${activeFilterCount}` : ''"
+                        badge-severity="contrast"
+                        severity="secondary"
+                        outlined
+                        @click="toggleAdvanced"
+                    />
+                    <Button label="重置" icon="pi pi-refresh" class="reset-btn" severity="secondary" outlined @click="handleReset" />
                     <slot name="actions"></slot>
                 </div>
             </div>
@@ -347,33 +345,23 @@ label="重置" icon="pi pi-refresh" class="reset-btn" severity="secondary" outli
                             <i class="pi pi-filter" />
                             筛选条件
                         </h4>
-                        <div class="panel-actions">
-
-                        </div>
+                        <div class="panel-actions"></div>
                     </div>
 
                     <div class="filters-grid">
                         <div v-for="filter in filterConfigs" :key="filter.key" :class="getColumnClass(filter)">
-                            <FilterItem
-:ref="(el) => (filterRefs[filter.key] = el)" :config="filter" :value="localParams.filters[filter.key]"
-                                :immediate="immediate" :show-error="showValidationErrors"
-                                @update="handleFilterUpdate" />
+                            <FilterItem :ref="(el) => (filterRefs[filter.key] = el)" :config="filter" :value="localParams.filters[filter.key]" :immediate="immediate" :show-error="showValidationErrors" @update="handleFilterUpdate" />
                         </div>
                     </div>
 
                     <!-- 筛选面板底部操作 -->
                     <div class="panel-footer">
                         <div class="footer-info">
-                            <span v-if="activeFilterCount > 0" class="filter-count"> 已设置 {{ activeFilterCount }} 个筛选条件
-                            </span>
+                            <span v-if="activeFilterCount > 0" class="filter-count"> 已设置 {{ activeFilterCount }} 个筛选条件 </span>
                         </div>
                         <div class="footer-actions">
-                            <Button
-label="清空筛选" icon="pi pi-times" size="small" severity="secondary"
-                                @click="handleClearFilters" />
-                            <Button
-label="应用筛选" icon="pi pi-check" size="small" :disabled="!isFormValid"
-                                @click="handleImmediateSearch" />
+                            <Button label="清空筛选" icon="pi pi-times" size="small" severity="secondary" @click="handleClearFilters" />
+                            <Button label="应用筛选" icon="pi pi-check" size="small" :disabled="!isFormValid" @click="handleImmediateSearch" />
                         </div>
                     </div>
                 </div>
@@ -391,7 +379,6 @@ label="应用筛选" icon="pi pi-check" size="small" :disabled="!isFormValid"
     position: relative;
     @apply bg-gray-50/20 border-gray-200;
     @apply dark:bg-gray-800/20 dark:border-gray-600;
-
 }
 
 .search-bar {
@@ -411,8 +398,7 @@ label="应用筛选" icon="pi pi-check" size="small" :disabled="!isFormValid"
 }
 
 .search-input-wrapper {
-
-    @apply flex-1 flex items-center w-full
+    @apply flex-1 flex items-center w-full;
 }
 
 .search-icon {
@@ -434,7 +420,6 @@ label="应用筛选" icon="pi pi-check" size="small" :disabled="!isFormValid"
     @apply text-gray-900;
     @apply dark:text-gray-100;
 }
-
 
 .search-actions {
     display: flex;

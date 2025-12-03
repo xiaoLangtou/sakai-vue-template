@@ -24,7 +24,7 @@ const staticRoutes: RouteRecordRaw[] = [
                 path: '/dashboard',
                 name: 'dashboard',
                 component: () => import('@/views/dashboard/index.vue')
-            },
+            }
         ]
     },
     {
@@ -38,18 +38,18 @@ const staticRoutes: RouteRecordRaw[] = [
     {
         path: '/403',
         name: '403',
-        component: () => import('@/views/error-page/forbidden.vue'),
+        component: () => import('@/views/error-page/forbidden.vue')
     },
     {
         path: '/404',
         name: '404',
-        component: () => import('@/views/error-page/not-found.vue'),
+        component: () => import('@/views/error-page/not-found.vue')
     },
     {
         path: '/503',
         name: '503',
-        component: () => import('@/views/error-page/service-unavailable.vue'),
-    },
-]
+        component: () => import('@/views/error-page/service-unavailable.vue')
+    }
+];
 
 export default staticRoutes;

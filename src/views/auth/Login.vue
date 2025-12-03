@@ -28,12 +28,12 @@ let expireTimer: NodeJS.Timeout | null = null;
  */
 const getCaptcha = async () => {
     const result = await to<ICaptcha>(loginService.getCaptchaImage());
-    if ( !result.ok ) {
+    if (!result.ok) {
         console.error('获取验证码失败:', result.error);
         return;
     }
     account.captchaId = result.value.captchaId;
-    captchaImage.value = `data:image/svg+xml;base64,${ btoa(result.value.captcha) }`;
+    captchaImage.value = `data:image/svg+xml;base64,${btoa(result.value.captcha)}`;
 
     // 开始过期定时器
     startCaptchaExpireTimer();
@@ -44,7 +44,7 @@ const getCaptcha = async () => {
  */
 const startCaptchaExpireTimer = () => {
     // 清除之前的定时器
-    if ( expireTimer ) {
+    if (expireTimer) {
         clearTimeout(expireTimer);
     }
 
@@ -58,33 +58,24 @@ const startCaptchaExpireTimer = () => {
 };
 
 /**
- * 关闭过期提示并重新获取验证码
- */
-const closeCaptchaExpiredModal = () => {
-    isCaptchaExpired.value = false;
-    getCaptcha();
-};
-
-/**
  * 登录处理
  */
 const handleLogin = async () => {
     try {
-        if ( !account.username || !account.password ) {
+        if (!account.username || !account.password) {
             return globalToast.warn('请输入账号和密码');
         }
 
-        if ( !account.captcha ) {
+        if (!account.captcha) {
             return globalToast.warn('请输入验证码');
         }
         loading.value = true;
         await loginAction(account);
-        globalToast.success(`${ getGreeting() }，欢迎回来！`);
+        globalToast.success(`${getGreeting()}，欢迎回来！`);
     } finally {
         await getCaptcha();
         loading.value = false;
     }
-
 };
 
 // 组件挂载时获取验证码
@@ -94,7 +85,7 @@ onMounted(() => {
 
 // 组件卸载时清除定时器
 onUnmounted(() => {
-    if ( expireTimer ) {
+    if (expireTimer) {
         clearTimeout(expireTimer);
     }
 });
@@ -102,8 +93,8 @@ onUnmounted(() => {
 // 写个方法，用来判断时间，区分上午、下午、晚上
 const getGreeting = () => {
     const hour = new Date().getHours();
-    if ( hour < 12 ) return '早上好';
-    if ( hour < 18 ) return '下午好';
+    if (hour < 12) return '早上好';
+    if (hour < 18) return '下午好';
     return '晚上好';
 };
 
@@ -112,160 +103,144 @@ const checked = ref(false);
 
 <template>
     <FloatingConfigurator />
-    <div class="bg-surface-50 dark:bg-surface-950 min-h-screen flex "  >
-        <!-- 左侧背景区域 -->
-        <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-600 dark:to-primary-800 items-center justify-center overflow-hidden">
-            <!-- 背景装饰 -->
-            <div class="absolute inset-0 bg-black/10"></div>
-            <div class="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
-            <div class="absolute bottom-20 right-20 w-48 h-48 bg-white/5 rounded-full blur-2xl"></div>
+    <div class="bg-surface-0 dark:bg-surface-900 min-h-screen w-full flex overflow-hidden text-surface-900 dark:text-surface-0">
+        <!-- 左侧视觉区域 -->
+        <div class="hidden lg:flex lg:w-1/2 relative bg-primary-600 items-center justify-center overflow-hidden">
+            <!-- 背景渐变与装饰 -->
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-500 to-primary-800 opacity-90 z-0"></div>
+            <div class="absolute inset-0 bg-[url('@/assets/images/login-bg.png')] bg-cover bg-center opacity-10 mix-blend-overlay z-0"></div>
 
-            <!-- 浮动背景图片 -->
-            <img src="@/assets/images/login-bg.png" class="w-3/4 max-w-md object-contain animate-float relative z-10" alt="">
+            <!-- 动态光斑 -->
+            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-white/20 rounded-full blur-[100px] animate-pulse-slow"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-900/30 rounded-full blur-[120px]"></div>
 
+            <!-- 内容展示 -->
+            <div class="relative z-10 flex flex-col items-center text-center px-12">
+                <div class="mb-12 relative">
+                    <!-- 光效背景 -->
+                    <div class="absolute inset-0 bg-white/20 blur-3xl rounded-full transform scale-75"></div>
+                    <img src="@/assets/images/login-bg.png" class="w-[400px] relative z-10 drop-shadow-2xl animate-float" alt="Illustration" />
+                </div>
+                <h2 class="text-3xl xl:text-4xl font-bold text-white mb-4 tracking-tight">欢迎使用 Sakai Vue</h2>
+                <p class="text-primary-100 text-lg max-w-md leading-relaxed">构建现代化、高效、安全的企业级应用系统的最佳选择。</p>
+            </div>
         </div>
 
-        <!-- 右侧登录表单区域 -->
-        <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
-            <div class="w-full max-w-md">
-                <!-- Logo 和标题 -->
+        <!-- 右侧表单区域 -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 relative">
+            <!-- 移动端顶部装饰 -->
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary-500 to-primary-700 lg:hidden"></div>
+
+            <div class="w-full max-w-[420px] space-y-8">
+                <!-- 头部信息 -->
                 <div class="text-center mb-8">
-                    <img class="w-16 h-16 mx-auto mb-6" src="@/assets/images/logo.svg" />
-                    <h1 class="text-surface-900 dark:text-surface-0 text-2xl font-semibold mb-2">登录账户</h1>
-                    <p class="text-muted-color">请使用您的账号密码登录系统</p>
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 mb-6 shadow-sm">
+                        <img class="w-10 h-10" src="@/assets/images/logo.svg" alt="Logo" />
+                    </div>
+                    <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-2">登录账户</h1>
+                    <p class="text-surface-500 dark:text-surface-400">请输入您的账号密码以继续</p>
                 </div>
 
-                <!-- 登录表单 -->
-                <div class="space-y-6">
-                    <!-- 账号输入 -->
-                    <div>
-                        <label class="block text-surface-900 dark:text-surface-0 font-medium mb-2" for="username">账号</label>
-                        <InputText
-                            id="username"
-                            v-model="account.username"
-                            class="w-full"
-                            placeholder="请输入账号"
-                            type="text" />
+                <!-- 表单内容 -->
+                <div class="flex flex-col gap-5">
+                    <!-- 账号 -->
+                    <div class="flex flex-col gap-2">
+                        <label for="username" class="text-sm font-medium text-surface-700 dark:text-surface-300">账号</label>
+                        <IconField>
+                            <InputIcon class="pi pi-user text-surface-400" />
+                            <InputText id="username" v-model="account.username" class="w-full pl-10" size="large" placeholder="请输入账号" :class="{ 'p-invalid': !account.username && checked }" />
+                        </IconField>
                     </div>
 
-                    <!-- 密码输入 -->
-                    <div>
-                        <label class="block text-surface-900 dark:text-surface-0 font-medium mb-2" for="password">密码</label>
-                        <Password
-                            id="password"
-                            v-model="account.password"
-                            :feedback="false"
-                            :toggle-mask="true"
-                            class="w-full"
-                            fluid
-                            placeholder="请输入密码" />
+                    <!-- 密码 -->
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <label for="password" class="text-sm font-medium text-surface-700 dark:text-surface-300">密码</label>
+                        </div>
+                        <IconField>
+                            <InputIcon class="pi pi-lock z-10 text-surface-400" />
+                            <Password id="password" v-model="account.password" :feedback="false" toggle-mask class="w-full" :input-class="'w-full pl-10 p-3'" placeholder="请输入密码" />
+                        </IconField>
                     </div>
 
                     <!-- 验证码 -->
-                    <div>
-                        <label class="block text-surface-900 dark:text-surface-0 font-medium mb-2" for="captcha">验证码</label>
-                        <div class="flex items-center gap-4">
-                            <InputText
-                                id="captcha"
-                                v-model="account.captcha"
-                                class="flex-1"
-                                placeholder="请输入验证码"
-                                type="text" />
-                            <!-- 验证码图片 -->
-                            <div class="flex-shrink-0">
-                                <div class="relative cursor-pointer" @click="getCaptcha">
-                                    <img
-                                        v-if="captchaImage"
-                                        :src="captchaImage"
-                                        alt="验证码"
-                                        class="h-10 border rounded hover:border-primary-500 transition-colors" />
-                                    <div
-                                        v-else
-                                        class="h-10 w-20 border rounded flex items-center justify-center text-xs text-muted-color hover:border-primary-500 transition-colors">
-                                        点击获取
-                                    </div>
-                                    <!-- 验证码过期蒙层 -->
-                                    <div
-                                        v-if="isCaptchaExpired"
-                                        class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded cursor-pointer"
-                                        @click="closeCaptchaExpiredModal">
-                                        <div class="text-white text-xs text-center px-2">
-                                            <i class="pi pi-exclamation-triangle text-orange-400 mb-1 block"></i>
-                                            <div class="text-xs opacity-80">点击刷新</div>
-                                        </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="captcha" class="text-sm font-medium text-surface-700 dark:text-surface-300">验证码</label>
+                        <div class="flex gap-3">
+                            <IconField class="flex-1">
+                                <InputIcon class="pi pi-shield text-surface-400" />
+                                <InputText id="captcha" v-model="account.captcha" class="w-full pl-10" size="large" placeholder="验证码" @keyup.enter="handleLogin" />
+                            </IconField>
+                            <div class="relative shrink-0">
+                                <div class="h-[46px] w-32 rounded-md overflow-hidden border border-surface-200 dark:border-surface-700 cursor-pointer relative group transition-all hover:border-primary-500 hover:shadow-sm" @click="getCaptcha">
+                                    <img v-if="captchaImage" :src="captchaImage" alt="验证码" class="w-full h-full object-cover" />
+                                    <div v-else class="w-full h-full flex items-center justify-center bg-surface-50 dark:bg-surface-800 text-xs text-surface-400"><i class="pi pi-refresh mr-1"></i> 获取中</div>
+
+                                    <!-- 过期遮罩 -->
+                                    <div v-if="isCaptchaExpired" class="absolute inset-0 bg-surface-900/80 backdrop-blur-[1px] flex flex-col items-center justify-center text-white/90 z-10">
+                                        <i class="pi pi-exclamation-circle mb-1 text-orange-400"></i>
+                                        <span class="text-xs font-medium">点击刷新</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 记住我和忘记密码 -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <Checkbox id="rememberme1" v-model="checked" binary class="mr-2"></Checkbox>
-                            <label for="rememberme1" class="text-surface-700 dark:text-surface-300">记住我</label>
+                    <!-- 选项 -->
+                    <div class="flex items-center justify-between mt-2">
+                        <div class="flex items-center gap-2">
+                            <Checkbox id="rememberme" v-model="checked" binary />
+                            <label for="rememberme" class="text-sm text-surface-600 dark:text-surface-400 cursor-pointer select-none hover:text-surface-900 dark:hover:text-surface-200 transition-colors">记住我</label>
                         </div>
-                        <span class="text-primary font-medium cursor-pointer hover:text-primary-600 transition-colors">
-                            忘记密码？
-                        </span>
+                        <span class="text-sm font-medium text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">忘记密码？</span>
                     </div>
 
                     <!-- 登录按钮 -->
-                    <Button
-                        :loading="loading"
-                        class="w-full"
-                        label="登录"
-                        size="large"
-                        @click="handleLogin" />
+                    <Button label="登录" class="w-full mt-2 font-bold text-lg shadow-lg shadow-primary-500/30" size="large" :loading="loading" @click="handleLogin" />
+                </div>
+
+                <!-- 底部 -->
+                <div class="text-center mt-8 text-sm text-surface-500 dark:text-surface-400">
+                    还没有账号？
+                    <span class="font-medium text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">立即注册</span>
                 </div>
             </div>
         </div>
     </div>
-
-
 </template>
 
 <style scoped>
-.pi-eye {
-    transform: scale(1.6);
-    margin-right: 1rem;
-}
-
-.pi-eye-slash {
-    transform: scale(1.6);
-    margin-right: 1rem;
-}
-
-/* 上下浮动动画 */
-.animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
+/* 浮动动画 */
 @keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
+    0%,
+    100% {
+        transform: translateY(0);
     }
+
     50% {
         transform: translateY(-20px);
     }
 }
 
-.auth-bg:after {
-    background-color: #efefef;
-    background-image: linear-gradient(90deg, rgba(60, 10, 30, 0.04) 3%, transparent 0), linear-gradient(1turn, rgba(60, 10, 30, 0.04) 3%, transparent 0);
-    background-size: 20px 20px;
-    background-position: 50%;
-    background-repeat: repeat;
+.animate-float {
+    animation: float 6s ease-in-out infinite;
 }
 
-.auth-bg:after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -10;
-    pointer-events: none;
+/* 缓慢脉冲 */
+@keyframes pulse-slow {
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.2;
+        transform: scale(1.1);
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 8s infinite ease-in-out;
 }
 </style>

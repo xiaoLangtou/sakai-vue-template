@@ -72,15 +72,13 @@ export function useTableStyles(props: TableStylesProps) {
     // 获取列的body样式
     const getColumnBodyStyle = (column: TableColumn<any>): Record<string, any> => {
         const style: Record<string, any> = {
-            minWidth: "80px",
+            minWidth: '80px',
             ...column.style
         };
 
         // 设置宽度（与表头保持一致）
         if (column.width) {
-            const width = typeof column.width === 'number'
-                ? `${column.width}px`
-                : column.width;
+            const width = typeof column.width === 'number' ? `${column.width}px` : column.width;
             style.width = width;
             style.minWidth = width;
             style.maxWidth = width;
@@ -88,16 +86,12 @@ export function useTableStyles(props: TableStylesProps) {
 
         // 设置最小宽度
         if (column.minWidth && !column.width) {
-            style.minWidth = typeof column.minWidth === 'number'
-                ? `${column.minWidth}px`
-                : column.minWidth;
+            style.minWidth = typeof column.minWidth === 'number' ? `${column.minWidth}px` : column.minWidth;
         }
 
         // 设置最大宽度
         if (column.maxWidth && !column.width) {
-            style.maxWidth = typeof column.maxWidth === 'number'
-                ? `${column.maxWidth}px`
-                : column.maxWidth;
+            style.maxWidth = typeof column.maxWidth === 'number' ? `${column.maxWidth}px` : column.maxWidth;
         }
 
         // 处理文本省略
@@ -150,16 +144,12 @@ export function useTableStyles(props: TableStylesProps) {
 
         // 设置宽度
         if (column.width) {
-            style.width = typeof column.width === 'number'
-                ? `${column.width}px`
-                : column.width;
+            style.width = typeof column.width === 'number' ? `${column.width}px` : column.width;
         }
 
         // 设置最小宽度
         if (column.minWidth) {
-            style.minWidth = typeof column.minWidth === 'number'
-                ? `${column.minWidth}px`
-                : column.minWidth;
+            style.minWidth = typeof column.minWidth === 'number' ? `${column.minWidth}px` : column.minWidth;
         }
 
         // 处理固定列样式
@@ -170,7 +160,6 @@ export function useTableStyles(props: TableStylesProps) {
 
             if (column.alignFrozen === 'left') {
                 style.left = '0';
-
             } else if (column.alignFrozen === 'right') {
                 style.right = '0';
             }
@@ -226,8 +215,6 @@ export function useTableStyles(props: TableStylesProps) {
         handleStyleChange,
         handleTableSettingChange,
         resetStyles,
-        getCurrentTheme,
-
-
+        getCurrentTheme
     };
 }

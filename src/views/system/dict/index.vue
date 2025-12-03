@@ -9,12 +9,11 @@ import type { TableColumns } from '@/composables';
 import { CircleCheck, CircleX } from 'lucide-vue-next';
 import { h } from 'vue';
 
-
 // 页面标题
 const title = ref('字典管理');
 const toast = useToast();
 const { copy, isSupported } = useClipboard();
-const { tableConfig, handlePageChange, handleFilterChange, handleRefresh, dictTypeForm,getMoreActions, } = useDict();
+const { tableConfig, handlePageChange, handleFilterChange, handleRefresh, dictTypeForm, getMoreActions } = useDict();
 
 // 字典项抽屉状态管理
 const dictItemsDrawerVisible = ref(false);
@@ -45,7 +44,7 @@ function handleColumnsChange(columns: TableColumns<IDictType>): void {
  * @param type - 字典类型值
  */
 const copyDictType = async (type: string) => {
-    if ( !isSupported ) {
+    if (!isSupported) {
         toast.add({
             severity: 'warn',
             summary: '提示',
@@ -60,10 +59,10 @@ const copyDictType = async (type: string) => {
         toast.add({
             severity: 'success',
             summary: '成功',
-            detail: `已复制字典类型: ${ type }`,
+            detail: `已复制字典类型: ${type}`,
             life: 3000
         });
-    } catch ( err ) {
+    } catch (err) {
         console.error('复制失败:', err);
         toast.add({
             severity: 'error',
@@ -74,17 +73,15 @@ const copyDictType = async (type: string) => {
     }
 };
 
-
 const openNewDictType = () => {
     console.log(dictTypeForm.value);
     dictTypeForm.value?.openDrawer();
 };
 
-
 const formatterDictType = (value: string) => {
     return {
-        'SYSTEM': '系统字典',
-        'BUSINESS': '业务字典'
+        SYSTEM: '系统字典',
+        BUSINESS: '业务字典'
     }[value];
 };
 
@@ -92,12 +89,10 @@ const handleCloseDictItem = () => {
     dictItemsDrawerVisible.value = false;
     selectedDictType.value = undefined;
 };
-
 </script>
 
 <template>
     <PageContainer>
-
         <template #header>
             <div class="flex justify-between items-center">
                 <h5 class="m-0">{{ title }}</h5>
@@ -107,9 +102,7 @@ const handleCloseDictItem = () => {
                 </div>
             </div>
         </template>
-        <CustomTable v-bind="tableConfig" @page="handlePageChange"
-                           @refresh="handleRefresh" @update:columns="handleColumnsChange"
-                           @filter-change="handleFilterChange">
+        <CustomTable v-bind="tableConfig" @page="handlePageChange" @refresh="handleRefresh" @update:columns="handleColumnsChange" @filter-change="handleFilterChange">
             <!-- 字典名称列 -->
             <template #column-dictName="{ data }">
                 <Button :label="data.dictName" variant="link" @click="openDictItemsDrawer(data)" />
@@ -118,8 +111,7 @@ const handleCloseDictItem = () => {
             <template #column-dictCode="{ data }">
                 <div class="flex items-center gap-1">
                     <Tag :value="data.dictCode" severity="secondary"></Tag>
-                    <i class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors"
-                       title="复制字典类型" @click="copyDictType(data.dictCode)"></i>
+                    <i class="pi pi-clone cursor-pointer text-gray-500 hover:text-blue-500 transition-colors" title="复制字典类型" @click="copyDictType(data.dictCode)"></i>
                 </div>
             </template>
             <!-- 字典类型 -->
@@ -129,20 +121,14 @@ const handleCloseDictItem = () => {
             <!-- 状态列 -->
             <template #column-status="{ data }">
                 <div class="flex items-center gap-1">
-                    <component
-                        :is="h(data.status == 1 ? CircleCheck : CircleX, { size: 14, color: data.status == 1 ? 'var(--primary-color)' : 'red' })">
-                    </component>
+                    <component :is="h(data.status == 1 ? CircleCheck : CircleX, { size: 14, color: data.status == 1 ? 'var(--primary-color)' : 'red' })"> </component>
                     <span>{{ data.status == 1 ? '启用' : '停用' }}</span>
                 </div>
             </template>
         </CustomTable>
         <DictTypeForm ref="dictTypeForm" @success="handleRefresh" />
         <Menu ref="menu" :model="getMoreActions()" popup></Menu>
-        <DictItemsDrawer
-            v-model:visible="dictItemsDrawerVisible"
-            :dict-type="selectedDictType"
-            @close="handleCloseDictItem"
-        />
+        <DictItemsDrawer v-model:visible="dictItemsDrawerVisible" :dict-type="selectedDictType" @close="handleCloseDictItem" />
     </PageContainer>
 </template>
 

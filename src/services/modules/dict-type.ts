@@ -1,6 +1,6 @@
-import { http } from "@/services/core/http";
-import type { IDictType, IDictTypeQuery } from "../types/dict";
-import type { IPageResult, IQueryPage } from "../types/types";
+import { http } from '@/services/core/http';
+import type { IDictType, IDictTypeQuery } from '../types/dict';
+import type { IPageResult, IQueryPage } from '../types/types';
 
 class DictTypeService {
     private static instance: DictTypeService;
@@ -10,7 +10,6 @@ class DictTypeService {
         }
         return DictTypeService.instance;
     }
-
 
     /**
      * 获取字典列表
@@ -24,9 +23,9 @@ class DictTypeService {
      * @returns {Promise<any[]>} 字典列表
      */
     getDictList(query: IDictTypeQuery & IQueryPage) {
-        return http.get<IPageResult<IDictType>>("/dict/list", {
+        return http.get<IPageResult<IDictType>>('/dict/list', {
             params: {
-                ...query,
+                ...query
             }
         });
     }
@@ -43,7 +42,7 @@ class DictTypeService {
      * @returns
      */
     addDictType(data: IDictType) {
-        return http.post("/dict/add", data);
+        return http.post('/dict/add', data);
     }
 
     /**
@@ -58,9 +57,8 @@ class DictTypeService {
      * @returns {Promise<ApiResponse>} 更新结果
      */
     updateDictType(data: IDictType) {
-        return http.post("/dict/update", data);
+        return http.post('/dict/update', data);
     }
-
 
     /**
      * 删除字典类型
@@ -70,7 +68,6 @@ class DictTypeService {
     removeDictType(id: string | number) {
         return http.delete(`/dict/remove/${id}`);
     }
-
 
     /**
      * 获取字典类型详情
@@ -82,6 +79,4 @@ class DictTypeService {
     }
 }
 
-
 export const dictTypeService = DictTypeService.getInstance();
-

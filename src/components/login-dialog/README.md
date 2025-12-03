@@ -20,10 +20,7 @@
 
 ```vue
 <template>
-  <LoginDialog 
-    v-model:visible="isVisible"
-    @login-success="handleLoginSuccess"
-  />
+    <LoginDialog v-model:visible="isVisible" @login-success="handleLoginSuccess" />
 </template>
 
 <script setup>
@@ -33,7 +30,7 @@ import { LoginDialog } from '@/components';
 const isVisible = ref(false);
 
 const handleLoginSuccess = () => {
-  console.log('登录成功');
+    console.log('登录成功');
 };
 </script>
 ```
@@ -56,16 +53,16 @@ hideLoginDialog();
 
 ## 📋 Props
 
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| visible | boolean | false | 是否显示弹窗 |
+| 属性名  | 类型    | 默认值 | 说明         |
+| ------- | ------- | ------ | ------------ |
+| visible | boolean | false  | 是否显示弹窗 |
 
 ## 🎯 Events
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
+| 事件名         | 参数           | 说明         |
+| -------------- | -------------- | ------------ |
 | update:visible | value: boolean | 更新显示状态 |
-| login-success | - | 登录成功事件 |
+| login-success  | -              | 登录成功事件 |
 
 ## 🔧 自动触发机制
 
@@ -82,11 +79,11 @@ hideLoginDialog();
 ```vue
 <style>
 .login-dialog :deep(.p-dialog-header) {
-  /* 自定义头部样式 */
+    /* 自定义头部样式 */
 }
 
 .login-dialog :deep(.p-dialog-content) {
-  /* 自定义内容样式 */
+    /* 自定义内容样式 */
 }
 </style>
 ```

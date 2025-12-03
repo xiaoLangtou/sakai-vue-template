@@ -16,7 +16,7 @@ import setupTabsGuard from './tabs';
 
 NProgress.configure({
     showSpinner: false,
-    speed: 500,
+    speed: 500
 });
 
 const removeLoading = () => {

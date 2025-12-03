@@ -7,10 +7,12 @@
 ## 什么是 Result 模式？
 
 Result 模式是一种函数式编程中的错误处理模式，它将操作的结果封装在一个联合类型中：
+
 - 成功时包含结果值
 - 失败时包含错误信息
 
 这种模式的核心优势在于：
+
 1. **显式错误处理**：强制开发者处理可能的错误情况
 2. **类型安全**：编译时就能发现潜在的错误处理问题
 3. **函数式风格**：支持链式调用和值转换
@@ -25,6 +27,7 @@ export type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: 
 ```
 
 这个联合类型是整个工具的核心，它明确区分了成功和失败两种状态：
+
 - `T`：成功时的值类型
 - `E`：错误类型，默认为 `Error`
 - `ok` 字段：用于类型守卫，区分成功和失败状态
@@ -46,6 +49,7 @@ export function safeRun<T, E = Error>(fn: () => T): Result<T, E> {
 `safeRun` 函数将任何可能抛出异常的同步函数包装成返回 Result 类型的安全函数。
 
 **使用示例：**
+
 ```typescript
 // 解析 JSON 字符串
 const parseResult = safeRun(() => JSON.parse(jsonString));
@@ -77,6 +81,7 @@ export async function to<T, E = Error>(promise: Promise<T>): Promise<Result<T, E
 `to` 函数专门用于处理 Promise，将可能 reject 的 Promise 转换为返回 Result 的 Promise。
 
 **使用示例：**
+
 ```typescript
 // API 调用
 const apiResult = await to(fetch('/api/users'));
@@ -108,11 +113,12 @@ map<U>(fn: (value: T) => U): ResultHandler<U, E>
 `map` 方法只在结果成功时执行转换函数，失败时直接传递错误。
 
 **使用示例：**
+
 ```typescript
 const result = new ResultHandler(parseResult)
-    .map(data => data.users)           // 提取用户数组
-    .map(users => users.length)        // 获取用户数量
-    .map(count => `共有 ${count} 个用户`); // 格式化消息
+    .map((data) => data.users) // 提取用户数组
+    .map((users) => users.length) // 获取用户数量
+    .map((count) => `共有 ${count} 个用户`); // 格式化消息
 
 if (result.get().ok) {
     console.log(result.get().value); // "共有 10 个用户"
@@ -128,13 +134,13 @@ mapErr<F>(fn: (error: E) => F): ResultHandler<T, F>
 `mapErr` 方法只在结果失败时执行转换函数，成功时直接传递值。
 
 **使用示例：**
+
 ```typescript
-const result = new ResultHandler(apiResult)
-    .mapErr(error => ({
-        code: 'API_ERROR',
-        message: `API 调用失败: ${error.message}`,
-        timestamp: new Date().toISOString()
-    }));
+const result = new ResultHandler(apiResult).mapErr((error) => ({
+    code: 'API_ERROR',
+    message: `API 调用失败: ${error.message}`,
+    timestamp: new Date().toISOString()
+}));
 ```
 
 #### unwrap 方法：获取值或抛出异常
@@ -163,16 +169,16 @@ get(): Result<T, E>
 async function getUserProfile(userId: string) {
     const userResult = await to(fetchUser(userId));
     const profileResult = await to(fetchUserProfile(userId));
-    
+
     return new ResultHandler(userResult)
-        .map(user => ({ user }))
-        .map(async data => {
+        .map((user) => ({ user }))
+        .map(async (data) => {
             if (profileResult.ok) {
                 return { ...data, profile: profileResult.value };
             }
             return data;
         })
-        .mapErr(error => ({
+        .mapErr((error) => ({
             type: 'USER_FETCH_ERROR',
             message: `获取用户信息失败: ${error.message}`,
             userId
@@ -185,9 +191,9 @@ async function getUserProfile(userId: string) {
 ```typescript
 function processUserInput(input: string) {
     return new ResultHandler(safeRun(() => JSON.parse(input)))
-        .map(data => validateUserData(data))
-        .map(userData => transformUserData(userData))
-        .mapErr(error => ({
+        .map((data) => validateUserData(data))
+        .map((userData) => transformUserData(userData))
+        .mapErr((error) => ({
             field: 'user_input',
             message: '用户输入格式错误',
             originalError: error
@@ -200,17 +206,17 @@ function processUserInput(input: string) {
 ```typescript
 async function loadConfig(configPath: string) {
     const fileResult = await to(fs.readFile(configPath, 'utf8'));
-    
+
     return new ResultHandler(fileResult)
-        .map(content => safeRun(() => JSON.parse(content)))
-        .map(parseResult => {
+        .map((content) => safeRun(() => JSON.parse(content)))
+        .map((parseResult) => {
             if (parseResult.ok) {
                 return parseResult.value;
             }
             throw new Error('配置文件格式错误');
         })
-        .map(config => validateConfig(config))
-        .mapErr(error => ({
+        .map((config) => validateConfig(config))
+        .mapErr((error) => ({
             configPath,
             error: error.message,
             suggestion: '请检查配置文件格式是否正确'
@@ -257,12 +263,12 @@ async function resultApproach(userId: string) {
     const userResult = await to(fetchUser(userId));
     const profileResult = await to(fetchUserProfile(userId));
     const settingsResult = await to(fetchUserSettings(userId));
-    
+
     return new ResultHandler(userResult)
-        .map(user => ({ user }))
-        .map(data => profileResult.ok ? { ...data, profile: profileResult.value } : data)
-        .map(data => settingsResult.ok ? { ...data, settings: settingsResult.value } : data)
-        .mapErr(error => ({
+        .map((user) => ({ user }))
+        .map((data) => (profileResult.ok ? { ...data, profile: profileResult.value } : data))
+        .map((data) => (settingsResult.ok ? { ...data, settings: settingsResult.value } : data))
+        .mapErr((error) => ({
             type: 'USER_DATA_ERROR',
             message: '获取用户数据失败',
             details: error
@@ -300,7 +306,7 @@ function handleResult<T>(result: Result<T, any>) {
     if (result.ok) {
         return result.value;
     }
-    
+
     // 根据错误类型采取不同的处理策略
     if (result.error.code === 'NETWORK_ERROR') {
         // 网络错误，可以重试
@@ -321,10 +327,10 @@ function handleResult<T>(result: Result<T, any>) {
 async function complexOperation(data: InputData) {
     const step1 = await to(validateInput(data));
     if (!step1.ok) return step1;
-    
+
     const step2 = await to(processData(step1.value));
     if (!step2.ok) return step2;
-    
+
     const step3 = await to(saveResult(step2.value));
     return step3;
 }
@@ -333,6 +339,7 @@ async function complexOperation(data: InputData) {
 ## 性能考虑
 
 Result 模式的性能开销主要来自：
+
 1. 对象创建：每次操作都会创建新的 Result 对象
 2. 类型检查：运行时需要检查 `ok` 字段
 

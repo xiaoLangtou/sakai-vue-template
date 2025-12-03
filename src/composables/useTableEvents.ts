@@ -64,35 +64,21 @@ export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>,
     /**
      * 处理分页事件
      */
-    const handlePage = (event: {
-        originalEvent: Event;
-        first: number;
-        rows: number;
-        page: number;
-        pageCount: number;
-    }): void => {
+    const handlePage = (event: { originalEvent: Event; first: number; rows: number; page: number; pageCount: number }): void => {
         emit('page', event);
     };
 
     /**
      * 处理排序事件
      */
-    const handleSort = (event: {
-        originalEvent: Event;
-        sortField: string;
-        sortOrder: number;
-        multiSortMeta?: Array<{ field: string; order: number }>;
-    }): void => {
+    const handleSort = (event: { originalEvent: Event; sortField: string; sortOrder: number; multiSortMeta?: Array<{ field: string; order: number }> }): void => {
         emit('sort', event);
     };
 
     /**
      * 处理筛选事件
      */
-    const handleFilter = (event: {
-        originalEvent: Event;
-        filters: Record<string, any>;
-    }): void => {
+    const handleFilter = (event: { originalEvent: Event; filters: Record<string, any> }): void => {
         emit('filter', event);
     };
 
@@ -113,36 +99,22 @@ export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>,
     /**
      * 处理单元格编辑完成事件
      */
-    const handleCellEditComplete = (event: {
-        originalEvent: Event;
-        data: T;
-        newData: T;
-        field: string;
-        index: number;
-    }): void => {
+    const handleCellEditComplete = (event: { originalEvent: Event; data: T; newData: T; field: string; index: number }): void => {
         emit('cell-edit-complete', event);
     };
 
     /**
      * 处理单元格编辑取消事件
      */
-    const handleCellEditCancel = (event: {
-        originalEvent: Event;
-        data: T;
-        field: string;
-        index: number;
-    }): void => {
+    const handleCellEditCancel = (event: { originalEvent: Event; data: T; field: string; index: number }): void => {
         emit('cell-edit-cancel', event);
     };
 
     /**
      * 处理行展开事件
      */
-    const handleRowExpand = (event: {
-        originalEvent: Event;
-        data: T;
-    }): void => {
-        const index = expandedRows.value.findIndex(row => row === event.data);
+    const handleRowExpand = (event: { originalEvent: Event; data: T }): void => {
+        const index = expandedRows.value.findIndex((row) => row === event.data);
         if (index === -1) {
             expandedRows.value.push(event.data);
         }
@@ -152,11 +124,8 @@ export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>,
     /**
      * 处理行折叠事件
      */
-    const handleRowCollapse = (event: {
-        originalEvent: Event;
-        data: T;
-    }): void => {
-        const index = expandedRows.value.findIndex(row => row === event.data);
+    const handleRowCollapse = (event: { originalEvent: Event; data: T }): void => {
+        const index = expandedRows.value.findIndex((row) => row === event.data);
         if (index > -1) {
             expandedRows.value.splice(index, 1);
         }
@@ -166,24 +135,14 @@ export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>,
     /**
      * 处理列大小调整结束事件
      */
-    const handleColumnResizeEnd = (event: {
-        originalEvent: Event;
-        element: HTMLElement;
-        column: any;
-        delta: number;
-    }): void => {
+    const handleColumnResizeEnd = (event: { originalEvent: Event; element: HTMLElement; column: any; delta: number }): void => {
         emit('column-resize-end', event);
     };
 
     /**
      * 处理列重新排序事件
      */
-    const handleColumnReorder = (event: {
-        originalEvent: Event;
-        dragIndex: number;
-        dropIndex: number;
-        columns: any[];
-    }): void => {
+    const handleColumnReorder = (event: { originalEvent: Event; dragIndex: number; dropIndex: number; columns: any[] }): void => {
         emit('column-reorder', event);
     };
 
@@ -209,7 +168,7 @@ export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>,
      * 切换行选择状态
      */
     const toggleRowSelection = (row: T): void => {
-        const index = selectedRows.value.findIndex(selectedRow => selectedRow === row);
+        const index = selectedRows.value.findIndex((selectedRow) => selectedRow === row);
         if (index > -1) {
             selectedRows.value.splice(index, 1);
         } else {
@@ -237,7 +196,7 @@ export function useTableEvents<T = any>(emit: (event: keyof TableEventsEmits<T>,
      * 切换行展开状态
      */
     const toggleRowExpansion = (row: T): void => {
-        const index = expandedRows.value.findIndex(expandedRow => expandedRow === row);
+        const index = expandedRows.value.findIndex((expandedRow) => expandedRow === row);
         if (index > -1) {
             expandedRows.value.splice(index, 1);
         } else {

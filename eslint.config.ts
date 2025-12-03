@@ -13,41 +13,26 @@ import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 import autoImport from './.eslintrc-auto-import.js';
-import pluginQuery from '@tanstack/eslint-plugin-query'
+import pluginQuery from '@tanstack/eslint-plugin-query';
 export default typescriptEslint.config(
     {
-        ignores: [
-            '*.d.ts',
-            '**/dist/*',
-            '**/plop/*',
-            '*.env',
-            '*.env.local',
-            '.vscode',
-            '.idea',
-            '.DS_Store',
-            'src/types/*.d.ts',
-        ],
+        ignores: ['*.d.ts', '**/dist/*', '**/plop/*', '*.env', '*.env.local', '.vscode', '.idea', '.DS_Store', 'src/types/*.d.ts']
     },
 
     {
-        extends: [
-            js.configs.recommended,
-            ...typescriptEslint.configs.recommended,
-            ...pluginQuery.configs['flat/recommended'],
-            ...eslintPluginVue.configs['flat/recommended'],
-        ],
+        extends: [js.configs.recommended, ...typescriptEslint.configs.recommended, ...pluginQuery.configs['flat/recommended'], ...eslintPluginVue.configs['flat/recommended']],
         files: ['**/*.{ts,vue,tsx}'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
             globals: {
                 ...globals.browser,
-                ...autoImport.globals,
+                ...autoImport.globals
             },
             parserOptions: {
                 parser: typescriptEslint.parser,
-                jsx: true,
-            },
+                jsx: true
+            }
         },
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
@@ -62,29 +47,32 @@ export default typescriptEslint.config(
             'vue/block-order': [
                 'error',
                 {
-                    order: [['template', 'script'], 'style'],
-                },
+                    order: [['template', 'script'], 'style']
+                }
             ],
 
             'vue/no-duplicate-attributes': [
                 'error',
                 {
                     allowCoexistClass: true,
-                    allowCoexistStyle: true,
-                },
+                    allowCoexistStyle: true
+                }
             ],
             'no-irregular-whitespace': [
                 1,
                 {
-                    skipComments: true,
-                },
+                    skipComments: true
+                }
             ],
             'object-curly-spacing': ['error', 'always'],
-            'vue/max-attributes-per-line': ['error', {
-                singleline: 1, // 单行最多1个属性
-                multiline: 1   // 多行每行1个属性
-            }],
-        },
+            'vue/max-attributes-per-line': [
+                'error',
+                {
+                    singleline: 1, // 单行最多1个属性
+                    multiline: 1 // 多行每行1个属性
+                }
+            ]
+        }
     },
-    eslintConfigPrettier,
+    eslintConfigPrettier
 );

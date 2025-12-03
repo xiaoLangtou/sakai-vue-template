@@ -14,7 +14,7 @@ export default function setupTabsGuard(router: Router) {
             next();
             return;
         }
-        if (to.path !== '/' && !tabsStore.tabs.some(tab => tab.path === to.path)) {
+        if (to.path !== '/' && !tabsStore.tabs.some((tab) => tab.path === to.path)) {
             console.log('添加标签页', to.meta);
             const newTab = {
                 key: to.path,
@@ -30,7 +30,7 @@ export default function setupTabsGuard(router: Router) {
         }
 
         // 设置当前路由对应的标签页为激活状态
-        const currentTab = tabsStore.tabs.find(tab => tab.path === to.path);
+        const currentTab = tabsStore.tabs.find((tab) => tab.path === to.path);
         if (currentTab) {
             tabsStore.setActiveTab(currentTab.key);
         }

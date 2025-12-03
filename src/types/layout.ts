@@ -15,7 +15,7 @@ export interface LayoutConfig {
     /** 是否显示标签页 */
     showTab: boolean;
     /** 标签页样式 */
-    tabStyle: 'Fashion' | 'Card' | 'Square';
+    tabStyle: 'Card' | 'Square';
     /** 标签页是否显示图标 */
     isShowIcon: boolean;
     /** 标签页是否持久化*/
@@ -228,4 +228,3 @@ export interface LayoutStoreMethods {
     /** 关闭移动端侧边栏 */
     closeMobileSidebar(): void;
 }
-

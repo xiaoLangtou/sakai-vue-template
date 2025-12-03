@@ -4,27 +4,17 @@ import { useLayoutStore } from '@/stores/layout';
 import { storeToRefs } from 'pinia';
 import Drawer from 'primevue/drawer';
 import { computed, onMounted, onUnmounted } from 'vue';
+import { AppHeaderLogo } from '../shared';
 import AppFooter from './app-footer.vue';
 import AppHeader from './app-header.vue';
 import AppSidebar from './app-sidebar.vue';
-import { AppHeaderLogo } from '../shared';
 
 // ==================== Store 状态管理 ====================
 const layoutStore = useLayoutStore();
-const { layoutConfig, isShowHeader } = storeToRefs(layoutStore);
 
 // ==================== 响应式引用优化 ====================
 // 提取常用的响应式属性，避免频繁访问 store，解决 IDE 卡死问题
-const {
-    isMobile,
-    isTablet,
-    isDesktop,
-    isWide,
-    isSidebarActive,
-    isCollapsed,
-    currentBreakpoint,
-    showMobileSidebar
-} = storeToRefs(layoutStore);
+const { isMobile, isTablet, isDesktop, isWide, isSidebarActive, isCollapsed, currentBreakpoint, showMobileSidebar } = storeToRefs(layoutStore);
 
 // ==================== 生命周期管理 ====================
 onMounted(() => {
@@ -36,21 +26,20 @@ onUnmounted(() => {
 });
 
 
-const gradientMaskForTheContentArea = computed(() => {
-    if ( layoutStore.isShowTab && !layoutStore.isShowHeader ) {
-        return 'top-[45px]';
-    } else if ( layoutStore.isShowTab && layoutStore.isShowHeader ) {
-        return 'top-[108px]';
-    } else {
-        return 'top-[60px]';
-    }
-});
+const TABS_TOP_POSITIONS = {
+    WITH_HEADER: '64px',
+    WITHOUT_HEADER: '0px'
+};
 
+
+/**
+ * 计算标签页顶部位置样式
+ */
 const tabsTopStyle = computed(() => {
-    return { top: layoutStore.isShowHeader ? '64px' : '0px' };
+    return {
+        top: layoutStore.isShowHeader ? TABS_TOP_POSITIONS.WITH_HEADER : TABS_TOP_POSITIONS.WITHOUT_HEADER
+    };
 });
-
-
 </script>
 
 <template>
@@ -62,8 +51,8 @@ const tabsTopStyle = computed(() => {
                 'sidebar-collapsed': isCollapsed,
                 [`${currentBreakpoint}-layout`]: true
             }
-        ]">
-
+        ]"
+    >
         <!-- 桌面端侧边栏 -->
 
         <AppSidebar v-if="(isDesktop || isWide) && isSidebarActive" />
@@ -79,7 +68,8 @@ const tabsTopStyle = computed(() => {
             }"
             class="mobile-sidebar-drawer"
             position="left"
-            @hide="layoutStore.closeMobileSidebar">
+            @hide="layoutStore.closeMobileSidebar"
+        >
             <template #header>
                 <AppHeaderLogo />
             </template>
@@ -89,28 +79,13 @@ const tabsTopStyle = computed(() => {
         </Drawer>
 
         <!-- 主体内容区域 -->
-        <div :class="[
-            'main-content',
-            'relative',
-            `${currentBreakpoint}-main`
-        ]">
+        <div :class="['main-content', 'relative', `${currentBreakpoint}-main`]">
             <!-- 顶部头部栏 -->
             <AppHeader v-if="layoutStore.isShowHeader" />
 
             <!-- 标签页组件 -->
-            <AppTabs
-                v-if="layoutStore.isShowTab"
-                :show-icon="layoutStore.isShowIcon"
-                :style="tabsTopStyle"
-                :tab-style="layoutStore.tabStyle" class="tabs-container" />
+            <AppTabs v-if="layoutStore.isShowTab" :show-icon="layoutStore.isShowIcon" :style="tabsTopStyle" :tab-style="layoutStore.tabStyle" class="tabs-container" />
 
-            <!-- 内容区域渐变遮罩 -->
-            <div :class="[
-                'absolute left-0 right-0 h-2 pointer-events-none z-10',
-                'bg-gradient-to-b from-surface-50 to-surface-100',
-                'dark:from-surface-900 dark:to-transparent',
-                gradientMaskForTheContentArea
-            ]" />
 
             <!-- 主要内容区域 -->
             <div class="layout-main-container relative">

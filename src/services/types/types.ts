@@ -1,4 +1,4 @@
-import { type AxiosRequestConfig } from "axios";
+import { type AxiosRequestConfig } from 'axios';
 export interface ApiResponse<T = any> {
     code: number;
     message: string;
@@ -14,15 +14,10 @@ export interface RequestConfig extends AxiosRequestConfig {
     redirectToLoginOnError?: boolean;
 }
 
-
-
 export interface IQueryPage {
     current: number;
     size: number;
 }
-
-
-
 
 export interface IPageResult<T> {
     records: T[];
@@ -33,5 +28,5 @@ export interface IPageResult<T> {
         pageSize: number | string;
         total: number;
         totalPage: number;
-    }
+    };
 }

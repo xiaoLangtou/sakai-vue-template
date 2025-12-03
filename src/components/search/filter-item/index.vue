@@ -180,9 +180,7 @@ defineExpose({
         </div>
 
         <div class="filter-input-wrapper">
-            <component
-:is="componentMap[config.type]" v-bind="componentProps" :model-value="value"
-                @update:model-value="handleUpdate" />
+            <component :is="componentMap[config.type]" v-bind="componentProps" :model-value="value" @update:model-value="handleUpdate" />
             <div v-if="hasError" class="error-indicator">
                 <i class="pi pi-exclamation-triangle" />
             </div>

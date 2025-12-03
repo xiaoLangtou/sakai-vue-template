@@ -1,14 +1,7 @@
 import { ref, watch, nextTick } from 'vue';
-import type {
-    TablePersistenceProps,
-    TablePersistenceState,
-    TableState
-} from '@/types/table';
+import type { TablePersistenceProps, TablePersistenceState, TableState } from '@/types/table';
 
-export function useTablePersistence(
-    props: TablePersistenceProps,
-    state: TablePersistenceState
-) {
+export function useTablePersistence(props: TablePersistenceProps, state: TablePersistenceState) {
     const isRestoring = ref(false);
     const storageKey = ref(props.persistStateKey || 'custom-table-state');
 
@@ -130,22 +123,22 @@ export function useTablePersistence(
 
             // 恢复列配置
             if (props.persistColumns !== false && parsedState.columns && state.columns) {
-                const restoredColumns = parsedState.columns.map((savedCol: any) => {
-                    const originalCol = state.columns.value.find((col: any) =>
-                        col.key === savedCol.key || col.field === savedCol.field
-                    );
+                const restoredColumns = parsedState.columns
+                    .map((savedCol: any) => {
+                        const originalCol = state.columns.value.find((col: any) => col.key === savedCol.key || col.field === savedCol.field);
 
-                    if (originalCol) {
-                        return {
-                            ...originalCol,
-                            visible: savedCol.visible,
-                            frozen: savedCol.frozen,
-                            width: savedCol.width,
-                            order: savedCol.order
-                        };
-                    }
-                    return null;
-                }).filter(Boolean);
+                        if (originalCol) {
+                            return {
+                                ...originalCol,
+                                visible: savedCol.visible,
+                                frozen: savedCol.frozen,
+                                width: savedCol.width,
+                                order: savedCol.order
+                            };
+                        }
+                        return null;
+                    })
+                    .filter(Boolean);
 
                 if (restoredColumns.length > 0) {
                     state.columns.value = restoredColumns;

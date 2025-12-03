@@ -11,22 +11,26 @@
 ## 🏗️ 核心技术架构
 
 ### 构建工具
+
 - **Rsbuild**: 替代 Vite/Webpack 的新一代构建工具，性能更优
 - **TypeScript**: 严格类型检查，提升代码质量
 - **Rspack**: 底层打包引擎
 
 ### 前端框架
+
 - **Vue 3.4+**: Composition API + `<script setup>`
 - **Vue Router 4**: Hash 模式路由
 - **Pinia**: 状态管理，支持持久化
 
 ### UI 框架
+
 - **PrimeVue 4.3+**: 主要 UI 组件库
 - **PrimeUI Themes**: Aura 主题系统
 - **TailwindCSS 3.4**: 原子化 CSS
 - **Lucide Icons**: 现代图标库
 
 ### 数据管理
+
 - **TanStack Query**: 服务端状态管理
 - **Axios**: HTTP 请求库
 - **Zod**: 数据验证
@@ -95,44 +99,50 @@ sakai-vue/
 ## 🔑 核心功能模块
 
 ### 1. 认证系统 ([src/stores/auth.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/auth.ts:0:0-0:0))
+
 - **登录/登出**: 支持用户名密码登录，MD5 加密
 - **Token 管理**: 自动存储和刷新 Token
 - **用户信息**: 存储用户基本信息
 - **登录确认**: 退出时二次确认
 
 ### 2. 路由系统 ([src/router/](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/router:0:0-0:0))
+
 - **静态路由**: 登录页、错误页等固定路由
 - **动态路由**: 根据用户权限动态加载菜单路由
 - **路由守卫**:
-  - [permission.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/router/guard/permission.ts:0:0-0:0): 权限验证
-  - [menu.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/types/menu.ts:0:0-0:0): 动态菜单加载
-  - [tabs.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/tabs.ts:0:0-0:0): 标签页管理
-  - [info.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/router/guard/info.ts:0:0-0:0): 用户信息获取
-  - [loading.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/loading.ts:0:0-0:0): 页面加载状态
+    - [permission.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/router/guard/permission.ts:0:0-0:0): 权限验证
+    - [menu.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/types/menu.ts:0:0-0:0): 动态菜单加载
+    - [tabs.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/tabs.ts:0:0-0:0): 标签页管理
+    - [info.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/router/guard/info.ts:0:0-0:0): 用户信息获取
+    - [loading.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/loading.ts:0:0-0:0): 页面加载状态
 
 ### 3. 布局系统 ([src/stores/layout.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/layout.ts:0:0-0:0))
+
 - **响应式断点**: Mobile/Tablet/Desktop/Wide
 - **侧边栏模式**: Relative/Fixed 两种模式
 - **主题切换**: 亮色/暗色主题
-- **布局配置**: 
-  - 标签页显示/隐藏
-  - 头部/底部显示控制
-  - 色弱/灰色模式
-  - 水印功能
+- **布局配置**:
+    - 标签页显示/隐藏
+    - 头部/底部显示控制
+    - 色弱/灰色模式
+    - 水印功能
 
 ### 4. 菜单系统 ([src/stores/menu.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/menu.ts:0:0-0:0))
+
 - **菜单获取**: 从后端获取用户菜单
 - **菜单扁平化**: 树形结构转扁平列表
 - **顶部菜单**: 一级菜单提取
 - **子菜单映射**: Map 结构存储子菜单
 
 ### 5. 标签页系统 ([src/stores/tabs.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/stores/tabs.ts:0:0-0:0))
+
 - **标签页管理**: 添加、删除、激活
 - **批量操作**: 关闭其他、关闭所有、关闭左侧/右侧
 - **持久化**: LocalStorage 存储
 - **状态管理**: 加载状态、错误状态
 
 ### 6. HTTP 请求 ([src/services/core/http.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/services/core/http.ts:0:0-0:0))
+
 - **请求拦截**: 自动添加 Token
 - **响应拦截**: 统一错误处理
 - **401 处理**: Token 过期自动弹出登录框
@@ -142,6 +152,7 @@ sakai-vue/
 ### 7. 组件系统
 
 #### 业务组件 ([src/components/bussiness/](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/components/bussiness:0:0-0:0))
+
 - **AppTabs**: 标签页组件
 - **GlobalSearch**: 全局搜索
 - **LoginDialog**: 登录弹窗
@@ -152,6 +163,7 @@ sakai-vue/
 - **SplitPane**: 分割面板
 
 #### UI 组件 ([src/components/ui/](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/components/ui:0:0-0:0))
+
 - **CustomDialog**: 自定义对话框
 - **CustomDrawer**: 自定义抽屉
 - **Sidebar**: 侧边栏组件
@@ -159,6 +171,7 @@ sakai-vue/
 - **Sheet**: 表单面板
 
 #### 表格组件 ([src/components/table/](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/components/table:0:0-0:0))
+
 - **ConfigurableTable**: 可配置表格
 - **TableColumnSettings**: 列设置
 
@@ -167,20 +180,24 @@ sakai-vue/
 ## 🛠️ 工具函数
 
 ### 存储工具 ([src/utils/storage.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/utils/storage.ts:0:0-0:0))
+
 - **前缀管理**: 全局存储前缀
 - **过期时间**: 支持设置过期时间
 - **监听机制**: Watch 监听变化
 - **自动清理**: 过期数据自动清理
 
 ### 结果处理 ([src/utils/result-handler.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/utils/result-handler.ts:0:0-0:0))
+
 - **统一错误处理**: `to()` 函数包装 Promise
 - **类型安全**: TypeScript 类型推断
 
 ### 日志工具 ([src/utils/logger.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/utils/logger.ts:0:0-0:0))
+
 - **分级日志**: info/warn/error/debug
 - **环境区分**: 开发/生产环境
 
 ### 搜索助手 ([src/utils/search-helpers.ts](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/utils/search-helpers.ts:0:0-0:0))
+
 - **高亮搜索**: 关键词高亮
 - **模糊搜索**: 支持拼音搜索
 
@@ -189,12 +206,14 @@ sakai-vue/
 ## 🎨 样式系统
 
 ### TailwindCSS 配置
+
 - **PrimeUI 集成**: 使用 `tailwindcss-primeui` 插件
 - **暗色模式**: 支持 `.app-dark` 类名切换
 - **响应式断点**: sm/md/lg/xl/2xl
 - **自定义颜色**: HSL 颜色变量
 
 ### 全局样式 ([src/assets/styles.scss](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/src/assets/styles.scss:0:0-0:0))
+
 - **滚动条优化**: 细滚动条样式
 - **表格样式**: DataTable 自定义样式
 - **抽屉层级**: z-index 管理
@@ -204,11 +223,13 @@ sakai-vue/
 ## 🔧 开发配置
 
 ### 自动导入
+
 - **unplugin-auto-import**: 自动导入 Vue/Router/Pinia API
 - **unplugin-vue-components**: 自动导入 PrimeVue 组件
 - **PrimeVueResolver**: PrimeVue 组件解析器
 
 ### 代码规范
+
 - **ESLint**: TypeScript + Vue 规则
 - **Prettier**: 代码格式化
 - **Oxlint**: 快速 Lint 检查
@@ -216,6 +237,7 @@ sakai-vue/
 - **Commitlint**: Commit 规范
 
 ### 构建优化
+
 - **代码拆分**: `split-by-module` 策略
 - **Console 移除**: 生产环境移除 log/info/warn
 - **Source Map**: 开发/生产不同策略
@@ -259,6 +281,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ## 📝 环境变量
 
 项目使用 `.env` 文件管理环境变量：
+
 - `.env`: 通用配置
 - `.env.development`: 开发环境
 - `.env.production`: 生产环境
@@ -286,6 +309,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ## 📚 文档资源
 
 项目 [docs/](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/docs:0:0-0:0) 目录包含详细的使用文档：
+
 - [table.md](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/docs/table.md:0:0-0:0): 表格组件使用
 - [configurable-table-usage.md](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/docs/configurable-table-usage.md:0:0-0:0): 可配置表格
 - [search-components-usage.md](cci:7://file:///Volumes/weipengcheng/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/tva/sakai-vue/docs/search-components-usage.md:0:0-0:0): 搜索组件

@@ -13,7 +13,7 @@ import { createPluginsTs } from './config/plugin/plugins';
 import { createProxy, wrapperEnv } from './config/utils';
 import pkg from './package.json';
 
-const { publicVars } = loadEnv({ prefixes: [ 'VITE_' ] });
+const { publicVars } = loadEnv({ prefixes: ['VITE_'] });
 const { dependencies, devDependencies, name, version } = pkg;
 const __APP_INFO__ = {
     pkg: { dependencies, devDependencies, name, version },
@@ -64,9 +64,9 @@ const config: ReturnType<typeof defineConfig> = defineConfig((): RsbuildConfig =
                 js:
                     process.env.NODE_ENV === 'production'
                         ? // 生产模式使用高质量的 source map 格式
-                        'source-map'
+                          'source-map'
                         : // 开发模式使用性能更好的 source map 格式
-                        'cheap-module-source-map'
+                          'cheap-module-source-map'
             },
             assetPrefix: process.env.VITE_PUBLIC_PATH,
             dataUriLimit: {
@@ -93,7 +93,6 @@ const config: ReturnType<typeof defineConfig> = defineConfig((): RsbuildConfig =
              */
             chunkSplit: {
                 strategy: 'split-by-module'
-
             },
             /**
              * 在生产模式构建时，是否自动移除代码中的 console.[methodName]
@@ -103,10 +102,9 @@ const config: ReturnType<typeof defineConfig> = defineConfig((): RsbuildConfig =
              * removeConsole 为 true 时，移除所有 console 方法
              * removeConsole 为 false 时，不移除 console 方法
              */
-            removeConsole: process.env.NODE_ENV === 'production' ? [ 'log', 'info', 'warn' ] : false
-
+            removeConsole: process.env.NODE_ENV === 'production' ? ['log', 'info', 'warn'] : false
         },
-        plugins: [ ...rsbuildPlugins ]
+        plugins: [...rsbuildPlugins]
     };
 });
 

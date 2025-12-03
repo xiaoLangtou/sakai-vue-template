@@ -11,8 +11,8 @@
 
 <script setup lang="ts">
 defineOptions({
-    name: "PageContainer"
-})
+    name: 'PageContainer'
+});
 </script>
 
 <style lang="scss" scoped>

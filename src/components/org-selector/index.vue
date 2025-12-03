@@ -288,7 +288,7 @@ const handleCheckChange = (checked: boolean, item: Staff | Department) => {
             selectedItems.value.splice(index, 1);
         }
     }
-    console.log(item.isChecked)
+    console.log(item.isChecked);
     emit('change', selectedItems.value);
 };
 
@@ -361,9 +361,7 @@ defineOptions({
             <div class="search-section mb-4">
                 <IconField icon-position="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText
-v-model="searchKeyword" placeholder="搜索部门或人员" class="w-full" @input="handleSearchChange"
-                        @keyup.enter="handleSearch" />
+                    <InputText v-model="searchKeyword" placeholder="搜索部门或人员" class="w-full" @input="handleSearchChange" @keyup.enter="handleSearch" />
                 </IconField>
             </div>
 
@@ -374,10 +372,7 @@ v-model="searchKeyword" placeholder="搜索部门或人员" class="w-full" @inpu
                     <div v-if="breadcrumbs.length > 0" class="breadcrumb mb-3">
                         <Breadcrumb :model="breadcrumbItems" class="!p-0">
                             <template #item="{ item, props }">
-                                <a
-v-bind="props.action"
-                                    class="cursor-pointer text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                                    @click="navigateToLevel(item.index)">
+                                <a v-bind="props.action" class="cursor-pointer text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400" @click="navigateToLevel(item.index)">
                                     {{ item.label }}
                                 </a>
                             </template>
@@ -386,19 +381,12 @@ v-bind="props.action"
 
                     <!-- 搜索结果 -->
                     <div v-if="isSearching" class="search-results">
-                        <div class="search-title mb-2 text-sm text-gray-600 dark:text-gray-400">搜索结果 ({{
-                            searchResults.length }})</div>
+                        <div class="search-title mb-2 text-sm text-gray-600 dark:text-gray-400">搜索结果 ({{ searchResults.length }})</div>
                         <div class="search-list max-h-96 overflow-auto">
-                            <div
-v-for="item in searchResults" :key="getItemId(item)"
-                                class="search-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors"
-                                @click="handleSearchItemClick(item)">
-                                <Checkbox
-v-model="item.isChecked" :binary="true" :disabled="shouldDisableCheckbox(item)"
-                                    @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, item)" />
+                            <div v-for="item in searchResults" :key="getItemId(item)" class="search-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors" @click="handleSearchItemClick(item)">
+                                <Checkbox v-model="item.isChecked" :binary="true" :disabled="shouldDisableCheckbox(item)" @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, item)" />
                                 <div class="ml-2 flex-1">
-                                    <div class="item-name text-gray-900 dark:text-gray-100">{{ getItemName(item) }}
-                                    </div>
+                                    <div class="item-name text-gray-900 dark:text-gray-100">{{ getItemName(item) }}</div>
                                     <div class="item-path text-xs text-gray-500 dark:text-gray-400">
                                         {{ getItemPath(item) }}
                                     </div>
@@ -414,41 +402,25 @@ v-model="item.isChecked" :binary="true" :disabled="shouldDisableCheckbox(item)"
                     <div v-else class="org-tree-structure">
                         <!-- 部门列表 -->
                         <div v-if="currentLevel.children?.length > 0" class="departments mb-4">
-                            <div
-                                class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">
-                                部门</div>
-                            <div
-v-for="dept in currentLevel.children" :key="dept.id"
-                                class="dept-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors">
-                                <Checkbox
-v-model="dept.isChecked" :binary="true" :disabled="shouldDisableCheckbox(dept)"
-                                    @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, dept)" @click.stop />
+                            <div class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">部门</div>
+                            <div v-for="dept in currentLevel.children" :key="dept.id" class="dept-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors">
+                                <Checkbox v-model="dept.isChecked" :binary="true" :disabled="shouldDisableCheckbox(dept)" @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, dept)" @click.stop />
                                 <div class="ml-2 flex-1" @click="enterDepartment(dept)">
                                     <div class="flex items-center">
                                         <FolderIcon class="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
                                         <span class="text-gray-900 dark:text-gray-100">{{ dept.name }}</span>
-                                        <span class="ml-auto text-xs text-gray-500 dark:text-gray-400"> {{
-                                            dept.staffs?.length || 0 }}人
-                                        </span>
+                                        <span class="ml-auto text-xs text-gray-500 dark:text-gray-400"> {{ dept.staffs?.length || 0 }}人 </span>
                                     </div>
                                 </div>
-                                <ChevronRightIcon
-class="w-4 h-4 text-gray-400 dark:text-gray-500"
-                                    @click="enterDepartment(dept)" />
+                                <ChevronRightIcon class="w-4 h-4 text-gray-400 dark:text-gray-500" @click="enterDepartment(dept)" />
                             </div>
                         </div>
 
                         <!-- 人员列表 -->
                         <div v-if="currentLevel.staffs && currentLevel.staffs.length > 0" class="staff-list">
-                            <div
-                                class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">
-                                人员 ({{ currentLevel.staffs.length }})</div>
-                            <div
-v-for="staff in currentLevel.staffs" :key="staff.idStaff"
-                                class="staff-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
-                                <Checkbox
-v-model="staff.isChecked" :binary="true" :disabled="shouldDisableCheckbox(staff)"
-                                    @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, staff)" />
+                            <div class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">人员 ({{ currentLevel.staffs.length }})</div>
+                            <div v-for="staff in currentLevel.staffs" :key="staff.idStaff" class="staff-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
+                                <Checkbox v-model="staff.isChecked" :binary="true" :disabled="shouldDisableCheckbox(staff)" @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, staff)" />
                                 <div class="ml-2 flex-1">
                                     <div class="flex items-center">
                                         <UserIcon class="w-4 h-4 text-green-500 dark:text-green-400 mr-2" />
@@ -466,28 +438,19 @@ v-model="staff.isChecked" :binary="true" :disabled="shouldDisableCheckbox(staff)
                 <!-- 右侧：已选列表 -->
                 <div class="selected-panel w-80 border-l border-gray-200 dark:border-gray-700 pl-4">
                     <div class="panel-header flex items-center justify-between mb-3">
-                        <span class="font-medium text-gray-900 dark:text-gray-100">已选 ({{ selectedItems.length
-                            }})</span>
-                        <Button
-v-if="selectedItems.length > 0" link size="small" class="dark:text-blue-400"
-                            @click="clearAll"> 清空
-                        </Button>
+                        <span class="font-medium text-gray-900 dark:text-gray-100">已选 ({{ selectedItems.length }})</span>
+                        <Button v-if="selectedItems.length > 0" link size="small" class="dark:text-blue-400" @click="clearAll"> 清空 </Button>
                     </div>
 
                     <div class="selected-list max-h-96 overflow-auto">
-                        <div
-v-for="item in selectedItems" :key="getItemId(item)"
-                            class="selected-item flex items-center p-2 bg-blue-50 dark:bg-blue-900/30 rounded mb-2 transition-colors">
+                        <div v-for="item in selectedItems" :key="getItemId(item)" class="selected-item flex items-center p-2 bg-blue-50 dark:bg-blue-900/30 rounded mb-2 transition-colors">
                             <div class="flex-1">
-                                <div class="item-name text-sm text-gray-900 dark:text-gray-100">{{ getItemName(item) }}
-                                </div>
+                                <div class="item-name text-sm text-gray-900 dark:text-gray-100">{{ getItemName(item) }}</div>
                                 <div class="item-type text-xs text-gray-500 dark:text-gray-400">
                                     {{ item.type === 'department' ? '部门' : '人员' }}
                                 </div>
                             </div>
-                            <XIcon
-                                class="w-4 h-4 text-gray-400 dark:text-gray-500 cursor-pointer hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                                @click="removeSelected(item)" />
+                            <XIcon class="w-4 h-4 text-gray-400 dark:text-gray-500 cursor-pointer hover:text-red-500 dark:hover:text-red-400 transition-colors" @click="removeSelected(item)" />
                         </div>
                     </div>
                 </div>
@@ -496,17 +459,13 @@ v-for="item in selectedItems" :key="getItemId(item)"
     </div>
 
     <!-- 弹窗模式 -->
-    <Dialog
-v-else v-model:visible="dialogVisible" :header="title" :style="{ width: '900px' }" modal
-        class="org-selector-modal" @hide="handleCancel">
+    <Dialog v-else v-model:visible="dialogVisible" :header="title" :style="{ width: '900px' }" modal class="org-selector-modal" @hide="handleCancel">
         <div class="org-selector-modal-content">
             <!-- 搜索框 -->
             <div class="search-section mb-4">
                 <IconField icon-position="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText
-v-model="searchKeyword" placeholder="搜索部门或人员" class="w-full" @input="handleSearchChange"
-                        @keyup.enter="handleSearch" />
+                    <InputText v-model="searchKeyword" placeholder="搜索部门或人员" class="w-full" @input="handleSearchChange" @keyup.enter="handleSearch" />
                 </IconField>
             </div>
 
@@ -517,10 +476,7 @@ v-model="searchKeyword" placeholder="搜索部门或人员" class="w-full" @inpu
                     <div v-if="breadcrumbs.length > 0" class="breadcrumb mb-3">
                         <Breadcrumb :model="breadcrumbItems" class="!p-0">
                             <template #item="{ item, props }">
-                                <a
-v-bind="props.action"
-                                    class="cursor-pointer text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                                    @click="navigateToLevel(item.index)">
+                                <a v-bind="props.action" class="cursor-pointer text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400" @click="navigateToLevel(item.index)">
                                     {{ item.label }}
                                 </a>
                             </template>
@@ -529,19 +485,12 @@ v-bind="props.action"
 
                     <!-- 搜索结果 -->
                     <div v-if="isSearching" class="search-results">
-                        <div class="search-title mb-2 text-sm text-gray-600 dark:text-gray-400">搜索结果 ({{
-                            searchResults.length }})</div>
+                        <div class="search-title mb-2 text-sm text-gray-600 dark:text-gray-400">搜索结果 ({{ searchResults.length }})</div>
                         <div class="search-list max-h-80 overflow-auto">
-                            <div
-v-for="item in searchResults" :key="getItemId(item)"
-                                class="search-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors"
-                                @click="handleSearchItemClick(item)">
-                                <Checkbox
-v-model="item.isChecked" :binary="true" :disabled="shouldDisableCheckbox(item)"
-                                    @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, item)" />
+                            <div v-for="item in searchResults" :key="getItemId(item)" class="search-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors" @click="handleSearchItemClick(item)">
+                                <Checkbox v-model="item.isChecked" :binary="true" :disabled="shouldDisableCheckbox(item)" @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, item)" />
                                 <div class="ml-2 flex-1">
-                                    <div class="item-name text-gray-900 dark:text-gray-100">{{ getItemName(item) }}
-                                    </div>
+                                    <div class="item-name text-gray-900 dark:text-gray-100">{{ getItemName(item) }}</div>
                                     <div class="item-path text-xs text-gray-500 dark:text-gray-400">
                                         {{ getItemPath(item) }}
                                     </div>
@@ -557,40 +506,25 @@ v-model="item.isChecked" :binary="true" :disabled="shouldDisableCheckbox(item)"
                     <div v-else class="org-tree-structure">
                         <!-- 部门列表 -->
                         <div v-if="currentLevel.children?.length > 0" class="departments mb-4">
-                            <div
-                                class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">
-                                部门</div>
-                            <div
-v-for="dept in currentLevel.children" :key="dept.id"
-                                class="dept-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors">
-                                <Checkbox
-v-model="dept.isChecked" :binary="true" :disabled="shouldDisableCheckbox(dept)"
-                                    @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, dept)" @click.stop />
+                            <div class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">部门</div>
+                            <div v-for="dept in currentLevel.children" :key="dept.id" class="dept-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition-colors">
+                                <Checkbox v-model="dept.isChecked" :binary="true" :disabled="shouldDisableCheckbox(dept)" @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, dept)" @click.stop />
                                 <div class="ml-2 flex-1" @click="enterDepartment(dept)">
                                     <div class="flex items-center">
                                         <FolderIcon class="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
                                         <span class="text-gray-900 dark:text-gray-100">{{ dept.name }}</span>
-                                        <span class="ml-auto text-xs text-gray-500 dark:text-gray-400"> {{
-                                            dept.staffs?.length || 0 }}人 </span>
+                                        <span class="ml-auto text-xs text-gray-500 dark:text-gray-400"> {{ dept.staffs?.length || 0 }}人 </span>
                                     </div>
                                 </div>
-                                <ChevronRightIcon
-class="w-4 h-4 text-gray-400 dark:text-gray-500"
-                                    @click="enterDepartment(dept)" />
+                                <ChevronRightIcon class="w-4 h-4 text-gray-400 dark:text-gray-500" @click="enterDepartment(dept)" />
                             </div>
                         </div>
 
                         <!-- 人员列表 -->
                         <div v-if="currentLevel.staffs && currentLevel.staffs.length > 0" class="staff-list">
-                            <div
-                                class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">
-                                人员 ({{ currentLevel.staffs.length }})</div>
-                            <div
-v-for="staff in currentLevel.staffs" :key="staff.idStaff"
-                                class="staff-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
-                                <Checkbox
-v-model="staff.isChecked" :binary="true" :disabled="shouldDisableCheckbox(staff)"
-                                    @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, staff)" />
+                            <div class="section-title text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 pb-1 border-b border-gray-100 dark:border-gray-700">人员 ({{ currentLevel.staffs.length }})</div>
+                            <div v-for="staff in currentLevel.staffs" :key="staff.idStaff" class="staff-item flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
+                                <Checkbox v-model="staff.isChecked" :binary="true" :disabled="shouldDisableCheckbox(staff)" @change="(event) => handleCheckChange((event.target as HTMLInputElement).checked, staff)" />
                                 <div class="ml-2 flex-1">
                                     <div class="flex items-center">
                                         <UserIcon class="w-4 h-4 text-green-500 dark:text-green-400 mr-2" />
@@ -608,37 +542,27 @@ v-model="staff.isChecked" :binary="true" :disabled="shouldDisableCheckbox(staff)
                 <!-- 右侧：已选列表 -->
                 <div class="selected-panel w-80 border-l border-gray-200 dark:border-gray-700 pl-4">
                     <div class="panel-header flex items-center justify-between mb-3">
-                        <span class="font-medium text-gray-900 dark:text-gray-100">已选 ({{ selectedItems.length
-                            }})</span>
-                        <Button
-v-if="selectedItems.length > 0" link size="small" class="dark:text-blue-400"
-                            @click="clearAll"> 清空 </Button>
+                        <span class="font-medium text-gray-900 dark:text-gray-100">已选 ({{ selectedItems.length }})</span>
+                        <Button v-if="selectedItems.length > 0" link size="small" class="dark:text-blue-400" @click="clearAll"> 清空 </Button>
                     </div>
 
                     <div class="selected-list max-h-80 overflow-auto">
-                        <div
-v-for="item in selectedItems" :key="getItemId(item)"
-                            class="selected-item flex items-center p-2 bg-blue-50 dark:bg-blue-900/30 rounded mb-2 transition-colors">
+                        <div v-for="item in selectedItems" :key="getItemId(item)" class="selected-item flex items-center p-2 bg-blue-50 dark:bg-blue-900/30 rounded mb-2 transition-colors">
                             <div class="flex-1">
-                                <div class="item-name text-sm text-gray-900 dark:text-gray-100">{{ getItemName(item) }}
-                                </div>
+                                <div class="item-name text-sm text-gray-900 dark:text-gray-100">{{ getItemName(item) }}</div>
                                 <div class="item-type text-xs text-gray-500 dark:text-gray-400">
                                     {{ item.type === 'department' ? '部门' : '人员' }}
                                 </div>
                             </div>
-                            <XIcon
-                                class="w-4 h-4 text-gray-400 dark:text-gray-500 cursor-pointer hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                                @click="removeSelected(item)" />
+                            <XIcon class="w-4 h-4 text-gray-400 dark:text-gray-500 cursor-pointer hover:text-red-500 dark:hover:text-red-400 transition-colors" @click="removeSelected(item)" />
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 弹窗底部操作栏 -->
-            <div
-                class="modal-footer flex justify-between items-center pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-                <div class="selected-count text-sm text-gray-600 dark:text-gray-400">已选择 {{ selectedItems.length }} 项
-                </div>
+            <div class="modal-footer flex justify-between items-center pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="selected-count text-sm text-gray-600 dark:text-gray-400">已选择 {{ selectedItems.length }} 项</div>
                 <div class="flex gap-2">
                     <Button @click="handleCancel">取消</Button>
                     <Button severity="primary" @click="handleConfirm">确定</Button>

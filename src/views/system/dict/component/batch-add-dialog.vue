@@ -134,10 +134,7 @@ const updateField = (index: number, field: keyof BatchDictItem, value: any) => {
  * @returns 是否校验通过
  */
 const validateBatchItems = (): boolean => {
-    return batchItems.value.every(item =>
-        item.label && item.label.trim() &&
-        item.value && item.value.trim()
-    );
+    return batchItems.value.every((item) => item.label && item.label.trim() && item.value && item.value.trim());
 };
 
 /**
@@ -145,12 +142,12 @@ const validateBatchItems = (): boolean => {
  * @returns 重复的值数组
  */
 const checkDuplicateValues = (): string[] => {
-    const values = batchItems.value.map(item => item.value?.trim()).filter(Boolean);
-    const existingValues = props.existingItems.map(item => item.value);
+    const values = batchItems.value.map((item) => item.value?.trim()).filter(Boolean);
+    const existingValues = props.existingItems.map((item) => item.value);
     const duplicates: string[] = [];
 
     // 检查与现有数据的重复
-    values.forEach(value => {
+    values.forEach((value) => {
         if (existingValues.includes(value as string)) {
             duplicates.push(value as string);
         }
@@ -158,7 +155,7 @@ const checkDuplicateValues = (): string[] => {
 
     // 检查批量数据内部重复
     const valueCount = new Map<string, number>();
-    values.forEach(value => {
+    values.forEach((value) => {
         const count = valueCount.get(value as string) || 0;
         valueCount.set(value as string, count + 1);
         if (count > 0) {
@@ -199,7 +196,7 @@ const submitBatchAdd = async () => {
     try {
         // 构建新增数据
         const newItems: DictItem[] = batchItems.value.map((item, index) => {
-            const newId = Math.max(0, ...props.existingItems.map(i => i.id)) + index + 1;
+            const newId = Math.max(0, ...props.existingItems.map((i) => i.id)) + index + 1;
             const now = new Date().toLocaleString();
 
             return {
@@ -226,7 +223,6 @@ const submitBatchAdd = async () => {
         });
 
         dialogVisible.value = false;
-
     } catch (error) {
         toast.add({
             severity: 'error',
@@ -249,7 +245,7 @@ const handlePaste = (event: ClipboardEvent) => {
 
     event.preventDefault();
 
-    const rows = pastedText.split('\n').filter(row => row.trim());
+    const rows = pastedText.split('\n').filter((row) => row.trim());
     const parsedItems: BatchDictItem[] = [];
 
     rows.forEach((row, index) => {
@@ -261,7 +257,7 @@ const handlePaste = (event: ClipboardEvent) => {
                 tempId: generateTempId(),
                 label: label?.trim() || '',
                 value: value?.trim() || '',
-                sort: sort ? Number(sort) || (props.existingItems.length + parsedItems.length + 1) : (props.existingItems.length + parsedItems.length + 1),
+                sort: sort ? Number(sort) || props.existingItems.length + parsedItems.length + 1 : props.existingItems.length + parsedItems.length + 1,
                 remark: remark?.trim() || '',
                 status: true,
                 isDefault: false,
@@ -304,7 +300,7 @@ const focusPasteArea = async () => {
             if (text) {
                 // 模拟粘贴事件
                 const mockEvent = {
-                    preventDefault: () => { },
+                    preventDefault: () => {},
                     clipboardData: {
                         getData: () => text
                     }
@@ -409,80 +405,81 @@ const handleDialogOpen = () => {
 };
 
 // 监听对话框可见性变化
-watch(() => props.visible, (newVisible) => {
-    if (newVisible) {
-        initBatchItems();
+watch(
+    () => props.visible,
+    (newVisible) => {
+        if (newVisible) {
+            initBatchItems();
+        }
     }
-});
+);
 </script>
 
 <template>
-    <Dialog
-v-model:visible="dialogVisible" header="批量添加字典项" :modal="true" :style="{ width: '1200px' }"
-        class="batch-add-dialog" @show="handleDialogOpen">
+    <Dialog v-model:visible="dialogVisible" header="批量添加字典项" :modal="true" :style="{ width: '1200px' }" class="batch-add-dialog" @show="handleDialogOpen">
         <!-- 操作提示区域 -->
         <div class="operation-tips">
             <div class="tips-content">
                 <i class="pi pi-info-circle text-blue-500 mr-2"></i>
-                <span class="text-sm text-gray-600">
-                    支持从Excel复制粘贴数据，格式：标签、值、排序、备注（Tab分隔）
-                </span>
+                <span class="text-sm text-gray-600"> 支持从Excel复制粘贴数据，格式：标签、值、排序、备注（Tab分隔） </span>
             </div>
-            <Button
-label="粘贴Excel数据" icon="pi pi-clipboard" severity="secondary" outlined size="small"
-                @click="focusPasteArea" />
+            <Button label="粘贴Excel数据" icon="pi pi-clipboard" severity="secondary" outlined size="small" @click="focusPasteArea" />
         </div>
 
         <!-- 隐藏的粘贴区域 -->
-        <textarea
-ref="pasteArea" class="paste-area" placeholder="在此粘贴Excel数据（Ctrl+V），按ESC键关闭" @paste="handlePaste"
-            @keydown.esc="hidePasteArea" @blur="hidePasteArea" />
+        <textarea ref="pasteArea" class="paste-area" placeholder="在此粘贴Excel数据（Ctrl+V），按ESC键关闭" @paste="handlePaste" @keydown.esc="hidePasteArea" @blur="hidePasteArea" />
 
         <!-- 数据表格 -->
         <div class="table-container">
-            <DataTable
-:value="batchItems" :scrollable="true" scroll-height="450px" striped-rows show-gridlines
-                responsive-layout="scroll" data-key="tempId">
+            <DataTable :value="batchItems" :scrollable="true" scroll-height="450px" striped-rows show-gridlines responsive-layout="scroll" data-key="tempId">
                 <Column field="label" header="字典标签 *" style="min-width: 200px">
                     <template #body="{ data, index }">
                         <InputText
-:model-value="data.label" :class="{ 'p-invalid': hasFieldError(data, 'label') }"
+                            :model-value="data.label"
+                            :class="{ 'p-invalid': hasFieldError(data, 'label') }"
                             placeholder="请输入字典标签"
-                            @update:model-value="updateField(index, 'label', $event)" @blur="markFieldTouched(data.tempId!, 'label')" />
+                            @update:model-value="updateField(index, 'label', $event)"
+                            @blur="markFieldTouched(data.tempId!, 'label')"
+                        />
                     </template>
                 </Column>
 
                 <Column field="value" header="字典值 *" style="min-width: 200px">
                     <template #body="{ data, index }">
                         <InputText
-:model-value="data.value" :class="{ 'p-invalid': hasFieldError(data, 'value') }"
+                            :model-value="data.value"
+                            :class="{ 'p-invalid': hasFieldError(data, 'value') }"
                             placeholder="请输入字典值"
-                            @update:model-value="updateField(index, 'value', $event)" @blur="markFieldTouched(data.tempId!, 'value')" />
+                            @update:model-value="updateField(index, 'value', $event)"
+                            @blur="markFieldTouched(data.tempId!, 'value')"
+                        />
                     </template>
                 </Column>
 
                 <Column field="sort" header="排序" style="min-width: 120px">
                     <template #body="{ data, index }">
                         <InputNumber
-:model-value="data.sort" :min="0"
-                            :max="999" show-buttons button-layout="horizontal" increment-button-class="p-button-secondary"
-                            decrement-button-class="p-button-secondary" @update:model-value="updateField(index, 'sort', $event)" />
+                            :model-value="data.sort"
+                            :min="0"
+                            :max="999"
+                            show-buttons
+                            button-layout="horizontal"
+                            increment-button-class="p-button-secondary"
+                            decrement-button-class="p-button-secondary"
+                            @update:model-value="updateField(index, 'sort', $event)"
+                        />
                     </template>
                 </Column>
 
                 <Column field="remark" header="备注" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText
-:model-value="data.remark" placeholder="请输入备注"
-                            @update:model-value="updateField(index, 'remark', $event)" />
+                        <InputText :model-value="data.remark" placeholder="请输入备注" @update:model-value="updateField(index, 'remark', $event)" />
                     </template>
                 </Column>
 
                 <Column header="操作" style="width: 80px" :exportable="false">
                     <template #body="{ index }">
-                        <Button
-icon="pi pi-trash" severity="danger" text size="small"
-                            :disabled="batchItems.length <= 1" title="删除此行" @click="removeBatchRow(index)" />
+                        <Button icon="pi pi-trash" severity="danger" text size="small" :disabled="batchItems.length <= 1" title="删除此行" @click="removeBatchRow(index)" />
                     </template>
                 </Column>
             </DataTable>
@@ -498,12 +495,8 @@ icon="pi pi-trash" severity="danger" text size="small"
                     </div>
                 </div>
                 <div class="footer-right">
-                    <Button
-label="取消" icon="pi pi-times" severity="secondary" outlined
-                        @click="dialogVisible = false" />
-                    <Button
-label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting"
-                        @click="submitBatchAdd" />
+                    <Button label="取消" icon="pi pi-times" severity="secondary" outlined @click="dialogVisible = false" />
+                    <Button label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting" @click="submitBatchAdd" />
                 </div>
             </div>
         </template>
@@ -545,7 +538,6 @@ label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting"
 .batch-table {
     font-size: 14px;
 }
-
 
 /* 状态切换按钮 */
 .status-toggle {

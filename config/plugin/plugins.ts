@@ -15,26 +15,23 @@ export const createPluginsTs = () => {
                 eslintrc: {
                     enabled: true, // 1、改为true用于生成eslint配置。2、生成后改回false，避免重复生成消耗
                     filepath: './.eslintrc-auto-import.js',
-                    globalsPropValue: true,
+                    globalsPropValue: true
                 },
-                resolvers: [PrimeVueResolver()],
+                resolvers: [PrimeVueResolver()]
             }),
             Components({
                 dts: './src/types/components.d.ts',
                 globs: ['src/components/**/**/CustomTableSettings.vue'],
-                resolvers: [
-                    PrimeVueResolver(),
-                ],
-            }),
+                resolvers: [PrimeVueResolver()]
+            })
         ],
         rsbuildPlugins: [
             pluginBabel({
-                include: /\.(?:jsx|tsx)$/,
+                include: /\.(?:jsx|tsx)$/
             }),
             pluginVue(),
             pluginVueJsx(),
-            pluginSass({
-            }),
-        ],
+            pluginSass({})
+        ]
     };
 };

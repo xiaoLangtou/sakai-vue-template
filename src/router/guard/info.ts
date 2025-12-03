@@ -1,8 +1,8 @@
-import { loginService } from "@/services/modules/login";
-import { useAuthStore } from "@/stores";
-import { to as _to } from "@/utils/result-handler";
-import nProgress from "nprogress";
-import type { LocationQueryRaw, Router } from "vue-router";
+import { loginService } from '@/services/modules/login';
+import { useAuthStore } from '@/stores';
+import { to as _to } from '@/utils/result-handler';
+import nProgress from 'nprogress';
+import type { LocationQueryRaw, Router } from 'vue-router';
 
 export default function setupInfoGuard(router: Router) {
     router.beforeEach(async (to, from, next) => {
@@ -12,34 +12,33 @@ export default function setupInfoGuard(router: Router) {
             nProgress.done();
             return;
         }
-        const { setToken, setUserInfo } = useAuthStore()
+        const { setToken, setUserInfo } = useAuthStore();
 
         const gotoLogin = () => {
             next({
-                name: "Login",
+                name: 'Login',
                 query: {
                     redirect: to.name,
                     ...to.query
                 }
-            } as unknown as LocationQueryRaw)
+            } as unknown as LocationQueryRaw);
 
-            setToken('')
+            setToken('');
             nProgress.done();
-        }
+        };
 
-
-        const result = await _to(loginService.getUserInfo())
+        const result = await _to(loginService.getUserInfo());
         if (!result.ok) {
-            gotoLogin()
+            gotoLogin();
             return;
         }
-        const { userInfo } = result.value ?? { userInfo: null }
+        const { userInfo } = result.value ?? { userInfo: null };
         if (!userInfo) {
-            gotoLogin()
+            gotoLogin();
             return;
         }
-        setUserInfo(userInfo)
-        next()
+        setUserInfo(userInfo);
+        next();
         nProgress.done();
-    })
+    });
 }

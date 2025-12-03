@@ -21,21 +21,13 @@
 
 ```vue
 <template>
-  <div>
-    <!-- 触发按钮 -->
-    <Button 
-      icon="pi pi-search" 
-      label="搜索" 
-      @click="showSearch = true" 
-    />
-    
-    <!-- 全局搜索弹窗 -->
-    <GlobalSearch 
-      v-model:visible="showSearch"
-      @search="handleSearch"
-      @select="handleSelect"
-    />
-  </div>
+    <div>
+        <!-- 触发按钮 -->
+        <Button icon="pi pi-search" label="搜索" @click="showSearch = true" />
+
+        <!-- 全局搜索弹窗 -->
+        <GlobalSearch v-model:visible="showSearch" @search="handleSearch" @select="handleSelect" />
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -45,11 +37,11 @@ import GlobalSearch from '@/components/global-search/index.vue';
 const showSearch = ref(false);
 
 const handleSearch = (query: string) => {
-  console.log('搜索:', query);
+    console.log('搜索:', query);
 };
 
 const handleSelect = (result: any) => {
-  console.log('选择结果:', result);
+    console.log('选择结果:', result);
 };
 </script>
 ```
@@ -64,49 +56,49 @@ const showSearch = ref(false);
 
 // 监听 Ctrl+K 或 Cmd+K 快捷键
 const handleKeydown = (event: KeyboardEvent) => {
-  if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-    event.preventDefault();
-    showSearch.value = true;
-  }
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        showSearch.value = true;
+    }
 };
 
 onMounted(() => {
-  document.addEventListener('keydown', handleKeydown);
+    document.addEventListener('keydown', handleKeydown);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown);
+    document.removeEventListener('keydown', handleKeydown);
 });
 </script>
 ```
 
 ## 📋 Props
 
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `visible` | `boolean` | `false` | 是否显示弹窗 |
-| `placeholder` | `string` | `'搜索页面、菜单、用户...'` | 搜索框占位符 |
-| `maxHistory` | `number` | `10` | 最大搜索历史数量 |
+| 属性名        | 类型      | 默认值                      | 说明             |
+| ------------- | --------- | --------------------------- | ---------------- |
+| `visible`     | `boolean` | `false`                     | 是否显示弹窗     |
+| `placeholder` | `string`  | `'搜索页面、菜单、用户...'` | 搜索框占位符     |
+| `maxHistory`  | `number`  | `10`                        | 最大搜索历史数量 |
 
 ## 📤 Events
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
-| `update:visible` | `(value: boolean)` | 更新显示状态 |
-| `search` | `(query: string)` | 搜索事件 |
-| `select` | `(result: SearchResult)` | 选择结果事件 |
+| 事件名           | 参数                     | 说明         |
+| ---------------- | ------------------------ | ------------ |
+| `update:visible` | `(value: boolean)`       | 更新显示状态 |
+| `search`         | `(query: string)`        | 搜索事件     |
+| `select`         | `(result: SearchResult)` | 选择结果事件 |
 
 ## 🔧 SearchResult 类型
 
 ```typescript
 interface SearchResult {
-  id: string;              // 唯一标识
-  title: string;           // 标题
-  description?: string;    // 描述
-  type: 'page' | 'menu' | 'user' | 'document' | 'setting'; // 类型
-  path?: string;           // 路由路径
-  icon?: string;           // 图标
-  category?: string;       // 分类
+    id: string; // 唯一标识
+    title: string; // 标题
+    description?: string; // 描述
+    type: 'page' | 'menu' | 'user' | 'document' | 'setting'; // 类型
+    path?: string; // 路由路径
+    icon?: string; // 图标
+    category?: string; // 分类
 }
 ```
 
@@ -116,27 +108,27 @@ interface SearchResult {
 
 ```scss
 .global-search-dialog {
-  // 自定义弹窗样式
-  :deep(.p-dialog) {
-    border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
-  }
-  
-  // 自定义搜索框样式
-  .search-input {
-    border-radius: 12px;
-    font-size: 18px;
-  }
-  
-  // 自定义结果项样式
-  .result-item {
-    border-radius: 12px;
-    
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    // 自定义弹窗样式
+    :deep(.p-dialog) {
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
     }
-  }
+
+    // 自定义搜索框样式
+    .search-input {
+        border-radius: 12px;
+        font-size: 18px;
+    }
+
+    // 自定义结果项样式
+    .result-item {
+        border-radius: 12px;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    }
 }
 ```
 
@@ -148,28 +140,28 @@ import { searchService } from '@/services/modules/search';
 
 // 自定义搜索逻辑
 const performSearch = async (query: string) => {
-  if (!query.trim()) {
-    searchResults.value = [];
-    return;
-  }
+    if (!query.trim()) {
+        searchResults.value = [];
+        return;
+    }
 
-  loading.value = true;
-  
-  try {
-    // 调用实际搜索API
-    const response = await searchService.globalSearch({
-      keyword: query,
-      types: ['page', 'menu', 'user'],
-      limit: 20
-    });
-    
-    searchResults.value = response.data;
-  } catch (error) {
-    console.error('搜索失败:', error);
-    searchResults.value = [];
-  } finally {
-    loading.value = false;
-  }
+    loading.value = true;
+
+    try {
+        // 调用实际搜索API
+        const response = await searchService.globalSearch({
+            keyword: query,
+            types: ['page', 'menu', 'user'],
+            limit: 20
+        });
+
+        searchResults.value = response.data;
+    } catch (error) {
+        console.error('搜索失败:', error);
+        searchResults.value = [];
+    } finally {
+        loading.value = false;
+    }
 };
 </script>
 ```
@@ -198,30 +190,30 @@ const performSearch = async (query: string) => {
 
 ```typescript
 const searchCategories = [
-  { 
-    key: 'page', 
-    label: '页面', 
-    icon: FileText, 
-    color: 'info' 
-  },
-  { 
-    key: 'menu', 
-    label: '菜单', 
-    icon: Hash, 
-    color: 'success' 
-  },
-  { 
-    key: 'user', 
-    label: '用户', 
-    icon: Users, 
-    color: 'warning' 
-  },
-  { 
-    key: 'setting', 
-    label: '设置', 
-    icon: Settings, 
-    color: 'danger' 
-  }
+    {
+        key: 'page',
+        label: '页面',
+        icon: FileText,
+        color: 'info'
+    },
+    {
+        key: 'menu',
+        label: '菜单',
+        icon: Hash,
+        color: 'success'
+    },
+    {
+        key: 'user',
+        label: '用户',
+        icon: Users,
+        color: 'warning'
+    },
+    {
+        key: 'setting',
+        label: '设置',
+        icon: Settings,
+        color: 'danger'
+    }
 ];
 ```
 
@@ -236,10 +228,7 @@ const searchCategories = [
 ## 🌐 国际化支持
 
 ```vue
-<GlobalSearch 
-  :placeholder="$t('search.placeholder')"
-  v-model:visible="showSearch"
-/>
+<GlobalSearch :placeholder="$t('search.placeholder')" v-model:visible="showSearch" />
 ```
 
 ## 🔧 故障排除

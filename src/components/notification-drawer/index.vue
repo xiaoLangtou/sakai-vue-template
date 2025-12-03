@@ -4,15 +4,7 @@
  * @Date: 2025-01-13
 -->
 <template>
-    <CustomDrawer
-        :show-default-footer="true"
-        :visible="visible"
-        custom-width="400px"
-        style="--p-drawer-content-padding: 0"
-        header="通知"
-        position="right"
-        @update:visible="$emit('update:visible', $event)">
-
+    <CustomDrawer :show-default-footer="true" :visible="visible" custom-width="400px" style="--p-drawer-content-padding: 0" header="通知" position="right" @update:visible="$emit('update:visible', $event)">
         <!-- 消息内容区域 -->
         <div class="notification-container">
             <!-- 消息列表 -->
@@ -25,11 +17,8 @@
 
                 <!-- 消息列表 -->
                 <div v-else class="list">
-                    <div v-for="notification in notifications"
-                         :key="notification.id"
-                         class="item-container"
-                    >
-                        <div :class="['item', { 'unread': !notification.isRead }]" @click="markAsRead(notification.id)">
+                    <div v-for="notification in notifications" :key="notification.id" class="item-container">
+                        <div :class="['item', { unread: !notification.isRead }]" @click="markAsRead(notification.id)">
                             <div class="content">
                                 <div class="header">
                                     <div class="title">{{ notification.title }}</div>
@@ -39,15 +28,10 @@
                             </div>
 
                             <div class="item-actions">
-                                <button v-if="!notification.isRead"
-                                        class="btn read"
-                                        title="标记已读"
-                                        @click.stop="markAsRead(notification.id)">
+                                <button v-if="!notification.isRead" class="btn read" title="标记已读" @click.stop="markAsRead(notification.id)">
                                     <Check :size="14" />
                                 </button>
-                                <button class="btn delete"
-                                        title="删除"
-                                        @click.stop="deleteNotification(notification.id)">
+                                <button class="btn delete" title="删除" @click.stop="deleteNotification(notification.id)">
                                     <Trash2 :size="14" />
                                 </button>
                             </div>
@@ -57,29 +41,21 @@
             </div>
 
             <!-- 底部操作按钮 -->
-
         </div>
         <template #footer>
             <div class="footer-actions">
                 <div class="left-actions">
-                    <Button
-                        @click="viewAllMessages">
+                    <Button @click="viewAllMessages">
                         <MessageSquare :size="14" />
                         查看所有消息
                     </Button>
                 </div>
                 <div class="right-actions">
-                    <Button
-                        v-if="unreadCount > 0"
-
-                        @click="markAllAsRead">
+                    <Button v-if="unreadCount > 0" @click="markAllAsRead">
                         <CheckCheck :size="14" />
                         全部已读
                     </Button>
-                    <Button
-                        severity="secondary"
-
-                        @click="clearAll">
+                    <Button severity="secondary" @click="clearAll">
                         <Trash2 :size="14" />
                         清空
                     </Button>
@@ -114,16 +90,16 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    'update:visible': [ value: boolean ];
-    'mark-read': [ id: number ];
-    'delete': [ id: number ];
+    'update:visible': [value: boolean];
+    'mark-read': [id: number];
+    delete: [id: number];
     'mark-all-read': [];
     'clear-all': [];
     'view-all': [];
 }>();
 
 const unreadCount = computed(() => {
-    return props.notifications.filter(n => !n.isRead).length;
+    return props.notifications.filter((n) => !n.isRead).length;
 });
 
 const markAsRead = (id: number) => {
@@ -196,7 +172,7 @@ const viewAllMessages = () => {
 
 // 消息项样式 - 优化版
 .item {
-    @apply relative flex items-start px-3 py-4 rounded-lg cursor-pointer transition-all ;
+    @apply relative flex items-start px-3 py-4 rounded-lg cursor-pointer transition-all;
 
     &:hover {
         background: var(--surface-hover);
@@ -234,7 +210,6 @@ const viewAllMessages = () => {
 
     .header {
         @apply flex items-center mb-2 gap-2;
-
     }
 
     .title {
@@ -323,7 +298,6 @@ const viewAllMessages = () => {
     gap: 8px;
 }
 
-
 // 移动端适配
 @media (max-width: 640px) {
     .item-actions {
@@ -352,6 +326,4 @@ const viewAllMessages = () => {
         justify-content: center !important;
     }
 }
-
-
 </style>

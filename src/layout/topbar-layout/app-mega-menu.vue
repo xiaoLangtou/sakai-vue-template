@@ -12,21 +12,22 @@ const router = useRouter();
  * Menubar 组件使用扁平化的菜单结构，支持多级嵌套
  */
 
-
-const { menuList } = useMenuStore()
+const { menuList } = useMenuStore();
 const { isLucideIcon, lucideIconName } = useLucideIcon();
 
 const filterTreeMenu = (menuItems: MenuOptions[]): MenuOptions[] => {
-    return menuItems.filter(item => !item.meta.isHide).map(item => ({
-        ...item,
-        items: item.children ? filterTreeMenu(item.children) : undefined
-    })).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-}
-
+    return menuItems
+        .filter((item) => !item.meta.isHide)
+        .map((item) => ({
+            ...item,
+            items: item.children ? filterTreeMenu(item.children) : undefined
+        }))
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+};
 
 const filteredMenuItems = computed(() => {
     return filterTreeMenu(menuList);
-})
+});
 
 const handleClick = (item: MenuItem, hasSubmenu: boolean) => {
     if (hasSubmenu) return;
@@ -39,8 +40,7 @@ const handleClick = (item: MenuItem, hasSubmenu: boolean) => {
         router.push(item.path);
         return;
     }
-}
-
+};
 
 const activeItemPath = ref('');
 watchEffect(() => {
@@ -52,20 +52,12 @@ watchEffect(() => {
     <div class="menubar-container">
         <Menubar ref="menubar" :model="filteredMenuItems">
             <template #item="{ item, props, hasSubmenu, root }">
-                <a
-v-ripple class="flex items-center"
-                    :class="{ 'active-route': item.path === activeItemPath && !hasSubmenu }" v-bind="props.action"
-                    @click="handleClick(item, hasSubmenu)">
+                <a v-ripple class="flex items-center" :class="{ 'active-route': item.path === activeItemPath && !hasSubmenu }" v-bind="props.action" @click="handleClick(item, hasSubmenu)">
                     <component :is="lucideIconName(item.meta.icon)" v-if="isLucideIcon(item.meta.icon)" :size="16" />
                     <i v-else-if="item.meta.icon" :class="item.meta.icon" />
                     <span>{{ item.meta.title }}</span>
-                    <span
-v-if="item.shortcut"
-                        class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{
-                            item.shortcut }}</span>
-                    <i
-v-if="hasSubmenu"
-                        :class="['pi pi-angle-down ml-auto', { 'pi-angle-down': root, 'pi-angle-right': !root }]"></i>
+                    <span v-if="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+                    <i v-if="hasSubmenu" :class="['pi pi-angle-down ml-auto', { 'pi-angle-down': root, 'pi-angle-right': !root }]"></i>
                 </a>
             </template>
         </Menubar>
@@ -82,7 +74,7 @@ v-if="hasSubmenu"
 .menubar-container {
     width: 100%;
     height: 100%;
-    background:none;
+    background: none;
 }
 
 /* 主菜单栏样式 */
@@ -109,7 +101,6 @@ v-if="hasSubmenu"
     transition: all 0.2s;
     text-decoration: none;
 }
-
 
 /* 子菜单项样式 */
 .menubar-container :deep(.p-submenu-list .p-menuitem-link) {
@@ -173,7 +164,6 @@ v-if="hasSubmenu"
     @apply bg-surface-200 text-slate-800 rounded-sm;
     @apply dark:bg-surface-800 dark:text-slate-100;
     position: relative;
-
 
     .layout-menuitem-icon {
         color: var(--primary-contrast-color) !important;

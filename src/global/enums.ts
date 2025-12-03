@@ -14,7 +14,7 @@ export enum ResultEnum {
     ERROR = 500,
     OVERDUE = 401,
     TIMEOUT = 30000,
-    TYPE = 'success',
+    TYPE = 'success'
 }
 
 /**
@@ -25,7 +25,7 @@ export enum RequestEnum {
     POST = 'POST',
     PATCH = 'PATCH',
     PUT = 'PUT',
-    DELETE = 'DELETE',
+    DELETE = 'DELETE'
 }
 
 /**
@@ -39,20 +39,20 @@ export enum ContentTypeEnum {
     // form-data 一般配合qs
     FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8',
     // form-data 上传
-    FORM_DATA = 'multipart/form-data;charset=UTF-8',
+    FORM_DATA = 'multipart/form-data;charset=UTF-8'
 }
 
 export const FROZEN_STATUS: Record<string, string> = {
     NORMAL: '启用',
     FROZEN: '禁用',
     SUCCESS: '成功',
-    FAIL: '失败',
+    FAIL: '失败'
 };
 
 export const SEX_STATUS = {
     1: '男',
     2: '女',
-    3: '未知',
+    3: '未知'
 };
 
 export enum HTTP_METHOD {
@@ -64,13 +64,13 @@ export enum HTTP_METHOD {
     HEAD = 'HEAD', // 获取响应头
     OPTIONS = 'OPTIONS', // 获取可用方法
     TRACE = 'TRACE', // 追踪请求路径
-    CONNECT = 'CONNECT', // 建立隧道连接
+    CONNECT = 'CONNECT' // 建立隧道连接
 }
 
 export enum MenuLayoutMode {
     DEFAULT = 'default',
     TOP = 'top',
-    MIX = 'mix',
+    MIX = 'mix'
 }
 
 export const HttpMethodCN: Record<HTTP_METHOD, string> = {
@@ -82,10 +82,8 @@ export const HttpMethodCN: Record<HTTP_METHOD, string> = {
     [HTTP_METHOD.HEAD]: '头信息',
     [HTTP_METHOD.OPTIONS]: '选项',
     [HTTP_METHOD.TRACE]: '追踪',
-    [HTTP_METHOD.CONNECT]: '连接',
+    [HTTP_METHOD.CONNECT]: '连接'
 };
-
-
 
 export enum BreakpointType {
     MOBILE = 'mobile',

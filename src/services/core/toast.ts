@@ -30,17 +30,17 @@ class ToastEventBus {
      */
     emit(event: ToastEvent): void {
         // 通知所有监听器
-        this.listeners.forEach(listener => {
+        this.listeners.forEach((listener) => {
             try {
                 listener(event);
-            } catch ( error ) {
+            } catch (error) {
                 console.warn('Toast listener error:', error);
             }
         });
 
         // 如果没有监听器，降级到控制台输出
-        if ( this.listeners.length === 0 ) {
-            console.log(`[${ event.severity.toUpperCase() }] ${ event.summary }: ${ event.detail }`);
+        if (this.listeners.length === 0) {
+            console.log(`[${event.severity.toUpperCase()}] ${event.summary}: ${event.detail}`);
         }
     }
 
@@ -53,7 +53,7 @@ class ToastEventBus {
         // 返回取消监听的函数
         return () => {
             const index = this.listeners.indexOf(listener);
-            if ( index > -1 ) {
+            if (index > -1) {
                 this.listeners.splice(index, 1);
             }
         };

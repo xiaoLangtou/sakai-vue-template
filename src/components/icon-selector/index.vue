@@ -10,14 +10,70 @@ import { computed, ref, watch } from 'vue';
 
 // Lucide 图标导入
 import {
-    Home, User, Users, Settings, List, Table, BarChart, LineChart, PieChart,
-    Calendar, Clock, Mail, Phone, Map, MapPin, Camera, Image, File, Folder,
-    Download, Upload, Search, Filter, ArrowUpDown, RefreshCw, RotateCcw, Power,
-    Lock, Unlock, Key, Shield, Star, Heart, Bookmark, Tag, Tags, Plus, Minus,
-    X, Check, Eye, EyeOff, Edit, Trash2, Copy, Save, Printer, Share,
-    ExternalLink, Link, Bell, Volume2, VolumeX, Play, Pause, Square,
-    ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ChevronUp, ChevronDown,
-    ChevronLeft, ChevronRight
+    Home,
+    User,
+    Users,
+    Settings,
+    List,
+    Table,
+    BarChart,
+    LineChart,
+    PieChart,
+    Calendar,
+    Clock,
+    Mail,
+    Phone,
+    Map,
+    MapPin,
+    Camera,
+    Image,
+    File,
+    Folder,
+    Download,
+    Upload,
+    Search,
+    Filter,
+    ArrowUpDown,
+    RefreshCw,
+    RotateCcw,
+    Power,
+    Lock,
+    Unlock,
+    Key,
+    Shield,
+    Star,
+    Heart,
+    Bookmark,
+    Tag,
+    Tags,
+    Plus,
+    Minus,
+    X,
+    Check,
+    Eye,
+    EyeOff,
+    Edit,
+    Trash2,
+    Copy,
+    Save,
+    Printer,
+    Share,
+    ExternalLink,
+    Link,
+    Bell,
+    Volume2,
+    VolumeX,
+    Play,
+    Pause,
+    Square,
+    ArrowUp,
+    ArrowDown,
+    ArrowLeft,
+    ArrowRight,
+    ChevronUp,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-vue-next';
 
 /**
@@ -86,14 +142,70 @@ defineOptions({
     name: 'IconSelector',
     components: {
         // Lucide 图标组件注册
-        Home, User, Users, Settings, List, Table, BarChart, LineChart, PieChart,
-        Calendar, Clock, Mail, Phone, Map, MapPin, Camera, Image, File, Folder,
-        Download, Upload, Search, Filter, ArrowUpDown, RefreshCw, RotateCcw, Power,
-        Lock, Unlock, Key, Shield, Star, Heart, Bookmark, Tag, Tags, Plus, Minus,
-        X, Check, Eye, EyeOff, Edit, Trash2, Copy, Save, Printer, Share,
-        ExternalLink, Link, Bell, Volume2, VolumeX, Play, Pause, Square,
-        ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ChevronUp, ChevronDown,
-        ChevronLeft, ChevronRight
+        Home,
+        User,
+        Users,
+        Settings,
+        List,
+        Table,
+        BarChart,
+        LineChart,
+        PieChart,
+        Calendar,
+        Clock,
+        Mail,
+        Phone,
+        Map,
+        MapPin,
+        Camera,
+        Image,
+        File,
+        Folder,
+        Download,
+        Upload,
+        Search,
+        Filter,
+        ArrowUpDown,
+        RefreshCw,
+        RotateCcw,
+        Power,
+        Lock,
+        Unlock,
+        Key,
+        Shield,
+        Star,
+        Heart,
+        Bookmark,
+        Tag,
+        Tags,
+        Plus,
+        Minus,
+        X,
+        Check,
+        Eye,
+        EyeOff,
+        Edit,
+        Trash2,
+        Copy,
+        Save,
+        Printer,
+        Share,
+        ExternalLink,
+        Link,
+        Bell,
+        Volume2,
+        VolumeX,
+        Play,
+        Pause,
+        Square,
+        ArrowUp,
+        ArrowDown,
+        ArrowLeft,
+        ArrowRight,
+        ChevronUp,
+        ChevronDown,
+        ChevronLeft,
+        ChevronRight
     }
 });
 
@@ -285,7 +397,7 @@ const iconList = computed(() => {
 
 // 计算属性 - 当前库的图标
 const currentLibraryIcons = computed(() => {
-    return iconList.value.filter(icon => icon.library === currentLibrary.value);
+    return iconList.value.filter((icon) => icon.library === currentLibrary.value);
 });
 
 // 计算属性 - 图标选项（用于下拉框）
@@ -299,7 +411,7 @@ const iconOptions = computed(() => {
 // 计算属性 - 按分类分组的图标
 const iconsByCategory = computed(() => {
     const categories: Record<string, IconItem[]> = {};
-    currentLibraryIcons.value.forEach(icon => {
+    currentLibraryIcons.value.forEach((icon) => {
         const category = icon.category || 'other';
         if (!categories[category]) {
             categories[category] = [];
@@ -316,9 +428,7 @@ const categoryList = computed(() => {
 
 // 计算属性 - 启用的图标库
 const enabledLibraries = computed(() => {
-    return props.enabledLibraries.filter(lib =>
-        iconList.value.some(icon => icon.library === lib)
-    );
+    return props.enabledLibraries.filter((lib) => iconList.value.some((icon) => icon.library === lib));
 });
 
 // 计算属性 - 当前库索引（用于标签页）
@@ -355,7 +465,7 @@ filteredIcons.value = currentLibraryIcons.value;
  * @returns 图标标签
  */
 const getIconLabel = (iconValue: string): string => {
-    const icon = iconList.value.find(item => item.name === iconValue);
+    const icon = iconList.value.find((item) => item.name === iconValue);
     return icon ? icon.label : iconValue;
 };
 
@@ -365,7 +475,7 @@ const getIconLabel = (iconValue: string): string => {
  * @returns 图标对象
  */
 const getIconItem = (iconValue: string): IconItem | undefined => {
-    return iconList.value.find(item => item.name === iconValue);
+    return iconList.value.find((item) => item.name === iconValue);
 };
 
 /**
@@ -444,10 +554,7 @@ const filterIcons = () => {
     }
 
     const keyword = searchKeyword.value.toLowerCase();
-    filteredIcons.value = currentLibraryIcons.value.filter((icon) =>
-        icon.name.toLowerCase().includes(keyword) ||
-        icon.label.toLowerCase().includes(keyword)
-    );
+    filteredIcons.value = currentLibraryIcons.value.filter((icon) => icon.name.toLowerCase().includes(keyword) || icon.label.toLowerCase().includes(keyword));
 };
 
 /**
@@ -479,15 +586,24 @@ const isLucideIcon = (icon: IconItem): boolean => {
     <div class="icon-selector">
         <!-- 下拉选择框形式 -->
         <Select
-v-if="mode === 'dropdown'" v-model="selectedIcon" :options="iconOptions" option-label="label"
-            option-value="value" :placeholder="placeholder" :filter="filter" :filter-placeholder="filterPlaceholder"
-            :show-clear="showClear" :invalid="invalid" :disabled="disabled" class="w-full" @change="handleIconChange">
+            v-if="mode === 'dropdown'"
+            v-model="selectedIcon"
+            :options="iconOptions"
+            option-label="label"
+            option-value="value"
+            :placeholder="placeholder"
+            :filter="filter"
+            :filter-placeholder="filterPlaceholder"
+            :show-clear="showClear"
+            :invalid="invalid"
+            :disabled="disabled"
+            class="w-full"
+            @change="handleIconChange"
+        >
             <template #value="{ value }">
                 <div v-if="value" class="flex items-center gap-2">
                     <!-- PrimeVue 图标 -->
-                    <i
-v-if="!getIconItem(value) || !isLucideIcon(getIconItem(value)!)" :class="value"
-                        class="text-base text-surface-600"></i>
+                    <i v-if="!getIconItem(value) || !isLucideIcon(getIconItem(value)!)" :class="value" class="text-base text-surface-600"></i>
                     <!-- Lucide 图标 -->
                     <component :is="value" v-else class="w-4 h-4 text-surface-600" />
                     <span class="text-sm">{{ getIconLabel(value) }}</span>
@@ -497,9 +613,7 @@ v-if="!getIconItem(value) || !isLucideIcon(getIconItem(value)!)" :class="value"
             <template #option="{ option }">
                 <div class="flex items-center gap-2 py-1">
                     <!-- PrimeVue 图标 -->
-                    <i
-v-if="!getIconItem(option.value) || !isLucideIcon(getIconItem(option.value)!)"
-                        :class="option.value" class="text-base text-surface-600"></i>
+                    <i v-if="!getIconItem(option.value) || !isLucideIcon(getIconItem(option.value)!)" :class="option.value" class="text-base text-surface-600"></i>
                     <!-- Lucide 图标 -->
                     <component :is="option.value" v-else class="w-4 h-4 text-surface-600" />
                     <span class="text-sm">{{ option.label }}</span>
@@ -513,25 +627,17 @@ v-if="!getIconItem(option.value) || !isLucideIcon(getIconItem(option.value)!)"
                 <InputGroup>
                     <InputGroupAddon>
                         <!-- PrimeVue 图标预览 -->
-                        <i
-v-if="!getIconItem(selectedIcon) || !isLucideIcon(getIconItem(selectedIcon)!)"
-                            :class="selectedIcon" class="text-sm text-surface-500"></i>
+                        <i v-if="!getIconItem(selectedIcon) || !isLucideIcon(getIconItem(selectedIcon)!)" :class="selectedIcon" class="text-sm text-surface-500"></i>
                         <!-- Lucide 图标预览 -->
                         <component :is="selectedIcon" v-else :size="14" />
                     </InputGroupAddon>
-                    <InputText
-v-model="selectedIcon" placeholder="点击选择图标" :invalid="invalid" :disabled="disabled"
-                        :class="{ 'pl-8': selectedIcon && showPreview }" class="w-full text-sm" readonly
-                        @click="openIconSelector" />
+                    <InputText v-model="selectedIcon" placeholder="点击选择图标" :invalid="invalid" :disabled="disabled" :class="{ 'pl-8': selectedIcon && showPreview }" class="w-full text-sm" readonly @click="openIconSelector" />
                 </InputGroup>
             </div>
         </div>
 
         <!-- 图标选择器弹窗 - 极简版 -->
-        <Dialog
-v-model:visible="iconSelectorVisible" :modal="true" :dismissable="true" header="选择图标"
-            class="icon-selector-dialog" :style="{ width: '600px', maxWidth: '90vw' }">
-
+        <Dialog v-model:visible="iconSelectorVisible" :modal="true" :dismissable="true" header="选择图标" class="icon-selector-dialog" :style="{ width: '600px', maxWidth: '90vw' }">
             <!-- 搜索框 -->
             <div v-if="enableSearch" class="mb-4">
                 <InputText v-model="searchKeyword" placeholder="搜索图标..." class="w-full" @input="filterIcons" />
@@ -541,20 +647,21 @@ v-model:visible="iconSelectorVisible" :modal="true" :dismissable="true" header="
             <div v-if="showLibraryTabs && enabledLibraries.length > 1" class="mb-4">
                 <div class="flex gap-2">
                     <Button
-v-for="library in enabledLibraries" :key="library"
+                        v-for="library in enabledLibraries"
+                        :key="library"
                         :label="library === 'primevue' ? 'PrimeVue' : 'Lucide'"
                         :severity="currentLibrary === library ? 'primary' : 'secondary'"
-                        :outlined="currentLibrary !== library" size="small" @click="switchLibrary(library)" />
+                        :outlined="currentLibrary !== library"
+                        size="small"
+                        @click="switchLibrary(library)"
+                    />
                 </div>
             </div>
 
             <!-- 图标网格 -->
             <div class="icon-grid-container">
                 <div class="icon-grid">
-                    <button
-v-for="icon in filteredIcons" :key="icon.name"
-                        :class="['icon-btn', { 'selected': tempSelectedIcon === icon.name }]" :title="icon.label"
-                        @click="selectIcon(icon)">
+                    <button v-for="icon in filteredIcons" :key="icon.name" :class="['icon-btn', { selected: tempSelectedIcon === icon.name }]" :title="icon.label" @click="selectIcon(icon)">
                         <i v-if="!isLucideIcon(icon)" :class="icon.name"></i>
                         <component :is="icon.name" v-else class="w-5 h-5" />
                     </button>
@@ -571,12 +678,8 @@ v-for="icon in filteredIcons" :key="icon.name"
             <template #footer>
                 <div class="flex justify-between items-center">
                     <div v-if="tempSelectedIcon" class="flex items-center gap-2 text-sm text-gray-600">
-                        <i
-v-if="getIconItem(tempSelectedIcon) && !isLucideIcon(getIconItem(tempSelectedIcon)!)"
-                            :class="tempSelectedIcon"></i>
-                        <component
-                            :is="tempSelectedIcon"
-                            v-else-if="getIconItem(tempSelectedIcon) && isLucideIcon(getIconItem(tempSelectedIcon)!)" class="w-4 h-4" />
+                        <i v-if="getIconItem(tempSelectedIcon) && !isLucideIcon(getIconItem(tempSelectedIcon)!)" :class="tempSelectedIcon"></i>
+                        <component :is="tempSelectedIcon" v-else-if="getIconItem(tempSelectedIcon) && isLucideIcon(getIconItem(tempSelectedIcon)!)" class="w-4 h-4" />
                         <span>{{ getIconLabel(tempSelectedIcon) }}</span>
                     </div>
                     <div v-else class="text-sm text-gray-400">请选择一个图标</div>

@@ -26,21 +26,19 @@ class HttpClient {
             baseURL: baseURL || import.meta.env.VITE_API_URL || '/api',
             timeout: 10000,
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
         });
 
         this.setupInterceptors();
     }
-
-
 
     private setupInterceptors() {
         // 请求拦截器
         this.instance.interceptors.request.use(
             (config: InternalAxiosRequestConfig) => {
                 // 添加 token
-                const token = StorageUtil.get('accessToken')
+                const token = StorageUtil.get('accessToken');
                 if (token) {
                     config.headers = config.headers || {};
                     config.headers.Authorization = `Bearer ${token}`;
@@ -77,7 +75,7 @@ class HttpClient {
             },
             (error) => {
                 const config = error.config as RequestConfig;
-                console.log(error.code)
+                console.log(error.code);
                 // 处理不同的错误状态码
                 if (error.response) {
                     const { status, data } = error.response;
@@ -110,13 +108,11 @@ class HttpClient {
                         this.handleNetworkErrorRedirect();
                     }
                 }
-                console.log("eeeeeee")
+                console.log('eeeeeee');
                 return Promise.reject(error);
             }
         );
     }
-
-
 
     private async handleUnauthorized() {
         // 清除本地存储的token
@@ -131,25 +127,23 @@ class HttpClient {
             fullPath: currentRoute.fullPath,
             isPageInitialized
         });
-        
+
         // 使用路径和名称双重判断，确保准确识别登录页面
-        const isLoginPage = currentRoute.name === 'Login' || 
-                           currentRoute.path === '/auth/login' || 
-                           currentRoute.fullPath.includes('/auth/login');
-        
+        const isLoginPage = currentRoute.name === 'Login' || currentRoute.path === '/auth/login' || currentRoute.fullPath.includes('/auth/login');
+
         // 如果页面还未初始化完成（页面刷新阶段），不显示弹窗，交由路由守卫处理
         if (!isPageInitialized) {
             console.log('页面初始化阶段，不显示登录弹窗，交由路由守卫处理');
             return;
         }
-        
+
         if (isLoginPage) {
             // 如果已经在登录页面，只显示提示
             console.log('已在登录页面，只显示提示');
             globalToast.warn('登录已过期，请重新登录');
             return;
         }
-        
+
         // 如果不在登录页面且页面已初始化，显示登录弹窗
         console.log('不在登录页面且页面已初始化，显示登录弹窗');
         const { showLoginDialog } = useLoginDialog();
@@ -163,8 +157,8 @@ class HttpClient {
         // 跳转到登录页
         setTimeout(() => {
             router.replace({
-                name: 'Login',
-            })
+                name: 'Login'
+            });
         }, 1500);
     }
 
@@ -173,8 +167,6 @@ class HttpClient {
             globalToast.error(message);
         }
     }
-
-
 
     // GET 请求
     get<T = any>(url: string, config?: RequestConfig): Promise<T> {
@@ -212,8 +204,8 @@ class HttpClient {
             ...config,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                ...config?.headers,
-            },
+                ...config?.headers
+            }
         });
     }
 
@@ -221,8 +213,6 @@ class HttpClient {
     getInstance(): AxiosInstance {
         return this.instance;
     }
-
-
 }
 
 // 创建默认实例

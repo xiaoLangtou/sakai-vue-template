@@ -14,15 +14,17 @@ import type { MenuItem } from 'primevue/menuitem';
 import { usePrimeConfirm } from '@/composables/usePrimeConfirm.ts';
 import { computed, type ComputedRef, h, ref, watch } from 'vue';
 
-
 export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined>) => {
     const { confirmDelete } = usePrimeConfirm();
     const enabled = ref(false);
 
-    watch(() => dictTypeId.value, (newVal) => {
-        enabled.value = !!dictTypeId.value;
-    }, { immediate: true });
-
+    watch(
+        () => dictTypeId.value,
+        (newVal) => {
+            enabled.value = !!dictTypeId.value;
+        },
+        { immediate: true }
+    );
 
     // 表格列配置
     const tableColumns = ref<TableColumns<IDictData>>([
@@ -66,7 +68,6 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
         }
     ]);
 
-
     // 搜索和过滤配置
 
     const searchParams = ref<SearchParams<IDictDataQuery>>({
@@ -79,18 +80,24 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
         size: 10,
         total: 0
     });
-    const { data: tableData, isLoading, refetch } = useQuery({
-        queryKey: [ 'dictItems', dictTypeId.value, pageInfo.value.current, pageInfo.value.size, searchParams.value.keyword, searchParams.value.filters, pageInfo.value.total ],
+    const {
+        data: tableData,
+        isLoading,
+        refetch
+    } = useQuery({
+        queryKey: ['dictItems', dictTypeId.value, pageInfo.value.current, pageInfo.value.size, searchParams.value.keyword, searchParams.value.filters, pageInfo.value.total],
         queryFn: async () => {
-            const result = await to<IPageResult<IDictData>>(dictDataService.getDictDataList({
-                typeId: dictTypeId.value as unknown as number,
-                current: pageInfo.value.current,
-                size: pageInfo.value.size,
-                dictName: searchParams.value.keyword,
-                ...searchParams.value.filters
-            }));
+            const result = await to<IPageResult<IDictData>>(
+                dictDataService.getDictDataList({
+                    typeId: dictTypeId.value as unknown as number,
+                    current: pageInfo.value.current,
+                    size: pageInfo.value.size,
+                    dictName: searchParams.value.keyword,
+                    ...searchParams.value.filters
+                })
+            );
 
-            if ( !result.ok ) {
+            if (!result.ok) {
                 pageInfo.value.total = 0;
                 return [];
             }
@@ -103,17 +110,16 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
     });
 
     const { data: dictDetail } = useQuery({
-        queryKey: [ `dictDetail|${ dictTypeId.value }` ],
+        queryKey: [`dictDetail|${dictTypeId.value}`],
         queryFn: async () => {
             const result = await to<IDictType>(dictTypeService.getDictTypeDetail(dictTypeId.value as unknown as string));
 
-            if ( !result.ok ) return {};
+            if (!result.ok) return {};
             console.log(result.value);
             return result.value;
         },
         enabled: enabled
     });
-
 
     function handleColumnsChange(columns: TableColumns<IDictData>): void {
         tableColumns.value = columns;
@@ -157,7 +163,7 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
                 disabled: data.systemFlag === 'SYSTEM',
                 command: () => {
                     confirmDelete({
-                        message: `确定要删除字典类型 "${ data.dictName }(${ data.dictCode })" 吗？`,
+                        message: `确定要删除字典类型 "${data.dictName}(${data.dictCode})" 吗？`,
                         header: '确认删除',
                         accept: () => deleteDictType(data)
                     });
@@ -172,7 +178,7 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
      * 设置 Menu ref 实例
      */
     const setMenuRef = (el: any, id: number | string | undefined) => {
-        if ( el && id ) {
+        if (el && id) {
             menuRefs.value[id] = el;
         }
     };
@@ -180,7 +186,7 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
      * 打开对应行的菜单
      */
     const openRowMenu = (event: Event, id: number | string | undefined) => {
-        if ( !id ) return;
+        if (!id) return;
         menuRefs.value[id]?.toggle(event);
     };
 
@@ -206,29 +212,35 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
                 showGridlines: false
             },
             actions: {
-                frozen: true, alignFrozen: 'right', width: 200, render: (item: IDictData) => {
-                    return h('div', {
-                        class: 'flex justify-center items-center'
-                    }, [
-                        h(Button, {
-                            icon: 'pi pi-pen-to-square',
-                            label: '编辑',
-                            variant: 'text',
-                            onClick: () => editDictType(item)
-                        }),
+                frozen: true,
+                alignFrozen: 'right',
+                width: 200,
+                render: (item: IDictData) => {
+                    return h(
+                        'div',
+                        {
+                            class: 'flex justify-center items-center'
+                        },
+                        [
+                            h(Button, {
+                                icon: 'pi pi-pen-to-square',
+                                label: '编辑',
+                                variant: 'text',
+                                onClick: () => editDictType(item)
+                            }),
 
-                        h(Button, {
-                            icon: 'pi pi-ellipsis-h',
-                            variant: 'text',
-                            onClick: (event: Event) => openRowMenu(event, item.id)
-                        }),
-                        h(Menu, {
-                            ref: (el) => setMenuRef(el, item.id),
-                            model: getMoreActions(item),
-                            popup: true
-                        })
-
-                    ]);
+                            h(Button, {
+                                icon: 'pi pi-ellipsis-h',
+                                variant: 'text',
+                                onClick: (event: Event) => openRowMenu(event, item.id)
+                            }),
+                            h(Menu, {
+                                ref: (el) => setMenuRef(el, item.id),
+                                model: getMoreActions(item),
+                                popup: true
+                            })
+                        ]
+                    );
                 }
             },
             // 额外配置

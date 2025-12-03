@@ -9,31 +9,31 @@ const isLoginDialogVisible = ref(false);
  * 登录弹窗管理 Hook
  */
 export function useLoginDialog() {
-  /**
-   * 显示登录弹窗
-   */
-  const showLoginDialog = () => {
-    isLoginDialogVisible.value = true;
-  };
+    /**
+     * 显示登录弹窗
+     */
+    const showLoginDialog = () => {
+        isLoginDialogVisible.value = true;
+    };
 
-  /**
-   * 隐藏登录弹窗
-   */
-  const hideLoginDialog = () => {
-    isLoginDialogVisible.value = false;
-  };
+    /**
+     * 隐藏登录弹窗
+     */
+    const hideLoginDialog = () => {
+        isLoginDialogVisible.value = false;
+    };
 
-  /**
-   * 切换登录弹窗显示状态
-   */
-  const toggleLoginDialog = () => {
-    isLoginDialogVisible.value = !isLoginDialogVisible.value;
-  };
+    /**
+     * 切换登录弹窗显示状态
+     */
+    const toggleLoginDialog = () => {
+        isLoginDialogVisible.value = !isLoginDialogVisible.value;
+    };
 
-  return {
-    isLoginDialogVisible,
-    showLoginDialog,
-    hideLoginDialog,
-    toggleLoginDialog,
-  };
+    return {
+        isLoginDialogVisible,
+        showLoginDialog,
+        hideLoginDialog,
+        toggleLoginDialog
+    };
 }

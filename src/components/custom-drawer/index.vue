@@ -8,7 +8,7 @@
 <template>
     <Drawer
         :style="{ '--custom-width': customWidth }"
-        v-bind="{ ...drawerProps, class: ['custom-drawer', drawerClasses],baseZIndex:999,dismissable:dismissable,modal:modal,position:position,showCloseIcon:showCloseIcon,visible:visible }"
+        v-bind="{ ...drawerProps, class: ['custom-drawer', drawerClasses], baseZIndex: 999, dismissable: dismissable, modal: modal, position: position, showCloseIcon: showCloseIcon, visible: visible }"
         @hide="handleHide"
         @show="handleShow"
         @update:visible="handleUpdateVisible"
@@ -44,24 +44,12 @@
         </div>
 
         <!-- 底部插槽 -->
-        <template v-if="showDefaultFooter"  #footer>
+        <template v-if="showDefaultFooter" #footer>
             <div class="drawer-footer">
                 <slot name="footer">
-                    <div  class="flex justify-end gap-2">
-                        <Button
-                            v-if="showCancelButton"
-                            :icon="cancelButtonIcon"
-                            :label="cancelButtonText"
-                            severity="secondary"
-                            @click="handleCancel"
-                        />
-                        <Button
-                            v-if="showConfirmButton"
-                            :icon="confirmButtonIcon"
-                            :label="confirmButtonText"
-                            :loading="confirmLoading"
-                            @click="handleConfirm"
-                        />
+                    <div class="flex justify-end gap-2">
+                        <Button v-if="showCancelButton" :icon="cancelButtonIcon" :label="cancelButtonText" severity="secondary" @click="handleCancel" />
+                        <Button v-if="showConfirmButton" :icon="confirmButtonIcon" :label="confirmButtonText" :loading="confirmLoading" @click="handleConfirm" />
                     </div>
                 </slot>
             </div>
@@ -189,7 +177,7 @@ defineSlots<{
  * 抽屉样式类计算
  */
 const drawerClasses = computed(() => {
-    if ( props.customWidth ) {
+    if (props.customWidth) {
         return 'custom-drawer-width';
     }
 
@@ -209,10 +197,7 @@ const drawerClasses = computed(() => {
  * 抽屉属性计算
  */
 const drawerProps = computed(() => {
-    const {
-
-        ...rest
-    } = props;
+    const { ...rest } = props;
     return rest;
 });
 
@@ -279,30 +264,27 @@ const handleConfirm = () => {
 };
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 .drawer-content {
     @apply flex-1;
 }
 
-.custom-drawer__header{
+.custom-drawer__header {
     @apply w-full;
 }
-
 
 /* 响应式抽屉宽度样式 */
 .custom-drawer {
     .p-drawer-header {
         border-bottom: 1px solid;
         @apply border-surface-100 dark:border-surface-700;
-        --p-drawer-header-padding: .75rem 1.25rem;
+        --p-drawer-header-padding: 0.75rem 1.25rem;
     }
     .p-drawer-footer {
         border-top: 1px solid;
-        @apply border-surface-100 dark:border-surface-700 ;
-        --p-drawer-footer-padding: .75rem 1.25rem;
+        @apply border-surface-100 dark:border-surface-700;
+        --p-drawer-footer-padding: 0.75rem 1.25rem;
     }
-
-
 
     .p-button-text {
         border: none;
@@ -349,7 +331,7 @@ const handleConfirm = () => {
     /* 自定义宽度 */
 
     &.custom-drawer-width {
-        width: var(--custom-width)!important;
+        width: var(--custom-width) !important;
     }
 
     /* 移动端响应式 */

@@ -16,7 +16,7 @@ export const PRIMARY_COLOR_MAP: Record<string, string> = {
     fuchsia: '#d946ef',
     pink: '#ec4899',
     rose: '#f43f5e'
-}
+};
 
 export const PRIMARY_COLORS = [
     { name: 'noir', palette: {} },
@@ -417,7 +417,6 @@ export const SURFACE_COLORS = [
     }
 ];
 
-
 export const NOIR_SEMANTIC_COLORS = {
     semantic: {
         primary: {
@@ -466,22 +465,27 @@ export const NOIR_SEMANTIC_COLORS = {
     }
 };
 
-export const OTHER_SEMANTIC = (color: undefined | { name: string; palette: {} } | {
-    name: string;
-    palette: {
-        50: string;
-        100: string;
-        200: string;
-        300: string;
-        400: string;
-        500: string;
-        600: string;
-        700: string;
-        800: string;
-        900: string;
-        950: string
-    }
-}) => {
+export const OTHER_SEMANTIC = (
+    color:
+        | undefined
+        | { name: string; palette: {} }
+        | {
+              name: string;
+              palette: {
+                  50: string;
+                  100: string;
+                  200: string;
+                  300: string;
+                  400: string;
+                  500: string;
+                  600: string;
+                  700: string;
+                  800: string;
+                  900: string;
+                  950: string;
+              };
+          }
+) => {
     return {
         semantic: {
             primary: color?.palette || {},

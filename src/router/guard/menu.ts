@@ -1,6 +1,6 @@
-import useMenuStore from "@/stores/menu";
-import nProgress from "nprogress";
-import type { RouteLocationNormalized, Router, RouteRecordRaw } from "vue-router";
+import useMenuStore from '@/stores/menu';
+import nProgress from 'nprogress';
+import type { RouteLocationNormalized, Router, RouteRecordRaw } from 'vue-router';
 
 interface VueModule {
     default: any;
@@ -32,57 +32,51 @@ export interface MenuOptions {
     [key: string]: any;
 }
 
-const context = import.meta.webpackContext("/src/views/", {
+const context = import.meta.webpackContext('/src/views/', {
     recursive: true,
     regExp: /\.vue$/,
     mode: 'lazy',
-    chunkName: "views/[request]",
-    prefetch: true,
-})
+    chunkName: 'views/[request]',
+    prefetch: true
+});
 
-const views: Record<string, any> = {}
-
+const views: Record<string, any> = {};
 
 for (const path of context.keys()) {
-    const modulePath = path.replace("./", "/src/views/");
+    const modulePath = path.replace('./', '/src/views/');
     views[modulePath] = () => (context(path) as Promise<VueModule>).then((module) => module?.default || module);
 }
-
 
 const toRoutes = (menus: MenuOptions[]) => {
     const routes: RouteRecordRaw[] = [];
 
-    menus.forEach(menu => {
-        const path = menu.component ? `/src/views${menu.component}${menu.component.includes('.vue') ? '' : '.vue'}` : "";
+    menus.forEach((menu) => {
+        const path = menu.component ? `/src/views${menu.component}${menu.component.includes('.vue') ? '' : '.vue'}` : '';
         routes.push({
             name: menu.name,
             path: menu.path,
-            component: views[path] ?? "",
+            component: views[path] ?? '',
             children: [...toRoutes(menu.children ?? [])],
             meta: {
                 ...menu.meta,
                 id: menu.id,
-                parentId: menu.parentId,
+                parentId: menu.parentId
             }
-        })
-
-    })
+        });
+    });
 
     return routes;
-}
-
+};
 
 const setWebsiteTitle = (router: Router, to: RouteLocationNormalized) => {
     const route = router.getRoutes().find((item: RouteRecordRaw) => item.path === to.path);
     const appTitle = import.meta.env.VITE_GLOB_APP_TITLE;
     useTitle(route?.meta?.title ? `${route?.meta?.title} - ${appTitle}` : appTitle);
-}
-
+};
 
 export default function setupMenuGuard(router: Router) {
     let has404 = false;
     router.beforeEach(async (to, from, next) => {
-
         nProgress.start();
         if (to.name === 'Login') {
             next();
@@ -94,39 +88,39 @@ export default function setupMenuGuard(router: Router) {
             has404 = true;
 
             router.addRoute({
-                path: "/:pathMatch(.*)*",
+                path: '/:pathMatch(.*)*',
                 component: () => import('@/views/error-page/not-found.vue')
-            })
+            });
         }
         await nextTick();
 
-        const { menuList, getAuthMenuList } = useMenuStore()
+        const { menuList, getAuthMenuList } = useMenuStore();
 
         if (menuList.length) {
-            next()
-            nProgress.done()
+            next();
+            nProgress.done();
             return;
         }
 
         const data = await getAuthMenuList();
 
         if (!data.length) {
-            next({ name: "403" });
+            next({ name: '403' });
             nProgress.done();
             return;
         }
 
-        const routes = toRoutes(data)
-        console.log(routes)
+        const routes = toRoutes(data);
+        console.log(routes);
         routes.forEach((route: RouteRecordRaw) => {
-            console.log(route.name, !router.hasRoute(route.name))
+            console.log(route.name, !router.hasRoute(route.name));
             if (route.name && !router.hasRoute(route.name)) {
-                router.addRoute("root", route)
+                router.addRoute('root', route);
             }
-        })
-        console.log(router.getRoutes())
+        });
+        console.log(router.getRoutes());
         setWebsiteTitle(router, to);
         next({ ...to, replace: true });
         nProgress.done();
-    })
+    });
 }

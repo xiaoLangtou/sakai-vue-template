@@ -1,5 +1,5 @@
 // 获取菜单列表
-import http from "@/services/core/http"
+import http from '@/services/core/http';
 import type { IMenu, MenuOptions } from '../types/menu';
 
 /**

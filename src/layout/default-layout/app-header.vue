@@ -15,23 +15,18 @@ const handleToggle = (): void => {
 </script>
 
 <template>
-    <header :class="[
-        'app-header',
-        {
-            'mobile-header': layoutStore.isMobile,
-            'desktop-header': !layoutStore.isMobile
-        }
-    ]">
+    <header
+        :class="[
+            'app-header',
+            {
+                'mobile-header': layoutStore.isMobile,
+                'desktop-header': !layoutStore.isMobile
+            }
+        ]"
+    >
         <div class="header-left">
             <!-- 菜单切换按钮 -->
-            <Button
-                :aria-label="layoutStore.sidebarHidden ? '显示菜单' : '隐藏菜单'"
-                icon="pi pi-bars"
-                class="mobile-menu-toggle"
-                rounded
-                severity="secondary"
-                text
-                @click="handleToggle" />
+            <Button :aria-label="layoutStore.sidebarHidden ? '显示菜单' : '隐藏菜单'" icon="pi pi-bars" class="mobile-menu-toggle" rounded severity="secondary" text @click="handleToggle" />
 
             <!-- 桌面端面包屑导航 -->
             <AppBreadcrumb v-if="!layoutStore.isMobile" />

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import type { CustomDialogProps } from './type.ts';
 import Button from 'primevue/button';
 
@@ -8,7 +7,6 @@ const visible = defineModel({
     type: Boolean
 });
 
-
 const props = defineProps<CustomDialogProps>();
 
 const emit = defineEmits<{
@@ -16,16 +14,15 @@ const emit = defineEmits<{
     (e: 'confirm', $event: Event): void;
 }>();
 
-
 const dialogStyle = computed(() => {
     let style: Record<string, any> = {};
 
-    if ( props.style ) {
+    if (props.style) {
         style = { ...props.style };
     }
 
-    if ( props.width ) {
-        style.width = typeof props.width === 'number' ? `${ props.width }px` : props.width;
+    if (props.width) {
+        style.width = typeof props.width === 'number' ? `${props.width}px` : props.width;
     }
     return style;
 });
@@ -37,12 +34,10 @@ const handleCancel = ($event: Event) => {
 const handleConfirm = ($event: Event) => {
     emit('confirm', $event);
 };
-
-
 </script>
 
 <template>
-    <Dialog :style="dialogStyle" v-bind="{...props,visible:visible}">
+    <Dialog :style="dialogStyle" v-bind="{ ...props, visible: visible }">
         <template #header>
             <div class="custom-drawer__header">
                 <slot name="header">
@@ -58,20 +53,8 @@ const handleConfirm = ($event: Event) => {
             <div class="drawer-footer">
                 <slot name="footer">
                     <div class="flex justify-end gap-2">
-                        <Button
-                            v-if="showCancelButton"
-                            :icon="cancelButtonIcon"
-                            :label="cancelButtonText"
-                            severity="secondary"
-                            @click="handleCancel"
-                        />
-                        <Button
-                            v-if="showConfirmButton"
-                            :icon="confirmButtonIcon"
-                            :label="confirmButtonText"
-                            :loading="confirmLoading"
-                            @click="handleConfirm"
-                        />
+                        <Button v-if="showCancelButton" :icon="cancelButtonIcon" :label="cancelButtonText" severity="secondary" @click="handleCancel" />
+                        <Button v-if="showConfirmButton" :icon="confirmButtonIcon" :label="confirmButtonText" :loading="confirmLoading" @click="handleConfirm" />
                     </div>
                 </slot>
             </div>
@@ -82,10 +65,7 @@ const handleConfirm = ($event: Event) => {
         <template v-if="$slots.closeicon" #closeicon>
             <slot name="closeicon"></slot>
         </template>
-
     </Dialog>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

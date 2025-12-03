@@ -10,7 +10,6 @@ import { computed, ref } from 'vue';
 import { usePrimeConfirm } from '@/composables/usePrimeConfirm.ts';
 import globalToast from '@/services/core/toast.ts';
 
-
 /**
  * 用户认证 Store
  */
@@ -35,19 +34,20 @@ export const useAuthStore = defineStore('auth', () => {
         userInfo.value = _userInfo;
     };
     const loginAction = async (account: ILoginAccount, homePath?: string | undefined) => {
-        const result = await to<ILoginResponse>(loginService.login({
-            username: account.username,
-            password: md5(account.password),
-            captcha: account.captcha,
-            captchaId: account.captchaId
-        }));
-        if ( !result.ok ) return Promise.reject(result.error);
+        const result = await to<ILoginResponse>(
+            loginService.login({
+                username: account.username,
+                password: md5(account.password),
+                captcha: account.captcha,
+                captchaId: account.captchaId
+            })
+        );
+        if (!result.ok) return Promise.reject(result.error);
         const { accessToken, userInfo } = result.value;
         setToken(accessToken);
         StorageUtil.set('accessToken', accessToken);
 
         setUserInfo(userInfo);
-
 
         await router.replace({
             name: homePath ?? 'dashboard'
@@ -55,22 +55,19 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const logoutAction = async () => {
-
         await confirm.confirmWarning({
-            message: '确定退出登录吗?', icon: 'pi pi-exclamation-triangle', accept: async () => {
+            message: '确定退出登录吗?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
                 const result = await to(loginService.logout());
-                if ( !result.ok ) return;
+                if (!result.ok) return;
                 setToken('');
                 StorageUtil.remove('accessToken');
                 setUserInfo({} as IUserInfo);
                 await router.replace(LOGIN_URL);
-
-
             }
         });
-
     };
-
 
     return {
         userInfo,
@@ -81,6 +78,4 @@ export const useAuthStore = defineStore('auth', () => {
         loginAction,
         logoutAction
     };
-
-
 });

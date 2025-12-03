@@ -364,13 +364,9 @@ const cancelCustomButton = () => {
 </script>
 
 <template>
-    <CustomDrawer
-v-model:visible="dialogVisible" :header="title" :modal="true" :dismissable="true" position="right"
-        class="!w-[800px]" @hide="closeDialog">
+    <CustomDrawer v-model:visible="dialogVisible" :header="title" :modal="true" :dismissable="true" position="right" class="!w-[800px]" @hide="closeDialog">
         <div class="flex-1 overflow-y-auto">
-            <Form
-ref="formRef" :resolver="handleFormValidation" :default-values="getInitialValues()"
-                class="space-y-6" @submit="onFormSubmit">
+            <Form ref="formRef" :resolver="handleFormValidation" :default-values="getInitialValues()" class="space-y-6" @submit="onFormSubmit">
                 <!-- 基础信息 -->
                 <Fieldset legend="基础信息" :toggleable="true" class="mb-4">
                     <template #legend="{ toggleCallback }">
@@ -384,9 +380,7 @@ ref="formRef" :resolver="handleFormValidation" :default-values="getInitialValues
                         <!-- 菜单名称 -->
                         <SmartFormField name="name" label="菜单名称" required>
                             <template #default="{ field }">
-                                <InputText
-v-model="field.value" placeholder="请输入菜单名称" class="w-full"
-                                    :invalid="field.invalid" />
+                                <InputText v-model="field.value" placeholder="请输入菜单名称" class="w-full" :invalid="field.invalid" />
                             </template>
                         </SmartFormField>
 
@@ -394,19 +388,14 @@ v-model="field.value" placeholder="请输入菜单名称" class="w-full"
                             <!-- 菜单类型 -->
                             <SmartFormField name="type" label="菜单类型" required>
                                 <template #default="{ field }">
-                                    <Select
-v-model="field.value" :options="menuTypeOptions" option-label="label"
-                                        option-value="value" placeholder="请选择菜单类型" class="w-full"
-                                        :invalid="field.invalid" />
+                                    <Select v-model="field.value" :options="menuTypeOptions" option-label="label" option-value="value" placeholder="请选择菜单类型" class="w-full" :invalid="field.invalid" />
                                 </template>
                             </SmartFormField>
 
                             <!-- 菜单图标 -->
                             <SmartFormField name="icon" label="菜单图标">
                                 <template #default="{ field }">
-                                    <IconSelector
-v-model="field.value" mode="input" placeholder="请输入图标类名"
-                                        :invalid="field.invalid" show-preview preview-text="图标预览" />
+                                    <IconSelector v-model="field.value" mode="input" placeholder="请输入图标类名" :invalid="field.invalid" show-preview preview-text="图标预览" />
                                 </template>
                             </SmartFormField>
                         </div>
@@ -414,11 +403,7 @@ v-model="field.value" mode="input" placeholder="请输入图标类名"
                         <!-- 父级菜单 -->
                         <SmartFormField name="parentId" label="父级菜单">
                             <template #default="{ field }">
-                                <TreeSelect
-v-model="field.value" :options="computedParentMenuOptions" show-clear
-                                    placeholder="请选择父级菜单（不选择则为顶级菜单）" class="w-full" filter
-                                     filter-mode="lenient"
-                                    filter-placeholder="搜索菜单"  />
+                                <TreeSelect v-model="field.value" :options="computedParentMenuOptions" show-clear placeholder="请选择父级菜单（不选择则为顶级菜单）" class="w-full" filter filter-mode="lenient" filter-placeholder="搜索菜单" />
                             </template>
                         </SmartFormField>
                     </div>
@@ -438,18 +423,14 @@ v-model="field.value" :options="computedParentMenuOptions" show-clear
                             <!-- 路由路径 -->
                             <SmartFormField name="path" label="路由路径">
                                 <template #default="{ field }">
-                                    <InputText
-v-model="field.value" placeholder="如：/system/user" class="w-full"
-                                        :invalid="field.invalid" />
+                                    <InputText v-model="field.value" placeholder="如：/system/user" class="w-full" :invalid="field.invalid" />
                                 </template>
                             </SmartFormField>
 
                             <!-- 组件路径 -->
                             <SmartFormField name="component" label="组件路径">
                                 <template #default="{ field }">
-                                    <InputText
-v-model="field.value" placeholder="如：views/system/user/index.vue"
-                                        class="w-full" :invalid="field.invalid" />
+                                    <InputText v-model="field.value" placeholder="如：views/system/user/index.vue" class="w-full" :invalid="field.invalid" />
                                 </template>
                             </SmartFormField>
                         </div>
@@ -457,9 +438,7 @@ v-model="field.value" placeholder="如：views/system/user/index.vue"
                         <!-- 权限标识 -->
                         <SmartFormField name="permission" label="权限标识">
                             <template #default="{ field }">
-                                <InputText
-v-model="field.value" placeholder="如：system:user:list" class="w-full"
-                                    :invalid="field.invalid" />
+                                <InputText v-model="field.value" placeholder="如：system:user:list" class="w-full" :invalid="field.invalid" />
                             </template>
                         </SmartFormField>
                         <div class="text-sm text-gray-500 mt-1 flex items-center gap-2">
@@ -482,8 +461,7 @@ v-model="field.value" placeholder="如：system:user:list" class="w-full"
                         <!-- 添加按钮操作区 -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <!-- 快速添加按钮 -->
-                            <div
-                                class="flex items-center justify-between p-3 bg-blue-50 rounded border border-blue-200">
+                            <div class="flex items-center justify-between p-3 bg-blue-50 rounded border border-blue-200">
                                 <div class="flex items-center gap-2">
                                     <i class="pi pi-bolt text-blue-600"></i>
                                     <div>
@@ -495,8 +473,7 @@ v-model="field.value" placeholder="如：system:user:list" class="w-full"
                             </div>
 
                             <!-- 自定义添加按钮 -->
-                            <div
-                                class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-300">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-300">
                                 <div class="flex items-center gap-2">
                                     <i class="pi pi-plus-circle text-gray-600"></i>
                                     <div>
@@ -504,9 +481,7 @@ v-model="field.value" placeholder="如：system:user:list" class="w-full"
                                         <div class="text-xs text-gray-500">添加自定义按钮</div>
                                     </div>
                                 </div>
-                                <Button
-label="自定义按钮" icon="pi pi-plus" size="small" severity="secondary" outlined
-                                    @click="openCustomButtonDialog" />
+                                <Button label="自定义按钮" icon="pi pi-plus" size="small" severity="secondary" outlined @click="openCustomButtonDialog" />
                             </div>
                         </div>
 
@@ -515,9 +490,7 @@ label="自定义按钮" icon="pi pi-plus" size="small" severity="secondary" outl
                             <div class="text-sm font-medium text-gray-700 mb-2">已添加的按钮 ({{ buttonsCount }}个)</div>
 
                             <div class="grid grid-cols-1 gap-2">
-                                <div
-v-for="(button, index) in formData.buttons" :key="button.id || index"
-                                    class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded hover:border-blue-300 transition-colors">
+                                <div v-for="(button, index) in formData.buttons" :key="button.id || index" class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded hover:border-blue-300 transition-colors">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                                             <i :class="[button.icon, 'text-blue-600 text-sm']"></i>
@@ -528,12 +501,8 @@ v-for="(button, index) in formData.buttons" :key="button.id || index"
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <Button
-v-tooltip.top="'编辑按钮'" icon="pi pi-pencil" size="small" severity="secondary"
-                                            text @click="editButton(index)" />
-                                        <Button
-v-tooltip.top="'删除按钮'" icon="pi pi-trash" size="small" severity="danger"
-                                            text @click="removeButton(index)" />
+                                        <Button v-tooltip.top="'编辑按钮'" icon="pi pi-pencil" size="small" severity="secondary" text @click="editButton(index)" />
+                                        <Button v-tooltip.top="'删除按钮'" icon="pi pi-trash" size="small" severity="danger" text @click="removeButton(index)" />
                                     </div>
                                 </div>
                             </div>
@@ -567,9 +536,7 @@ v-tooltip.top="'删除按钮'" icon="pi pi-trash" size="small" severity="danger"
 
                         <SmartFormField name="externalUrl" label="外链地址">
                             <template #default="{ field }">
-                                <InputText
-v-model="field.value" placeholder="请输入外链地址（如：https://www.example.com）"
-                                    class="w-full" :invalid="field.invalid" />
+                                <InputText v-model="field.value" placeholder="请输入外链地址（如：https://www.example.com）" class="w-full" :invalid="field.invalid" />
                             </template>
                         </SmartFormField>
                     </div>
@@ -589,19 +556,14 @@ v-model="field.value" placeholder="请输入外链地址（如：https://www.exa
                             <!-- 显示排序 -->
                             <SmartFormField name="sort" label="显示排序">
                                 <template #default="{ field }">
-                                    <InputNumber
-v-model="field.value" :min="0" :max="9999" placeholder="请输入排序值"
-                                        class="w-full" :invalid="field.invalid" />
+                                    <InputNumber v-model="field.value" :min="0" :max="9999" placeholder="请输入排序值" class="w-full" :invalid="field.invalid" />
                                 </template>
                             </SmartFormField>
 
                             <!-- 菜单状态 -->
                             <SmartFormField name="status" label="菜单状态">
                                 <template #default="{ field }">
-                                    <Select
-v-model="field.value" :options="statusOptions" option-label="label"
-                                        option-value="value" placeholder="请选择状态" class="w-full"
-                                        :invalid="field.invalid" />
+                                    <Select v-model="field.value" :options="statusOptions" option-label="label" option-value="value" placeholder="请选择状态" class="w-full" :invalid="field.invalid" />
                                 </template>
                             </SmartFormField>
                         </div>
@@ -618,9 +580,7 @@ v-model="field.value" :options="statusOptions" option-label="label"
                         <!-- 备注 -->
                         <SmartFormField name="remark" label="备注">
                             <template #default="{ field }">
-                                <Textarea
-v-model="field.value" placeholder="请输入备注信息" rows="3" class="w-full"
-                                    :invalid="field.invalid" />
+                                <Textarea v-model="field.value" placeholder="请输入备注信息" rows="3" class="w-full" :invalid="field.invalid" />
                             </template>
                         </SmartFormField>
                     </div>
@@ -644,9 +604,7 @@ v-model="field.value" placeholder="请输入备注信息" rows="3" class="w-full
     <ButtonSelector v-model:visible="batchButtonVisible" title="批量添加按钮" @confirm="confirmBatchAddButtons" />
 
     <!-- 自定义按钮对话框 -->
-    <Dialog
-v-model:visible="customButtonVisible" :header="editingButtonIndex >= 0 ? '编辑按钮' : '添加自定义按钮'" modal
-        :style="{ width: '500px' }" :closable="true" :dismissable-mask="true">
+    <Dialog v-model:visible="customButtonVisible" :header="editingButtonIndex >= 0 ? '编辑按钮' : '添加自定义按钮'" modal :style="{ width: '500px' }" :closable="true" :dismissable-mask="true">
         <div class="space-y-4">
             <!-- 按钮名称 -->
             <div class="space-y-2">
@@ -660,8 +618,6 @@ v-model:visible="customButtonVisible" :header="editingButtonIndex >= 0 ? '编辑
                 <InputText v-model="customButtonForm.permission" placeholder="如：system:user:add" class="w-full" />
                 <div class="text-xs text-gray-500">格式：模块:功能:操作</div>
             </div>
-
-
 
             <!-- 排序值 -->
             <div class="space-y-2">
@@ -679,6 +635,4 @@ v-model:visible="customButtonVisible" :header="editingButtonIndex >= 0 ? '编辑
     </Dialog>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

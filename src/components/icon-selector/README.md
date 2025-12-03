@@ -17,23 +17,27 @@
 ## 🎨 视觉特性
 
 ### 现代化弹窗设计
+
 - 大尺寸弹窗（900px 宽，85vh 高）
 - 精美的头部设计，包含图标和描述
 - 优化的内容布局和间距
 
 ### 增强的图标网格
+
 - 8列网格布局，更好的视觉密度
 - 圆角卡片设计，悬停和选中状态
 - 选中指示器，清晰的视觉反馈
 - 平滑的动画过渡效果
 
 ### 改进的搜索体验
+
 - 大尺寸搜索框，更好的输入体验
 - 搜索结果计数显示
 - 一键清除搜索功能
 - 优化的空状态提示
 
 ### 精美的预览卡片
+
 - 图标预览卡片，显示选中的图标
 - 图标名称和类名的完整信息
 - 现代化的卡片设计
@@ -44,12 +48,7 @@
 
 ```vue
 <template>
-  <IconSelector
-    v-model="selectedIcon"
-    mode="dropdown"
-    placeholder="请选择图标"
-    show-preview
-  />
+    <IconSelector v-model="selectedIcon" mode="dropdown" placeholder="请选择图标" show-preview />
 </template>
 
 <script setup>
@@ -64,13 +63,7 @@ const selectedIcon = ref('');
 
 ```vue
 <template>
-  <IconSelector
-    v-model="selectedIcon"
-    mode="input"
-    placeholder="请输入图标类名"
-    show-preview
-    preview-text="图标预览"
-  />
+    <IconSelector v-model="selectedIcon" mode="input" placeholder="请输入图标类名" show-preview preview-text="图标预览" />
 </template>
 
 <script setup>
@@ -83,32 +76,32 @@ const selectedIcon = ref('');
 
 ## 📋 属性
 
-| 属性名 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| modelValue | string | '' | 当前选中的图标 |
-| mode | 'dropdown' \| 'input' | 'dropdown' | 显示模式 |
-| placeholder | string | '请选择图标' | 占位符文本 |
-| filter | boolean | true | 是否启用过滤（下拉模式） |
-| filterPlaceholder | string | '搜索图标' | 过滤占位符 |
-| showClear | boolean | true | 是否显示清除按钮 |
-| showPreview | boolean | true | 是否显示图标预览 |
-| previewText | string | '图标预览' | 预览文本 |
-| invalid | boolean | false | 是否无效状态 |
-| disabled | boolean | false | 是否禁用 |
-| drawerTitle | string | '选择图标' | 弹窗标题 |
-| drawerDescription | string | '选择一个图标作为菜单图标' | 弹窗描述 |
-| enableSearch | boolean | true | 是否启用搜索 |
-| customIcons | IconItem[] | [] | 自定义图标列表 |
-| defaultLibrary | 'primevue' \| 'lucide' | 'primevue' | 默认图标库 |
-| enabledLibraries | IconLibrary[] | ['primevue', 'lucide'] | 启用的图标库 |
-| showLibraryTabs | boolean | true | 是否显示图标库切换标签 |
+| 属性名            | 类型                   | 默认值                     | 说明                     |
+| ----------------- | ---------------------- | -------------------------- | ------------------------ |
+| modelValue        | string                 | ''                         | 当前选中的图标           |
+| mode              | 'dropdown' \| 'input'  | 'dropdown'                 | 显示模式                 |
+| placeholder       | string                 | '请选择图标'               | 占位符文本               |
+| filter            | boolean                | true                       | 是否启用过滤（下拉模式） |
+| filterPlaceholder | string                 | '搜索图标'                 | 过滤占位符               |
+| showClear         | boolean                | true                       | 是否显示清除按钮         |
+| showPreview       | boolean                | true                       | 是否显示图标预览         |
+| previewText       | string                 | '图标预览'                 | 预览文本                 |
+| invalid           | boolean                | false                      | 是否无效状态             |
+| disabled          | boolean                | false                      | 是否禁用                 |
+| drawerTitle       | string                 | '选择图标'                 | 弹窗标题                 |
+| drawerDescription | string                 | '选择一个图标作为菜单图标' | 弹窗描述                 |
+| enableSearch      | boolean                | true                       | 是否启用搜索             |
+| customIcons       | IconItem[]             | []                         | 自定义图标列表           |
+| defaultLibrary    | 'primevue' \| 'lucide' | 'primevue'                 | 默认图标库               |
+| enabledLibraries  | IconLibrary[]          | ['primevue', 'lucide']     | 启用的图标库             |
+| showLibraryTabs   | boolean                | true                       | 是否显示图标库切换标签   |
 
 ## 🎯 事件
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
-| update:modelValue | (value: string) | 值更新事件 |
-| change | (value: string) | 图标改变事件 |
+| 事件名            | 参数            | 说明         |
+| ----------------- | --------------- | ------------ |
+| update:modelValue | (value: string) | 值更新事件   |
+| change            | (value: string) | 图标改变事件 |
 
 ## 🔧 高级用法
 
@@ -116,12 +109,7 @@ const selectedIcon = ref('');
 
 ```vue
 <template>
-  <IconSelector
-    v-model="selectedIcon"
-    :enabled-libraries="['primevue', 'lucide']"
-    default-library="lucide"
-    show-library-tabs
-  />
+    <IconSelector v-model="selectedIcon" :enabled-libraries="['primevue', 'lucide']" default-library="lucide" show-library-tabs />
 </template>
 ```
 
@@ -129,11 +117,7 @@ const selectedIcon = ref('');
 
 ```vue
 <template>
-  <IconSelector
-    v-model="selectedIcon"
-    :custom-icons="customIconList"
-    mode="dropdown"
-  />
+    <IconSelector v-model="selectedIcon" :custom-icons="customIconList" mode="dropdown" />
 </template>
 
 <script setup>
@@ -142,9 +126,9 @@ import { IconSelector } from '@/components';
 
 const selectedIcon = ref('');
 const customIconList = [
-  { name: 'pi pi-home', label: 'home', library: 'primevue', category: 'general' },
-  { name: 'pi pi-user', label: 'user', library: 'primevue', category: 'general' },
-  { name: 'Settings', label: 'settings', library: 'lucide', category: 'general' }
+    { name: 'pi pi-home', label: 'home', library: 'primevue', category: 'general' },
+    { name: 'pi pi-user', label: 'user', library: 'primevue', category: 'general' },
+    { name: 'Settings', label: 'settings', library: 'lucide', category: 'general' }
 ];
 </script>
 ```
@@ -153,18 +137,13 @@ const customIconList = [
 
 ```vue
 <template>
-  <Form @submit="onSubmit">
-    <FormField name="icon" label="菜单图标">
-      <template #default="{ field }">
-        <IconSelector
-          v-model="field.value"
-          mode="input"
-          :invalid="field.invalid"
-          show-preview
-        />
-      </template>
-    </FormField>
-  </Form>
+    <Form @submit="onSubmit">
+        <FormField name="icon" label="菜单图标">
+            <template #default="{ field }">
+                <IconSelector v-model="field.value" mode="input" :invalid="field.invalid" show-preview />
+            </template>
+        </FormField>
+    </Form>
 </template>
 
 <script setup>
@@ -172,7 +151,7 @@ import { Form, FormField } from '@primevue/forms';
 import { IconSelector } from '@/components';
 
 const onSubmit = (data) => {
-  console.log('表单数据:', data);
+    console.log('表单数据:', data);
 };
 </script>
 ```
@@ -186,9 +165,9 @@ const onSubmit = (data) => {
 ```scss
 // 使用 CSS 变量自定义主色调
 :root {
-  --p-primary-50: #eff6ff;
-  --p-primary-500: #3b82f6;
-  --p-primary-600: #2563eb;
+    --p-primary-50: #eff6ff;
+    --p-primary-500: #3b82f6;
+    --p-primary-600: #2563eb;
 }
 ```
 
@@ -196,16 +175,16 @@ const onSubmit = (data) => {
 
 ```scss
 .icon-selector {
-  // 自定义网格列数
-  .grid {
-    grid-template-columns: repeat(10, 1fr);
-  }
-  
-  // 自定义选中状态
-  .icon-grid-item.selected {
-    border-color: #10b981;
-    background: #ecfdf5;
-  }
+    // 自定义网格列数
+    .grid {
+        grid-template-columns: repeat(10, 1fr);
+    }
+
+    // 自定义选中状态
+    .icon-grid-item.selected {
+        border-color: #10b981;
+        background: #ecfdf5;
+    }
 }
 ```
 
@@ -213,10 +192,10 @@ const onSubmit = (data) => {
 
 ```scss
 .icon-selector-dialog {
-  :deep(.p-dialog) {
-    width: 1200px !important;
-    height: 90vh !important;
-  }
+    :deep(.p-dialog) {
+        width: 1200px !important;
+        height: 90vh !important;
+    }
 }
 ```
 
@@ -232,12 +211,14 @@ const onSubmit = (data) => {
 ## 🎭 图标库
 
 ### PrimeVue Icons (60+ 图标)
+
 - **通用图标**：home, user, settings, list, table 等
 - **图表图标**：chart-bar, chart-line, chart-pie 等
 - **操作图标**：search, filter, download, upload 等
 - **箭头图标**：arrow-up, arrow-down, chevron-left 等
 
 ### Lucide Icons (60+ 图标)
+
 - **现代化设计**：简洁、一致的设计风格
 - **高质量矢量**：完美的像素对齐
 - **丰富分类**：涵盖各种使用场景
@@ -267,6 +248,7 @@ const onSubmit = (data) => {
 ## 🚀 更新日志
 
 ### v2.0.0 (最新)
+
 - ✨ 全新的现代化设计
 - 🎨 优化的弹窗布局和交互
 - 📱 改进的响应式设计
@@ -275,6 +257,7 @@ const onSubmit = (data) => {
 - 💫 丰富的动画效果
 
 ### v1.0.0
+
 - 🎉 初始版本发布
 - 📋 基础的图标选择功能
 - 🔧 支持自定义图标列表

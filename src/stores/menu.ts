@@ -1,15 +1,13 @@
-import { loginService } from "@/services/modules/login";
-import type { MenuOptions } from "@/services/types/menu";
-import { to } from "@/utils/result-handler";
+import { loginService } from '@/services/modules/login';
+import type { MenuOptions } from '@/services/types/menu';
+import { to } from '@/utils/result-handler';
 
 const useMenuStore = defineStore('menu', () => {
     const menuList = ref<MenuOptions[]>([]);
 
     const flatMenList = ref<MenuOptions[]>([]);
 
-
     const topMenuList = ref<MenuOptions[]>([]);
-
 
     let subMenuList = new Map<string, MenuOptions[]>();
 
@@ -51,7 +49,6 @@ const useMenuStore = defineStore('menu', () => {
         });
         subMenuList = _subMenuList;
         topMenuList.value = _topMenuList;
-
     };
 
     /**
@@ -61,19 +58,18 @@ const useMenuStore = defineStore('menu', () => {
     const getAuthMenuList = async () => {
         const result = await to<MenuOptions[]>(loginService.getMenuList());
         if (!result.ok) return Promise.reject(result.error);
-        console.log("getAuthMenuList", result.value);
+        console.log('getAuthMenuList', result.value);
         menuList.value = result.value;
         flatMenList.value = flattenMenu(result.value);
         filterMenu(result.value);
 
-        return result.value
-    }
+        return result.value;
+    };
 
     /**
      * 获取所有菜单
      * @returns 所有菜单列表
      */
-
 
     return {
         menuList,
@@ -81,8 +77,7 @@ const useMenuStore = defineStore('menu', () => {
         topMenuList,
         subMenuList,
         getAuthMenuList
-    }
-})
-
+    };
+});
 
 export default useMenuStore;

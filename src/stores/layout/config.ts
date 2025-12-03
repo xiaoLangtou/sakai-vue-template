@@ -1,5 +1,5 @@
-import { ref } from 'vue';
 import type { LayoutConfig, LayoutState } from '@/types/layout.ts';
+import { ref } from 'vue';
 
 /**
  * 布局配置状态管理
@@ -11,7 +11,7 @@ export function useConfig(layoutConfig: Ref<LayoutConfig>, layoutState: Ref<Layo
     const isShowTab = ref<boolean>(layoutConfig.value.showTab);
 
     /** 标签页样式 */
-    const tabStyle = ref<'Fashion' | 'Card' | 'Square'>(layoutConfig.value.tabStyle);
+    const tabStyle = ref<'Card' | 'Square'>(layoutConfig.value.tabStyle);
 
     /** 是否显示图标 */
     const isShowIcon = ref<boolean>(layoutConfig.value.isShowIcon);
@@ -49,7 +49,6 @@ export function useConfig(layoutConfig: Ref<LayoutConfig>, layoutState: Ref<Layo
     /** 灰色模式 */
     const isEnableGray = ref<boolean>(layoutConfig.value.isEnableGray);
 
-
     /**
      * 打开配置抽屉
      */
@@ -75,78 +74,84 @@ export function useConfig(layoutConfig: Ref<LayoutConfig>, layoutState: Ref<Layo
     const generateConfigString = (config: LayoutConfig) => {
         return `const defaultPreferences: LayoutConfig = {
     /** 主题预设 */
-    preset: '${ config.preset }',
+    preset: '${config.preset}',
     /** 主色调 */
-    primary: '${ config.primary }',
+    primary: '${config.primary}',
     /** 表面颜色 */
-    surface: ${ config.surface ? `'${ config.surface }'` : 'null' },
+    surface: ${config.surface ? `'${config.surface}'` : 'null'},
     /** 是否为暗色主题 */
-    darkTheme: ${ config.darkTheme },
+    darkTheme: ${config.darkTheme},
     /** 布局模式 */
-    layoutMode: '${ config.layoutMode }',
+    layoutMode: '${config.layoutMode}',
     /** 是否显示标签页 */
-    showTab: ${ isShowTab.value },
+    showTab: ${isShowTab.value},
     /** 标签页样式 */
-    tabStyle: '${ tabStyle.value }',
+    tabStyle: '${tabStyle.value}',
     /** 标签页是否显示图标 */
-    isShowIcon: ${ isShowIcon.value },
+    isShowIcon: ${isShowIcon.value},
     /** 标签页是否持久化*/
-    isPersistTab: ${ config.isPersistTab },
+    isPersistTab: ${config.isPersistTab},
     /** 是否显示头部 */
-    isShowHeader: ${ isShowHeader.value },
+    isShowHeader: ${isShowHeader.value},
     /** 是否启用全局搜索 */
-    isEnableSearch: ${ config.isEnableSearch },
+    isEnableSearch: ${config.isEnableSearch},
     /** 是否启用主题切换 */
-    isEnableTheme: ${ config.isEnableTheme },
+    isEnableTheme: ${config.isEnableTheme},
     /** 是否启用全屏 */
-    isEnableFullScreen: ${ config.isEnableFullScreen },
+    isEnableFullScreen: ${config.isEnableFullScreen},
     /** 是否启用通知 */
-    isEnableNotification: ${ config.isEnableNotification },
+    isEnableNotification: ${config.isEnableNotification},
     /** 是否启用侧边栏切换 */
-    isEnableSidebarToggle: ${ config.isEnableSidebarToggle },
+    isEnableSidebarToggle: ${config.isEnableSidebarToggle},
     /** 是否显示底部 */
-    isShowFooter: ${ isShowFooter.value },
+    isShowFooter: ${isShowFooter.value},
     /** 是否启用版权  */
-    isShowCopyright: ${ config.isShowCopyright },
+    isShowCopyright: ${config.isShowCopyright},
     /** 公司名 */
-    companyName: '${ companyName.value }',
+    companyName: '${companyName.value}',
     /** 公司主页 */
-    companyHomepage: '${ companyHomepage.value }',
+    companyHomepage: '${companyHomepage.value}',
     /** 日期 */
-    date: '${ date.value }',
+    date: '${date.value}',
     /** ICP 备案号*/
-    icp: '${ icp.value }',
+    icp: '${icp.value}',
     /** ICP 网站链接*/
-    icpLink: '${ icpLink.value }',
+    icpLink: '${icpLink.value}',
     /** 是否显示水印 */
-    isShowWatermark: ${ config.isShowWatermark },
+    isShowWatermark: ${config.isShowWatermark},
     /** 水印文字 */
-    watermarkText: '${ config.watermarkText }',
+    watermarkText: '${config.watermarkText}',
     /** 色弱模式 */
-    isEnableColorWeak: ${ isEnableColorWeak.value },
+    isEnableColorWeak: ${isEnableColorWeak.value},
     /** 灰色模式 */
-    isEnableGray: ${ isEnableGray.value }
+    isEnableGray: ${isEnableGray.value}
 };`;
     };
 
-
-    watch(() => isEnableColorWeak.value, (value: boolean) => {
-        if ( value ) {
-            //给html添加类名
-            document.documentElement.classList.add('color-weak');
-        } else {
-            document.documentElement.classList.remove('color-weak');
-        }
-    },{immediate:true});
-    watch(() => isEnableGray.value, (value: boolean) => {
-        if ( value ) {
-            //给html添加类名
-            document.documentElement.classList.add('color-gray');
-        } else {
-            document.documentElement.classList.remove('color-gray');
-        }
-    },{immediate:true});
-
+    watch(
+        () => isEnableColorWeak.value,
+        (value: boolean) => {
+            if (value) {
+                //给html添加类名
+                document.documentElement.classList.add('color-weak');
+            } else {
+                document.documentElement.classList.remove('color-weak');
+            }
+        },
+        { immediate: true }
+    );
+    watch(
+        () => isEnableGray.value,
+        (value: boolean) => {
+            if (value) {
+                //给html添加类名
+                document.documentElement.classList.add('color-gray');
+            } else {
+                document.documentElement.classList.remove('color-gray');
+            }
+        },
+        { immediate: true }
+    );
 
     return {
         // 基础状态
