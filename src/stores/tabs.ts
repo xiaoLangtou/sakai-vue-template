@@ -18,6 +18,8 @@ export interface TabItem {
     closable: boolean;
     /** 是否为首页 */
     isHome: boolean;
+    /** 是否固定 */
+    pinned?: boolean;
     /** 路由参数 */
     params?: Record<string, any>;
     /** 查询参数 */
@@ -40,10 +42,16 @@ export const useTabsStore = defineStore(
         const maxTabs = ref<number>(100);
 
         // 计算属性
-        const activeTabs = computed(() => tabs.value);
+        const activeTabs = computed(() => {
+            // 固定标签在前，非固定标签在后
+            const pinned = tabs.value.filter(tab => tab.pinned);
+            const unpinned = tabs.value.filter(tab => !tab.pinned);
+            return [...pinned, ...unpinned];
+        });
         const activeTab = computed(() => tabs.value.find((tab) => tab.key === activeTabKey.value));
         const tabsCount = computed(() => tabs.value.length);
         const canAddTab = computed(() => tabs.value.length < maxTabs.value);
+        const pinnedTabs = computed(() => tabs.value.filter(tab => tab.pinned));
 
         /**
          * 生成标签页唯一key
@@ -67,7 +75,6 @@ export const useTabsStore = defineStore(
             const title = (route.meta?.title as string) || route.name?.toString() || '未命名页面';
             const icon = route.meta?.icon as string;
             const isHome = route.path === '/' || route.name === 'Dashboard';
-
             return {
                 key,
                 title,
@@ -152,20 +159,24 @@ export const useTabsStore = defineStore(
          * @param key - 保留的标签页key
          */
         const closeOtherTabs = (key: string): void => {
-            tabs.value = tabs.value.filter((tab) => tab.key === key || tab.isHome);
-            activeTabKey.value = key;
+            const currentTab = tabs.value.find((tab) => tab.key === key);
+            if (!currentTab) return;
+
+            // 保留当前标签、首页和固定标签
+            tabs.value = tabs.value.filter((tab) => tab.key === key || tab.isHome || tab.pinned);
+            setActiveTab(key);
         };
 
         /**
-         * 关闭所有标签页（除首页）
+         * 关闭所有标签页
          */
         const closeAllTabs = (): void => {
-            tabs.value = tabs.value.filter((tab) => tab.isHome);
-            const homeTab = tabs.value.find((tab) => tab.isHome);
-            if (homeTab) {
-                activeTabKey.value = homeTab.key;
-            } else {
-                activeTabKey.value = '';
+            // 保留首页和固定标签
+            const keepTabs = tabs.value.filter((tab) => tab.isHome || tab.pinned);
+            tabs.value = keepTabs;
+
+            if (keepTabs.length > 0) {
+                setActiveTab(keepTabs[0].key);
             }
         };
 
@@ -180,8 +191,8 @@ export const useTabsStore = defineStore(
             const leftTabs = tabs.value.slice(0, index);
             const rightTabs = tabs.value.slice(index);
 
-            // 保留首页和右侧标签
-            tabs.value = [...leftTabs.filter((tab) => tab.isHome), ...rightTabs];
+            // 保留首页、固定标签和右侧标签
+            tabs.value = [...leftTabs.filter((tab) => tab.isHome || tab.pinned), ...rightTabs];
         };
 
         /**
@@ -195,8 +206,8 @@ export const useTabsStore = defineStore(
             const leftTabs = tabs.value.slice(0, index + 1);
             const rightTabs = tabs.value.slice(index + 1);
 
-            // 保留左侧标签和首页
-            tabs.value = [...leftTabs, ...rightTabs.filter((tab) => tab.isHome)];
+            // 保留左侧标签、首页和固定标签
+            tabs.value = [...leftTabs, ...rightTabs.filter((tab) => tab.isHome || tab.pinned)];
         };
 
         /**
@@ -230,6 +241,39 @@ export const useTabsStore = defineStore(
         };
 
         /**
+         * 固定标签页
+         * @param key - 标签页key
+         */
+        const pinTab = (key: string): void => {
+            const tab = tabs.value.find((tab) => tab.key === key);
+            if (tab) {
+                tab.pinned = true;
+            }
+        };
+
+        /**
+         * 取消固定标签页
+         * @param key - 标签页key
+         */
+        const unpinTab = (key: string): void => {
+            const tab = tabs.value.find((tab) => tab.key === key);
+            if (tab) {
+                tab.pinned = false;
+            }
+        };
+
+        /**
+         * 切换标签页固定状态
+         * @param key - 标签页key
+         */
+        const togglePinTab = (key: string): void => {
+            const tab = tabs.value.find((tab) => tab.key === key);
+            if (tab) {
+                tab.pinned = !tab.pinned;
+            }
+        };
+
+        /**
          * 重置标签页状态
          */
         const resetTabs = (): void => {
@@ -248,6 +292,7 @@ export const useTabsStore = defineStore(
             activeTab,
             tabsCount,
             canAddTab,
+            pinnedTabs,
 
             // 方法
             generateTabKey,
@@ -262,6 +307,9 @@ export const useTabsStore = defineStore(
             updateTab,
             setTabLoading,
             setTabError,
+            pinTab,
+            unpinTab,
+            togglePinTab,
             resetTabs
         };
     },

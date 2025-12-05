@@ -88,7 +88,7 @@ const drawerTitle = computed(() => {
 </script>
 
 <template>
-    <CustomDrawer v-model:visible="drawerVisible" :dismissable="true" :header="drawerTitle" :show-default-footer="false" :showCloseIcon="false" custom-width="85%" position="right" width-type="extra-large">
+    <CustomDrawer v-model:visible="drawerVisible" :dismissable="true" :header="drawerTitle" :show-default-footer="false" :show-close-icon="false" custom-width="85%" position="right" width-type="extra-large">
         <template #header>
             <PageHeader :description="dictDetail?.dictDesc" :title="drawerTitle" @back="goBack">
                 <!-- 操作按钮 -->

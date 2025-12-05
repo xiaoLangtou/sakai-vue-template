@@ -80,7 +80,8 @@ const handleRemoveFavorite = (event: Event, menuId: number) => {
 
             <!-- 收藏列表 -->
             <div class="favorites-list">
-                <div v-for="item in favoritesStore.favoriteMenus" :key="item.id" :class="[
+                <div
+v-for="item in favoritesStore.favoriteMenus" :key="item.id" :class="[
                     'favorite-item',
                     {
                         'favorite-item--active': isActiveRoute(item.path)
@@ -96,7 +97,8 @@ const handleRemoveFavorite = (event: Event, menuId: number) => {
                     <span class="favorite-item-label">{{ item.title }}</span>
 
                     <!-- 取消收藏按钮 -->
-                    <button class="favorite-item-remove" :aria-label="`取消收藏 ${item.title}`"
+                    <button
+class="favorite-item-remove" :aria-label="`取消收藏 ${item.title}`"
                         @click="handleRemoveFavorite($event, item.id)">
                         <Star :size="14" :fill="'currentColor'" class="text-yellow-500" />
                     </button>

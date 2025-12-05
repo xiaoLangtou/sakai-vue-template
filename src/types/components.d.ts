@@ -17,6 +17,7 @@ declare module 'vue' {
     Chip: typeof import('primevue/chip')['default']
     Column: typeof import('primevue/column')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
+    ContextMenu: typeof import('primevue/contextmenu')['default']
     CustomTableSettings: typeof import('./../components/custom-table/components/CustomTableSettings.vue')['default']
     DataTable: typeof import('primevue/datatable')['default']
     Dialog: typeof import('primevue/dialog')['default']

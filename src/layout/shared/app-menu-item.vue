@@ -2,6 +2,7 @@
 import { useLucideIcon } from '@/composables';
 import { useFavoritesStore } from '@/stores/favorites';
 import type { MenuItem } from '@/types/layout';
+import { useMouseInElement } from '@vueuse/core';
 import { ChevronRight, ExternalLink, Star } from 'lucide-vue-next';
 import { computed, inject, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -551,7 +552,8 @@ watch(isOutside, () => {
 .menu-item-arrow {
     flex-shrink: 0;
     color: var(--text-color-secondary);
-    transition: all 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.2s ease;
 
     &--expanded {
         transform: rotate(90deg);
@@ -562,14 +564,19 @@ watch(isOutside, () => {
 // 子菜单
 .submenu {
     overflow: hidden;
+    will-change: max-height, opacity, transform;
 }
 
 .submenu-enter-active {
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.05s,
+        transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .submenu-leave-active {
-    transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.2s cubic-bezier(0.4, 0, 1, 1),
+        transform 0.25s cubic-bezier(0.4, 0, 1, 1);
 }
 
 .submenu-enter-from {
@@ -578,10 +585,22 @@ watch(isOutside, () => {
     transform: translateY(-0.5rem);
 }
 
-.submenu-enter-to,
+.submenu-enter-to {
+    opacity: 1;
+    max-height: 2000px;
+    transform: translateY(0);
+}
+
 .submenu-leave-from {
     opacity: 1;
+    max-height: 2000px;
     transform: translateY(0);
+}
+
+.submenu-leave-to {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-0.5rem);
 }
 
 

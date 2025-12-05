@@ -323,7 +323,7 @@ const openNewDictItem = () => {
         </div>
 
         <!-- 字典项管理区域 -->
-        <DataTable v-model:editingRows="dictItemsEditRows" :value="dictItems" class="custom-table__border" data-key="id" edit-mode="row" style="--p-datatable-footer-border-width: 0" @row-edit-save="onRowEditSave" @row-edit-cancel="onRowEditCancel">
+        <DataTable v-model:editing-rows="dictItemsEditRows" :value="dictItems" class="custom-table__border" data-key="id" edit-mode="row" style="--p-datatable-footer-border-width: 0" @row-edit-save="onRowEditSave" @row-edit-cancel="onRowEditCancel">
             <Column field="dictLabel" header="字典名称" style="width: 25%; min-width: 25%; max-width: 25%">
                 <template #editor="{ data, field }">
                     <InputText v-model="data[field]" fluid placeholder="请输入字典名称" />
@@ -339,7 +339,7 @@ const openNewDictItem = () => {
                     <InputText v-model="data[field]" fluid placeholder="请输入描述" />
                 </template>
             </Column>
-            <Column :rowEditor="true" bodyStyle="text-align:center" style="width: 15%; min-width: 8rem; max-width: 15%">
+            <Column :row-editor="true" body-style="text-align:center" style="width: 15%; min-width: 8rem; max-width: 15%">
                 <template #editor="{ data, field, editorSaveCallback, editorCancelCallback }">
                     <div class="flex items-center justify-center gap-2">
                         <Button v-tooltip.bottom="'保存'" icon="pi pi-check" severity="primary" variant="text" @click="editorSaveCallback(data)" />

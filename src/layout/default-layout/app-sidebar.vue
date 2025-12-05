@@ -167,27 +167,32 @@ defineExpose({
 
 <template>
     <!-- Fixed 模式悬停触发区域 -->
-    <div v-if="isDesktopOrWide && layoutStore.sidebarFixedMode"
+    <div
+v-if="isDesktopOrWide && layoutStore.sidebarFixedMode"
         class="layout-sidebar-hover fixed top-0 left-0 w-[6px] h-[100vh] bg-gray-200 z-30"
         @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" />
 
     <!-- 侧边栏主体 -->
     <aside :class="['app-sidebar', sidebarClasses]" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
         <!-- 顶部 Logo 区域 -->
-        <div v-if="isDesktopOrWide"
+        <div
+v-if="isDesktopOrWide"
             class="sidebar-header flex items-center justify-center min-h-[64px] w-full relative overflow-hidden">
             <!-- Logo 容器 -->
             <div class="relative z-10 flex items-center justify-center w-full">
-                <Transition enter-active-class="transition-all duration-300 ease-out"
+                <Transition
+enter-active-class="transition-all duration-300 ease-out"
                     enter-from-class="opacity-0 scale-90" enter-to-class="opacity-100 scale-100"
                     leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-95" mode="out-in">
                     <!-- 展开状态 -->
-                    <div v-if="!layoutStore.isCollapsed" key="expanded"
+                    <div
+v-if="!layoutStore.isCollapsed" key="expanded"
                         class="flex items-center justify-between w-full gap-3">
                         <AppHeaderLogo />
                         <!-- Fixed 模式切换按钮 -->
-                        <button type="button"
+                        <button
+type="button"
                             class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-surface-700 cursor-pointer transition-colors duration-200"
                             @click="toggleFixedMode">
                             <PanelLeftClose v-if="!layoutStore.sidebarFixedMode" :size="18" />
@@ -207,7 +212,8 @@ defineExpose({
         <div class="flex-1 relative overflow-hidden flex flex-col">
             <!-- 搜索按钮 -->
             <div v-if="!layoutStore.isCollapsed" class="px-4 pt-3 pb-2">
-                <button type="button"
+                <button
+type="button"
                     class="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-surface-800 hover:bg-gray-200 dark:hover:bg-surface-700 rounded-lg transition-colors group"
                     @click="openSearch">
                     <Search :size="16" class="flex-shrink-0" />
@@ -219,7 +225,8 @@ defineExpose({
 
             <!-- 折叠状态的搜索按钮 -->
             <div v-else class="px-2 pt-3 pb-2">
-                <button type="button"
+                <button
+type="button"
                     class="w-full flex items-center justify-center p-2 text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-surface-800 hover:bg-gray-200 dark:hover:bg-surface-700 rounded-lg transition-colors"
                     @click="openSearch">
                     <Search :size="18" />
@@ -229,7 +236,8 @@ defineExpose({
             <!-- 菜单滚动区域 -->
             <div class="menu-scroll-area">
                 <div :class="isMobileOrTablet ? 'p-0 h-full' : 'h-full'">
-                    <AppMenu :collapsed="isMobileOrTablet ? false : layoutStore.isCollapsed"
+                    <AppMenu
+:collapsed="isMobileOrTablet ? false : layoutStore.isCollapsed"
                         :is-mobile="isMobileOrTablet" @menu-item-click="handleMenuItemClick" />
                 </div>
             </div>

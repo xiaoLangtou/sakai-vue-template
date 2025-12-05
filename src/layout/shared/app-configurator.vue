@@ -194,23 +194,27 @@ watch(
 </script>
 
 <template>
-    <CustomDrawer :show-default-footer="true" :visible="props.visible" header="系统配置" subheader="自定义偏好设置 & 实时预览"
+    <CustomDrawer
+:show-default-footer="true" :visible="props.visible" header="系统配置" subheader="自定义偏好设置 & 实时预览"
         position="right" style="width: 420px" @update:visible="emit('update:visible', $event)">
         <div class="theme-customizer">
             <!-- Theme Style Section -->
             <AppConfigCard title="主题风格">
                 <div class="flex items-center justify-center">
-                    <SelectButton v-model="preset" :allow-empty="false" :options="presetOptions"
+                    <SelectButton
+v-model="preset" :allow-empty="false" :options="presetOptions"
                         @change="onPresetChange" />
                 </div>
             </AppConfigCard>
 
             <AppConfigCard title="主题颜色">
                 <div class="color-grid">
-                    <div v-for="color in primaryColors" :key="color.name"
+                    <div
+v-for="color in primaryColors" :key="color.name"
                         :class="{ 'color-option--selected': layoutConfig.primary === color.name }"
                         class="color-option group rounded-md hvr-wobble-skew" @click="updateColors('primary', color)">
-                        <div :style="{ backgroundColor: color.palette[500] || getColorByName(color.name) }"
+                        <div
+:style="{ backgroundColor: color.palette[500] || getColorByName(color.name) }"
                             class="color-swatch">
                             <i v-if="layoutConfig.primary === color.name" class="pi pi-check check-icon"></i>
                         </div>
@@ -222,7 +226,8 @@ watch(
             <!-- Surface Color Section -->
             <AppConfigCard title="前景色">
                 <div class="color-grid">
-                    <div v-for="surface in surfaces" :key="surface.name"
+                    <div
+v-for="surface in surfaces" :key="surface.name"
                         :class="{ 'color-option--selected': layoutConfig.surface === surface.name }"
                         class="color-option group rounded-md hvr-wobble-skew" @click="updateColors('surface', surface)">
                         <div :style="{ backgroundColor: surface.palette[500] || '#6b7280' }" class="color-swatch">
@@ -236,7 +241,8 @@ watch(
             <!-- Layout Mode Section -->
             <AppConfigCard title="布局模式">
                 <div class="layout-mode-options">
-                    <div v-for="option in layoutModeOptions" :key="option.value"
+                    <div
+v-for="option in layoutModeOptions" :key="option.value"
                         :class="{ 'layout-mode-option--selected': layoutMode === option.value }"
                         class="layout-mode-option group" @click="
                             layoutMode = option.value as 'sidebar' | 'topbar';
@@ -281,7 +287,8 @@ watch(
                     <!-- 标签页的样式 -->
                     <div class="flex items-center justify-between">
                         <span class="font-bold">标签页的样式</span>
-                        <SelectButton v-model="tabStyle" :allow-empty="false" :options="[
+                        <SelectButton
+v-model="tabStyle" :allow-empty="false" :options="[
                             {
                                 label: '卡片',
                                 value: 'Card'

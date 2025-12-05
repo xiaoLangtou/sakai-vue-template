@@ -1,12 +1,34 @@
 .app-tabs {
-    height: 44px;
-    background-color: var(--surface-ground);
-    --p-tabs-tablist-background: var(--surface-ground);
+    --p-tabs-tablist-background: transparent;
     --p-tabs-tablist-border-width: 0;
+    --p-tabs-tab-border-width: 0;
+    --p-tabs-tab-background: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+    
+
+    @apply bg-white dark:bg-surface-900;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--surface-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
     .p-tablist-tab-list {
-        padding: 0 16px;
+        padding: 0 16px 0 16px;
+        padding-right: 80px !important; // 为右侧下拉按钮和渐变留出空间
+        gap: 4px;
+        position: relative;
     }
+
+
+    // 当有滚动时显示渐变
+    &.has-scroll-left::before {
+        opacity: 1;
+    }
+
+    &.has-scroll-right::after {
+        opacity: 1;
+    }
+
+
 
     &.app-tabs__Square {
         --p-tabs-tab-active-background: var(--primary-color);
@@ -14,25 +36,48 @@
 
         .app-tab-item {
             position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px 6px 0 0;
+            margin: 0 2px;
 
+            &::before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: var(--primary-color);
+                transform: scaleX(0);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
             &:not(:first-child) {
                 &::after {
-                    content: " ";
+                    content: ' ';
                     position: absolute;
                     top: 50%;
-                    left: 0;
+                    left: -2px;
                     width: 1px;
                     height: 50%;
                     transform: translateY(-50%);
-                    @apply bg-[#E5E5E5] dark:bg-[#333333];
+                    background: var(--surface-border);
+                    opacity: 0.5;
+                    transition: opacity 0.2s ease;
+                }
+            }
+
+            &:hover:not(.p-tab-active) {
+                background-color: var(--surface-hover);
+
+
+                &::after {
+                    opacity: 0;
                 }
             }
 
             &.p-tab-active {
-                &::after {
-                    background-color: var(--primary-color);
-                }
+                box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
             }
         }
     }
@@ -40,32 +85,51 @@
     &.app-tabs__Card {
         --p-tabs-tab-active-background: var(--surface-card);
         --p-tabs-tab-active-color: var(--text-color);
-        --p-tabs-tab-background: var(--surface-100);
+
 
         .p-tablist-tab-list {
-            gap: 6px;
-            padding: 5px 16px;
-            background: var(--surface-ground);
+            gap: 8px;
+            padding: 6px 16px;
+            background: transparent;
         }
 
         .app-tab-item {
-            border-radius: 8px;
-            background: var(--surface-100);
-            border: 1px solid var(--surface-border);
-            transition: all 0.2s ease;
+            border-radius: 10px;
+            @apply bg-gray-50 dark:bg-surface-800;
+            border: 1.5px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding-top: 8px;
             padding-bottom: 8px;
+            position: relative;
+            overflow: visible;
 
-            &.p-tab-active {
-                background: var(--surface-card);
-                border-color: var(--primary-color);
-                z-index: 1;
-                position: relative;
+            &::before {
+                content: '';
+                position: absolute;
+                inset: -1px;
+                border-radius: 10px;
+                padding: 1.5px;
+                background: linear-gradient(135deg, var(--primary-color), var(--primary-400));
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                mask-composite: exclude;
+                opacity: 0;
+                transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             &:hover:not(.p-tab-active) {
                 background: var(--surface-hover);
-                border-color: var(--surface-border-hover);
+                border-color: var(--surface-border);
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+
+            &.p-tab-active {
+                @apply bg-white dark:bg-surface-700;
+                background-color: var(--primary-color);
+                color: white;
+                z-index: 2;
             }
         }
     }
@@ -73,6 +137,115 @@
 
     .p-tablist-nav-button {
         z-index: 4;
+        transition: all 0.2s ease;
+        background: var(--surface-card) !important;
+
+
+        &:hover {
+            background-color: var(--surface-hover) !important;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
     }
 
+    .next-hidden {
+        display: none;
+    }
+
+    // 固定标签样式
+    .app-tab-item--pinned {
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-400));
+            opacity: 0.6;
+        }
+    }
+}
+
+// 固定图标样式
+.app-tab__pin-icon {
+    width: 20px;
+    height: 20px;
+    animation: pinPulse 2s ease-in-out infinite;
+
+    svg {
+        display: block;
+    }
+}
+
+@keyframes pinPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+// 标签页内容动画
+.app-tab-content {
+    position: relative;
+
+    button {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px;
+        border-radius: 4px;
+        color: var(--text-color-secondary);
+
+        &:hover {
+            opacity: 1;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: rgb(239, 68, 68);
+            transform: scale(1.15);
+        }
+    }
+
+    .app-tab__close-button--active {
+        @apply text-white dark:text-white;
+    }
+}
+
+
+// 标签页图标动画
+.app-tab__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .p-tab-active & {
+        transform: scale(1.1);
+    }
+}
+
+// 标签页标题
+.app-tab__title {
+    transition: color 0.2s ease;
+
+    .p-tab-active & {
+        font-weight: 600;
+    }
 }

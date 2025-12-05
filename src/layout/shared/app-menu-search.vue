@@ -232,24 +232,29 @@ watch(searchKeyword, () => {
 
 <template>
     <Teleport to="body">
-        <Transition enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0"
+        <Transition
+enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0"
             enter-to-class="opacity-100" leave-active-class="transition-opacity duration-150"
             leave-from-class="opacity-100" leave-to-class="opacity-0">
-            <div v-if="visible"
+            <div
+v-if="visible"
                 class="fixed inset-0 bg-black/50 dark:bg-black/70 z-[9999] flex items-start justify-center pt-[10vh]"
                 @click.self="closeSearch">
-                <Transition enter-active-class="transition-all duration-200 ease-out"
+                <Transition
+enter-active-class="transition-all duration-200 ease-out"
                     enter-from-class="opacity-0 scale-95 -translate-y-4"
                     enter-to-class="opacity-100 scale-100 translate-y-0"
                     leave-active-class="transition-all duration-150 ease-in"
                     leave-from-class="opacity-100 scale-100 translate-y-0"
                     leave-to-class="opacity-0 scale-95 -translate-y-4">
-                    <div v-if="visible"
+                    <div
+v-if="visible"
                         class="w-full max-w-2xl mx-4 bg-white dark:bg-surface-800 rounded-lg shadow-2xl overflow-hidden">
                         <!-- 搜索输入框 -->
                         <div class="flex items-center gap-3 p-4 border-b border-surface-200 dark:border-surface-700">
                             <Search :size="20" class="text-gray-400 flex-shrink-0" />
-                            <input ref="searchInputRef" v-model="searchKeyword" type="text"
+                            <input
+ref="searchInputRef" v-model="searchKeyword" type="text"
                                 placeholder="搜索菜单（支持拼音首字母，如：yhgl → 用户管理）"
                                 class="flex-1 outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 text-base"
                                 @keydown="handleKeydown" />
@@ -278,24 +283,28 @@ watch(searchKeyword, () => {
 
                             <!-- 结果列表 -->
                             <div v-else class="py-2">
-                                <div v-for="(menu, index) in filteredMenuList" :key="menu.id" :class="[
+                                <div
+v-for="(menu, index) in filteredMenuList" :key="menu.id" :class="[
                                     'flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors',
                                     selectedIndex === index ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-gray-50 dark:hover:bg-surface-700'
                                 ]" @click="handleMenuClick(menu)" @mouseenter="selectedIndex = index">
                                     <!-- 图标 -->
                                     <div
                                         class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-surface-700">
-                                        <component :is="lucideIconName(menu.meta.icon)"
+                                        <component
+:is="lucideIconName(menu.meta.icon)"
                                             v-if="isLucideIcon(menu.meta.icon)" :size="18"
                                             class="text-gray-600 dark:text-gray-400" />
-                                        <i v-else-if="menu.meta.icon" :class="menu.meta.icon"
+                                        <i
+v-else-if="menu.meta.icon" :class="menu.meta.icon"
                                             class="text-gray-600 dark:text-gray-400" />
                                     </div>
 
                                     <!-- 内容 -->
                                     <div class="flex-1 min-w-0">
                                         <!-- 标题 -->
-                                        <div class="font-medium text-gray-900 dark:text-white"
+                                        <div
+class="font-medium text-gray-900 dark:text-white"
                                             v-html="highlightMatch(menu.meta.title, searchKeyword)"></div>
                                         <!-- 面包屑 -->
                                         <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
@@ -304,7 +313,8 @@ watch(searchKeyword, () => {
                                     </div>
 
                                     <!-- 快捷键提示 -->
-                                    <div v-if="selectedIndex === index"
+                                    <div
+v-if="selectedIndex === index"
                                         class="flex-shrink-0 text-xs text-gray-400 bg-gray-100 dark:bg-surface-700 px-2 py-1 rounded">
                                         Enter</div>
                                 </div>

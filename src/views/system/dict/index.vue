@@ -92,7 +92,7 @@ const handleCloseDictItem = () => {
 </script>
 
 <template>
-    <PageContainer>
+    <PageContainer :card="true">
         <template #header>
             <div class="flex justify-between items-center">
                 <h5 class="m-0">{{ title }}</h5>

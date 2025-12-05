@@ -44,6 +44,7 @@ export default typescriptEslint.config(
             'vue/no-duplicate-attr-inheritance': 'off',
             'vue/no-ref-object-reactivity-loss': 1,
             'vue/multi-word-component-names': 'off',
+            "vue/first-attribute-linebreak": "off",
             'vue/block-order': [
                 'error',
                 {

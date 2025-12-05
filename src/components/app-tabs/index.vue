@@ -2,10 +2,8 @@
 import { useLucideIcon } from '@/composables';
 import type { TabItem } from '@/stores/tabs.ts';
 import { useTabsStore } from '@/stores/tabs.ts';
-import { ChevronDown, X } from 'lucide-vue-next';
+import { ChevronDown, Pin, X } from 'lucide-vue-next';
 import ContextMenu from 'primevue/contextmenu';
-import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -31,7 +29,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     showIcon: true,
     showClose: true,
-    style: 'Square',
+    tabStyle: 'Square',
     enableContextMenu: true,
     class: ''
 });
@@ -39,15 +37,13 @@ const props = withDefaults(defineProps<Props>(), {
 const router = useRouter();
 const route = useRoute();
 const tabsStore = useTabsStore();
-const confirm = useConfirm();
-const toast = useToast();
 
 // 响应式数据
 const contextMenuRef = ref<InstanceType<typeof ContextMenu>>();
 const contextMenuTab = ref<TabItem | null>(null);
-const tabsWrapper = ref<HTMLElement | null>(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
+const isPopoverVisible = ref(false);
 
 // 计算属性
 const tabs = computed(() => tabsStore.activeTabs);
@@ -63,6 +59,14 @@ const contextMenuItems = computed(() => {
     const isLastTab = currentTabIndex === tabs.value.length - 1;
 
     const menuItems = [
+        {
+            label: tab.pinned ? '取消固定' : '固定标签页',
+            icon: tab.pinned ? 'pi pi-bookmark-fill' : 'pi pi-bookmark',
+            command: () => handleContextMenuAction('togglePin')
+        },
+        {
+            separator: true
+        },
         {
             label: '重新加载',
             icon: 'pi pi-refresh',
@@ -81,7 +85,7 @@ const contextMenuItems = computed(() => {
             label: '关闭当前标签页',
             icon: 'pi pi-times',
             command: () => handleContextMenuAction('close'),
-            disabled: !tab.closable
+            disabled: !tab.closable || tab.pinned
         },
         {
             label: '关闭其他标签页',
@@ -132,6 +136,10 @@ const handleTabChange = (value: string | number): void => {
             ...(tab.params && Object.keys(tab.params).length > 0 && { params: tab.params }),
             ...(tab.query && Object.keys(tab.query).length > 0 && { query: tab.query })
         });
+        // 滚动到激活标签
+        scrollToActiveTab();
+        // 更新是否为最后一个标签页的状态
+        hideScrollLastButton();
     }
 };
 
@@ -190,37 +198,23 @@ const handleContextMenuAction = (action: string): void => {
             handleTabClose(tab, new Event('click'));
             break;
         case 'closeOthers':
-            confirm.require({
-                message: '确定要关闭其他标签页吗？',
-                header: '确认操作',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    tabsStore.closeOtherTabs(tab.key);
-                    router.push({
-                        path: tab.path,
-                        ...(tab.params && Object.keys(tab.params).length > 0 && { params: tab.params }),
-                        ...(tab.query && Object.keys(tab.query).length > 0 && { query: tab.query })
-                    });
-                }
+            tabsStore.closeOtherTabs(tab.key);
+            router.push({
+                path: tab.path,
+                ...(tab.params && Object.keys(tab.params).length > 0 && { params: tab.params }),
+                ...(tab.query && Object.keys(tab.query).length > 0 && { query: tab.query })
             });
             break;
         case 'closeAll':
-            confirm.require({
-                message: '确定要关闭所有标签页吗？',
-                header: '确认操作',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    tabsStore.closeAllTabs();
-                    if (tabsStore.activeTab) {
-                        const activeTab = tabsStore.activeTab;
-                        router.push({
-                            path: activeTab.path,
-                            ...(activeTab.params && Object.keys(activeTab.params).length > 0 && { params: activeTab.params }),
-                            ...(activeTab.query && Object.keys(activeTab.query).length > 0 && { query: activeTab.query })
-                        });
-                    }
-                }
-            });
+            tabsStore.closeAllTabs();
+            if (tabsStore.activeTab) {
+                const activeTab = tabsStore.activeTab;
+                router.push({
+                    path: activeTab.path,
+                    ...(activeTab.params && Object.keys(activeTab.params).length > 0 && { params: activeTab.params }),
+                    ...(activeTab.query && Object.keys(activeTab.query).length > 0 && { query: activeTab.query })
+                });
+            }
             break;
         case 'closeLeft':
             tabsStore.closeLeftTabs(tab.key);
@@ -232,6 +226,9 @@ const handleContextMenuAction = (action: string): void => {
             tabsStore.setTabLoading(tab.key, true);
             router.go(0); // 刷新当前页面
             break;
+        case 'togglePin':
+            tabsStore.togglePinTab(tab.key);
+            break;
     }
 
     closeContextMenu();
@@ -241,12 +238,51 @@ const handleContextMenuAction = (action: string): void => {
  * 检查滚动状态
  */
 const checkScrollStatus = (): void => {
-    if (!tabsWrapper.value) return;
+    const tabList = document.querySelector('.p-tablist-tab-list') as HTMLElement;
+    if (!tabList) return;
 
-    const { scrollLeft, scrollWidth, clientWidth } = tabsWrapper.value;
-    canScrollLeft.value = scrollLeft > 0;
-    canScrollRight.value = scrollLeft < scrollWidth - clientWidth;
+    const { scrollLeft, scrollWidth, clientWidth } = tabList;
+    canScrollLeft.value = scrollLeft > 5; // 留一点容差
+    canScrollRight.value = scrollLeft < scrollWidth - clientWidth - 5;
 };
+
+/**
+ * 滚动到激活的标签页
+ */
+const scrollToActiveTab = (): void => {
+    setTimeout(() => {
+        const activeTab = document.querySelector('.p-tab-active') as HTMLElement;
+        if (!activeTab) return;
+        // 使用 scrollIntoView 实现平滑滚动
+        activeTab.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+        });
+        // 更新滚动状态
+        setTimeout(() => checkScrollStatus(), 400);
+    }, 150);
+};
+
+/**
+ * 判断是不是选中的为最后一个标签页，如果是，则隐藏右侧的按钮
+ */
+const hideScrollLastButton = () => {
+    const activeTabKey = tabsStore.activeTabKey;
+    const tabKeys = tabsStore.tabs.map(tab => tab.key);
+    const nextButton = document.querySelector('.p-tablist-next-button') as HTMLElement;
+    if (nextButton) {
+        if (activeTabKey === tabKeys[tabKeys.length - 1]) {
+            nextButton.classList.add('next-hidden');
+        } else {
+            nextButton.classList.remove('next-hidden');
+        }
+    }
+
+    return false;
+}
+
+
 
 /**
  * 监听路由变化，自动添加标签页
@@ -275,6 +311,12 @@ onMounted(() => {
     // 初始化滚动状态
     setTimeout(() => {
         checkScrollStatus();
+        scrollToActiveTab(); // 初始化时滚动到激活标签
+        // 监听标签列表滚动
+        const tabList = document.querySelector('.p-tablist-tab-list');
+        if (tabList) {
+            tabList.addEventListener('scroll', checkScrollStatus);
+        }
     }, 100);
 
     // 监听窗口大小变化
@@ -287,13 +329,21 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', closeContextMenu);
     window.removeEventListener('resize', checkScrollStatus);
+
+    // 移除滚动监听
+    const tabList = document.querySelector('.p-tablist-tab-list');
+    if (tabList) {
+        tabList.removeEventListener('scroll', checkScrollStatus);
+    }
 });
 
 const setTabStyle = (name: string | undefined, key: string) => {
     if (!name) return '';
+    const tab = tabs.value.find(t => t.key === key);
+    const pinnedClass = tab?.pinned ? 'app-tab-item--pinned' : '';
     return {
-        Card: `app-tab-item overflow-hidden ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`,
-        Square: `app-tab-item overflow-hidden ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`
+        Card: `app-tab-item overflow-hidden ${pinnedClass} ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`,
+        Square: `app-tab-item overflow-hidden ${pinnedClass} ${key !== activeTabKey.value ? 'hvr-bounce-to-top' : ''}`
     }[name];
 };
 
@@ -305,7 +355,18 @@ watch(
     () => {
         setTimeout(() => {
             checkScrollStatus();
+            scrollToActiveTab();
         }, 100);
+    }
+);
+
+/**
+ * 监听激活标签变化，自动滚动
+ */
+watch(
+    () => activeTabKey.value,
+    () => {
+        scrollToActiveTab();
     }
 );
 
@@ -333,6 +394,7 @@ const filteredTabs = computed(() => {
 const toggle = (event: Event) => {
     // 每次切换时清空搜索关键词
     clearSearch();
+    isPopoverVisible.value = !isPopoverVisible.value;
     op.value?.toggle(event);
 };
 
@@ -354,7 +416,13 @@ const handleSearchInput = (event: Event) => {
 </script>
 
 <template>
-    <div :class="['app-tabs', props.class, 'app-tabs__' + tabStyle]">
+    <div :class="[
+        'app-tabs',
+        props.class,
+        'app-tabs__' + tabStyle,
+        { 'has-scroll-left': canScrollLeft },
+        { 'has-scroll-right': canScrollRight }
+    ]">
         <div class="flex items-center justify-between pr-4 gap-4">
             <div class="flex-[calc(100%_-_46px)] w-[calc(100%_-_46px)]">
                 <Tabs :scrollable="true" :show-navigators="true" :value="activeTabKey" class="custom-tabs"
@@ -362,18 +430,28 @@ const handleSearchInput = (event: Event) => {
                     <TabList class="custom-tab-list">
                         <Tab v-for="tab in tabs" :key="tab.key" :class="setTabStyle(tabStyle, tab.key)" :value="tab.key"
                             as="div" @contextmenu.prevent="handleContextMenu(tab, $event)">
-                            <div class="flex justify-between items-center w-[100px] app-tab-content">
-                                <div class="flex items-center gap-1">
+                            <div
+                                class="flex justify-between items-center min-w-[80px] max-w-[180px] gap-2 app-tab-content">
+                                <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                                    <!-- 标签图标 -->
                                     <div v-if="props.showIcon && tab.icon" class="app-tab__icon">
                                         <component :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)"
                                             :size="16" />
                                         <i v-else-if="tab.icon" :class="tab.icon" />
                                     </div>
+                                    <!-- 标签标题 -->
                                     <span
-                                        class="app-tab__title text-ellipsis overflow-hidden whitespace-nowrap inline-block w-20 text-left">{{
-                                        tab.title }}</span>
+                                        class="app-tab__title text-ellipsis overflow-hidden whitespace-nowrap inline-block flex-1 text-left">{{
+                                            tab.title }}</span>
                                 </div>
-                                <button v-if="props.showClose && tab.closable && tabs.length > 1"
+                                <!-- 固定图标 - 替换关闭按钮位置 -->
+                                <div v-if="tab.pinned">
+                                    <Pin :size="16" :class="tab.key == activeTabKey ? 'text-white' : 'text-secondary'"
+                                        :stroke-width="2.5" />
+                                </div>
+                                <!-- 关闭按钮 - 非固定标签显示 -->
+                                <button v-else-if="tabs.length > 1 && tab.closable"
+                                    :class="tab.key == activeTabKey ? 'app-tab__close-button--active' : ''"
                                     :aria-label="`关闭 ${tab.title}`" @click.stop="handleTabClose(tab, $event)">
                                     <X :size="12" />
                                 </button>
@@ -383,9 +461,14 @@ const handleSearchInput = (event: Event) => {
                 </Tabs>
             </div>
             <div v-if="tabs.length > 1"
-                class="w-[30px] h-[30px] flex items-center justify-center bg-white dark:bg-transparent cursor-pointer rounded-[8px]"
+                class="relative w-[36px] h-[36px] flex items-center justify-center bg-white dark:bg-gray-800 cursor-pointer rounded-[8px] transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-110 border border-gray-200 dark:border-gray-700"
                 @click="toggle">
-                <chevron-down :size="16" />
+                <chevron-down :size="16" class="transition-transform duration-200"
+                    :class="{ 'rotate-180': isPopoverVisible }" />
+                <span
+                    class="absolute -top-1 -right-1 bg-primary-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {{ tabs.length }}
+                </span>
             </div>
         </div>
 
@@ -412,7 +495,7 @@ const handleSearchInput = (event: Event) => {
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-sm font-medium text-gray-600 dark:text-gray-400"> 打开的标签页 </span>
                         <span class="text-xs text-gray-500 dark:text-gray-500"> {{ filteredTabs.length }}/{{ tabs.length
-                            }} </span>
+                        }} </span>
                     </div>
 
                     <!-- 搜索结果为空时的提示 -->
@@ -426,8 +509,7 @@ const handleSearchInput = (event: Event) => {
                     <div class="max-h-[240px] overflow-y-auto">
                         <div v-for="(tab, index) in filteredTabs" :key="`${tab.title}-${index}`" :class="{
                             'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700': tab.key === activeTabKey
-                        }"
-                            class="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                        }" class="flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group"
                             @click="handleTabChange(tab.key)">
                             <!-- 图标 -->
                             <component :is="lucideIconName(tab.icon)" v-if="isLucideIcon(tab.icon)" :size="16"

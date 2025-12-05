@@ -32,5 +32,4 @@
     "css.lint.unknownAtRules": "ignore",
     "scss.lint.unknownAtRules": "ignore",
     "less.lint.unknownAtRules": "ignore",
-    "vue.complete.casing.tags": "pascal"
 }

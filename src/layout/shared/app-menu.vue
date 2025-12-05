@@ -106,7 +106,8 @@ const handleMenuItemClick = (): void => {
 </script>
 
 <template>
-    <nav class="app-menu" :class="{
+    <nav
+class="app-menu" :class="{
         'mobile-menu': props.isMobile,
         'desktop-menu': !props.isMobile,
         'collapsed-menu': props.collapsed && !props.isMobile,
@@ -117,7 +118,8 @@ const handleMenuItemClick = (): void => {
             <AppFavoritesMenu :collapsed="props.collapsed" @menu-item-click="handleMenuItemClick" />
 
             <!-- 常规菜单 -->
-            <AppMenuItem v-for="(item, index) in filteredMenuItems" :key="item.id" :collapsed="props.collapsed"
+            <AppMenuItem
+v-for="(item, index) in filteredMenuItems" :key="item.id" :collapsed="props.collapsed"
                 :index="index" :is-mobile="props.isMobile" :item="item" :level="0"
                 @menu-item-click="handleMenuItemClick" />
         </div>

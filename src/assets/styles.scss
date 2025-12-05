@@ -1,8 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'primeicons/primeicons.css';
-@use '@/assets/tailwind.css';
+@use '@/assets/tailwind.scss';
 @use '@/assets/layout/layout.scss';
 
+:root{
+    --p-contextmenu-item-padding: 0.75rem 0.75rem!important;
+}
 
 /* 全局滚动条样式优化 */
 /* Webkit 浏览器 (Chrome, Safari, Edge) */
