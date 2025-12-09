@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import { computed, ref, watch } from 'vue';
 
 // 定义字典项接口
 interface DictItem {
@@ -300,7 +300,7 @@ const focusPasteArea = async () => {
             if (text) {
                 // 模拟粘贴事件
                 const mockEvent = {
-                    preventDefault: () => {},
+                    preventDefault: () => { },
                     clipboardData: {
                         getData: () => text
                     }
@@ -416,191 +416,94 @@ watch(
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" header="批量添加字典项" :modal="true" :style="{ width: '1200px' }" class="batch-add-dialog" @show="handleDialogOpen">
+    <Dialog v-model:visible="dialogVisible" header="批量添加字典项" :modal="true" :style="{ width: '1200px' }"
+        class="batch-add-dialog" @show="handleDialogOpen">
         <!-- 操作提示区域 -->
-        <div class="operation-tips">
-            <div class="tips-content">
+        <div
+            class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 mb-4 flex justify-between items-center">
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
                 <i class="pi pi-info-circle text-blue-500 mr-2"></i>
-                <span class="text-sm text-gray-600"> 支持从Excel复制粘贴数据，格式：标签、值、排序、备注（Tab分隔） </span>
+                <span> 支持从Excel复制粘贴数据，格式：标签、值、排序、备注（Tab分隔） </span>
             </div>
-            <Button label="粘贴Excel数据" icon="pi pi-clipboard" severity="secondary" outlined size="small" @click="focusPasteArea" />
+            <Button label="粘贴Excel数据" icon="pi pi-clipboard" severity="secondary" outlined size="small"
+                @click="focusPasteArea" />
         </div>
 
         <!-- 隐藏的粘贴区域 -->
-        <textarea ref="pasteArea" class="paste-area" placeholder="在此粘贴Excel数据（Ctrl+V），按ESC键关闭" @paste="handlePaste" @keydown.esc="hidePasteArea" @blur="hidePasteArea" />
+        <textarea ref="pasteArea" class="absolute -left-[9999px] opacity-0 pointer-events-none w-px h-px"
+            placeholder="在此粘贴Excel数据（Ctrl+V），按ESC键关闭" @paste="handlePaste" @keydown.esc="hidePasteArea"
+            @blur="hidePasteArea" />
 
         <!-- 数据表格 -->
-        <div class="table-container">
-            <DataTable :value="batchItems" :scrollable="true" scroll-height="450px" striped-rows show-gridlines responsive-layout="scroll" data-key="tempId">
+        <div class="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <DataTable :value="batchItems" :scrollable="true" scroll-height="450px" striped-rows show-gridlines
+                responsive-layout="scroll" data-key="tempId" size="small">
                 <Column field="label" header="字典标签 *" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText
-                            :model-value="data.label"
-                            :class="{ 'p-invalid': hasFieldError(data, 'label') }"
-                            placeholder="请输入字典标签"
+                        <InputText :model-value="data.label" :class="{ 'p-invalid': hasFieldError(data, 'label') }"
+                            placeholder="请输入字典标签" class="w-full p-inputtext-sm"
                             @update:model-value="updateField(index, 'label', $event)"
-                            @blur="markFieldTouched(data.tempId!, 'label')"
-                        />
+                            @blur="markFieldTouched(data.tempId!, 'label')" />
                     </template>
                 </Column>
 
                 <Column field="value" header="字典值 *" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText
-                            :model-value="data.value"
-                            :class="{ 'p-invalid': hasFieldError(data, 'value') }"
-                            placeholder="请输入字典值"
+                        <InputText :model-value="data.value" :class="{ 'p-invalid': hasFieldError(data, 'value') }"
+                            placeholder="请输入字典值" class="w-full p-inputtext-sm"
                             @update:model-value="updateField(index, 'value', $event)"
-                            @blur="markFieldTouched(data.tempId!, 'value')"
-                        />
+                            @blur="markFieldTouched(data.tempId!, 'value')" />
                     </template>
                 </Column>
 
-                <Column field="sort" header="排序" style="min-width: 120px">
+                <Column field="sort" header="排序" style="min-width: 150px">
                     <template #body="{ data, index }">
-                        <InputNumber
-                            :model-value="data.sort"
-                            :min="0"
-                            :max="999"
-                            show-buttons
-                            button-layout="horizontal"
-                            increment-button-class="p-button-secondary"
-                            decrement-button-class="p-button-secondary"
-                            @update:model-value="updateField(index, 'sort', $event)"
-                        />
+                        <InputNumber :model-value="data.sort" :min="0" :max="999" show-buttons
+                            button-layout="horizontal" increment-button-class="p-button-secondary"
+                            decrement-button-class="p-button-secondary" input-class="w-full p-inputtext-sm text-center"
+                            class="w-full" @update:model-value="updateField(index, 'sort', $event)" />
                     </template>
                 </Column>
 
                 <Column field="remark" header="备注" style="min-width: 200px">
                     <template #body="{ data, index }">
-                        <InputText :model-value="data.remark" placeholder="请输入备注" @update:model-value="updateField(index, 'remark', $event)" />
+                        <InputText :model-value="data.remark" placeholder="请输入备注" class="w-full p-inputtext-sm"
+                            @update:model-value="updateField(index, 'remark', $event)" />
                     </template>
                 </Column>
 
-                <Column header="操作" style="width: 80px" :exportable="false">
+                <Column header="操作" style="width: 80px" :exportable="false" alignFrozen="right" frozen>
                     <template #body="{ index }">
-                        <Button icon="pi pi-trash" severity="danger" text size="small" :disabled="batchItems.length <= 1" title="删除此行" @click="removeBatchRow(index)" />
+                        <div class="flex justify-center">
+                            <Button icon="pi pi-trash" severity="danger" text size="small" rounded
+                                :disabled="batchItems.length <= 1" v-tooltip.left="'删除此行'"
+                                @click="removeBatchRow(index)" />
+                        </div>
                     </template>
                 </Column>
             </DataTable>
         </div>
 
         <template #footer>
-            <div class="dialog-footer">
-                <div class="footer-left">
+            <div
+                class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
                     <Button icon="pi pi-plus" label="添加一行" severity="secondary" outlined @click="addBatchRow" />
-                    <div class="data-count">
-                        <i class="pi pi-list mr-1"></i>
+                    <div
+                        class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                        <i class="pi pi-list mr-2"></i>
                         <span>共 {{ batchItems.length }} 行数据</span>
                     </div>
                 </div>
-                <div class="footer-right">
-                    <Button label="取消" icon="pi pi-times" severity="secondary" outlined @click="dialogVisible = false" />
-                    <Button label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting" @click="submitBatchAdd" />
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <Button label="取消" icon="pi pi-times" severity="secondary" outlined
+                        @click="dialogVisible = false" />
+                    <Button label="提交" icon="pi pi-check" severity="primary" :loading="batchSubmitting"
+                        @click="submitBatchAdd" />
                 </div>
             </div>
         </template>
     </Dialog>
 </template>
 
-<style scoped>
-/* 操作提示区域 */
-.operation-tips {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    margin-bottom: 16px;
-}
-
-.tips-content {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    color: #64748b;
-    font-size: 14px;
-}
-
-/* 隐藏的粘贴区域 */
-.paste-area {
-    position: absolute;
-    left: -9999px;
-    opacity: 0;
-    pointer-events: none;
-    width: 1px;
-    height: 1px;
-}
-
-/* 批量表格样式 */
-.batch-table {
-    font-size: 14px;
-}
-
-/* 状态切换按钮 */
-.status-toggle {
-    width: 80px;
-}
-
-/* 默认值复选框 */
-.default-checkbox {
-    display: flex;
-    justify-content: center;
-}
-
-/* 对话框底部样式 */
-.dialog-footer {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 0 0 0;
-    border-top: 1px solid #e2e8f0;
-    margin-top: 16px;
-}
-
-.footer-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.footer-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.data-count {
-    display: flex;
-    align-items: center;
-    color: #64748b;
-    font-size: 14px;
-    padding: 6px 12px;
-    background: #f8fafc;
-    border-radius: 4px;
-    border: 1px solid #e2e8f0;
-}
-
-/* 响应式设计 */
-@media (max-width: 1024px) {
-    .operation-tips {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-    }
-
-    .dialog-footer {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .footer-left,
-    .footer-right {
-        width: 100%;
-        justify-content: center;
-    }
-}
-</style>
+<style scoped></style>

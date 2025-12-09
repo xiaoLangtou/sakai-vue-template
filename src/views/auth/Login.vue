@@ -172,7 +172,7 @@ const checked = ref(false);
                                 <InputText id="captcha" v-model="account.captcha" class="w-full pl-10" size="large" placeholder="验证码" @keyup.enter="handleLogin" />
                             </IconField>
                             <div class="relative shrink-0">
-                                <div class="h-[46px] w-32 rounded-md overflow-hidden border border-surface-200 dark:border-surface-700 cursor-pointer relative group transition-all hover:border-primary-500 hover:shadow-sm" @click="getCaptcha">
+                                <div class="h-[38px] w-32 rounded-md overflow-hidden border border-surface-200 dark:border-surface-700 cursor-pointer relative group transition-all hover:border-primary-500 hover:shadow-sm" @click="getCaptcha">
                                     <img v-if="captchaImage" :src="captchaImage" alt="验证码" class="w-full h-full object-cover" />
                                     <div v-else class="w-full h-full flex items-center justify-center bg-surface-50 dark:bg-surface-800 text-xs text-surface-400"><i class="pi pi-refresh mr-1"></i> 获取中</div>
 

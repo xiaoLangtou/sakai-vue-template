@@ -1,339 +1,164 @@
 <script setup lang="ts">
-import { CustomTable, PageContainer, PageHeader } from '@/components';
+import { CustomTable } from '@/components';
 import type { IDictData, IDictType } from '@/services/types/dict';
-import { useConfirm } from 'primevue/useconfirm';
-import { useToast } from 'primevue/usetoast';
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import BatchAddDialog from './component/batch-add-dialog.vue';
-import DictItemDialog from './component/dict-item-dialog.vue';
 import { useDictItems } from './composables/useDictItems';
+import DictItemDialog from './component/dict-item-dialog.vue';
+import { computed, ref } from 'vue';
 
-// 路由实例
-const route = useRoute();
-const router = useRouter();
+// 定义 props
+const props = defineProps<{
+    selectedDictType?: IDictType;
+}>();
+
+// 定义事件
+const emit = defineEmits<{
+    deleteItem: [item: IDictData];
+    editItem: [item?: IDictData];
+}>();
 
 // 获取字典类型ID
-const dictTypeId = computed(() => Number(route.params.id));
+const selectedDictTypeId = computed(() => props.selectedDictType?.id as string | number | undefined);
 
-const { tableColumns, filterConfigs, searchParams, tableData, dictDetail, isLoading, handlePageChange, handleColumnsChange, handleFilterChange, handleRefresh } = useDictItems(+dictTypeId.value);
+const {
+    tableColumns: itemTableColumns,
+    searchParams: itemSearchParams,
+    tableData: dictItems,
+    isLoading: itemsLoading,
+    handlePageChange: handleItemPageChange,
+    handleColumnsChange: handleItemColumnsChange,
+    handleFilterChange: handleItemFilterChange,
+    handleRefresh: refreshDictItems
+} = useDictItems(selectedDictTypeId);
 
-// 页面标题
-const title = ref('字典项管理');
-
-// 服务实例
-const confirm = useConfirm();
-const toast = useToast();
-
-// 表格数据
-const dictType = ref<IDictType | null>(null);
-const selectedDictItems = ref<IDictData[]>([]);
-
-// 对话框控制
-const dictItemDialog = ref(false);
-
-const batchAddDialog = ref(false);
-
-// 当前编辑的字典项
-const currentEditItem = ref<Partial<IDictData> | null>(null);
-
-// 返回字典管理页面
-const goBack = () => {
-    router.push('/system/dict/index');
+/**
+ * 打开字典项编辑对话框
+ */
+const openDictItemDialog = (item?: IDictData) => {
+    emit('editItem', item);
 };
 
 /**
- * 打开新增字典项对话框
+ * 处理删除字典项
  */
-const openNewDictItem = () => {
-    currentEditItem.value = null;
-    dictItemDialog.value = true;
+const handleDeleteDictItem = (item: IDictData) => {
+    emit('deleteItem', item);
 };
 
 /**
- * 打开编辑字典项对话框
- * @param item - 要编辑的字典项
+ * 格式化字典类型
  */
-const editDictItem = (item: IDictData) => {
-    currentEditItem.value = { ...item };
-    dictItemDialog.value = true;
-};
-
-/**
- * 处理字典项保存
- * @param item - 保存的字典项
- * @param action - 操作类型（create 或 update）
- */
-const handleDictItemSave = (item: IDictData, action: 'create' | 'update') => {
-    if (action === 'update') {
-        // 更新现有字典项
-        const index = dictItems.value.findIndex((i) => i.id === item.id);
-        if (index !== -1) {
-            // 如果设置为默认值，需要将同类型的其他项设为非默认
-            if (item.isDefault) {
-                dictItems.value.forEach((existingItem) => {
-                    if (existingItem.dictTypeId === item.dictTypeId && existingItem.id !== item.id) {
-                        existingItem.isDefault = false;
-                    }
-                });
-            }
-            dictItems.value[index] = item;
-        }
-    } else {
-        // 创建新字典项
-        // 如果设置为默认值，需要将同类型的其他项设为非默认
-        if (item.isDefault) {
-            dictItems.value.forEach((existingItem) => {
-                if (existingItem.dictTypeId === item.dictTypeId) {
-                    existingItem.isDefault = false;
-                }
-            });
-        }
-        dictItems.value.push(item);
-    }
-};
-
-// 确认删除字典项
-const confirmDeleteItem = (item: IDictData) => {
-    selectedDictItems.value = [item];
-    confirm.require({
-        message: `确定要删除字典项 "${item.label}" 吗？`,
-        header: '确认删除',
-        icon: 'pi pi-exclamation-triangle',
-        acceptClass: 'p-button-danger',
-        accept: () => deleteDictItems(),
-        reject: () => {
-            selectedDictItems.value = [];
-        }
-    });
-};
-
-// 确认批量删除字典项
-const confirmDeleteSelectedItems = () => {
-    if (!selectedDictItems.value || selectedDictItems.value.length === 0) {
-        toast.add({ severity: 'warn', summary: '警告', detail: '请先选择要删除的字典项', life: 3000 });
-        return;
-    }
-
-    confirm.require({
-        message: `确定要删除选中的 ${selectedDictItems.value.length} 个字典项吗？`,
-        header: '确认批量删除',
-        icon: 'pi pi-exclamation-triangle',
-        acceptClass: 'p-button-danger',
-        accept: () => deleteDictItems(),
-        reject: () => {
-            selectedDictItems.value = [];
-        }
-    });
-};
-
-// 删除字典项
-const deleteDictItems = () => {
-    if (!selectedDictItems.value || selectedDictItems.value.length === 0) return;
-
-    const deleteCount = selectedDictItems.value.length;
-
-    // 删除选中的字典项
-    const itemIds = selectedDictItems.value.map((item) => item.id);
-    dictItems.value = dictItems.value.filter((item) => !itemIds.includes(item.id));
-
-    toast.add({ severity: 'success', summary: '成功', detail: `已删除 ${deleteCount} 个字典项`, life: 3000 });
-    selectedDictItems.value = [];
-};
-
-// 切换字典项状态
-const toggleItemStatus = (item: IDictData) => {
-    const index = dictItems.value.findIndex((i) => i.id === item.id);
-    if (index !== -1) {
-        dictItems.value[index].status = !dictItems.value[index].status;
-        const status = dictItems.value[index].status ? '启用' : '停用';
-        toast.add({ severity: 'success', summary: '成功', detail: `字典项已${status}`, life: 3000 });
-    }
-};
-
-// 导出字典数据
-const exportDict = () => {
-    toast.add({ severity: 'info', summary: '提示', detail: '字典数据导出功能已触发', life: 3000 });
-};
-
-// 导入字典数据
-const importDict = () => {
-    toast.add({ severity: 'info', summary: '提示', detail: '字典数据导入功能已触发', life: 3000 });
-};
-
-/**
- * 打开批量添加对话框
- */
-const openBatchAddDialog = () => {
-    batchAddDialog.value = true;
-};
-
-/**
- * 处理批量添加保存
- * @param newItems - 新增的字典项
- */
-const handleBatchSave = (newItems: IDictData[]) => {
-    // 添加到现有数据中
-    // dictItems.value.push(...newItems);
-};
-/**
- * 获取字典项更多操作菜单项
- * @param data - 字典项数据
- */
-const getItemMoreActions = (data: IDictData) => {
-    return [
-        {
-            label: data.status ? '停用' : '启用',
-            icon: data.status ? 'pi pi-times' : 'pi pi-check',
-            command: () => toggleItemStatus(data)
-        },
-        {
-            label: '删除',
-            icon: 'pi pi-trash',
-            command: () => confirmDeleteItem(data)
-        }
-    ];
-};
-
-// 每行菜单的 ref 对象
-const menuRefs = ref<Record<number, any>>({});
-
-/**
- * 设置 Menu ref 实例
- */
-const setMenuRef = (el: any, id: number) => {
-    if (el) {
-        menuRefs.value[id] = el;
-    }
-};
-
-/**
- * 打开对应行的菜单
- */
-const openRowMenu = (event: Event, id: number) => {
-    menuRefs.value[id]?.toggle(event);
+const formatterDictType = (value: string) => {
+    return {
+        SYSTEM: '系统字典',
+        BUSINESS: '业务字典'
+    }[value];
 };
 </script>
 
 <template>
-    <PageContainer>
-        <template #header>
-            <PageHeader :title="`${dictDetail?.dictName} - ${title}`" :description="dictDetail?.dictDesc" @back="goBack">
-                <!-- 操作按钮 -->
-                <template #actions>
-                    <Button label="新增" icon="pi pi-plus" class="mr-2" @click="openNewDictItem" />
-                    <Button label="批量添加" icon="pi pi-plus-circle" class="mr-2" @click="openBatchAddDialog" />
-                    <Button label="批量删除" icon="pi pi-trash" severity="danger" class="mr-2" :disabled="!selectedDictItems || selectedDictItems.length === 0" @click="confirmDeleteSelectedItems" />
-                    <Button label="导出" icon="pi pi-download" class="mr-2" @click="exportDict" />
-                    <Button label="导入" icon="pi pi-upload" class="mr-2" @click="importDict" />
-                </template>
-            </PageHeader>
-        </template>
-        <CustomTable
-            v-model:selection="selectedDictItems"
-            :value="tableData"
-            :columns="tableColumns"
-            data-key="id"
-            :loading="isLoading"
-            :search-params="searchParams"
-            :filter-configs="filterConfigs"
-            selection-mode="multiple"
-            @update:columns="handleColumnsChange"
-            @page="handlePageChange"
-            @filter-change="handleFilterChange"
-            @refresh="handleRefresh"
-        >
-            <!-- 字典标签列 -->
-            <template #column-label="slotProps">
-                <span class="font-medium">{{ slotProps.data.label }}</span>
-            </template>
-            <!-- 字典值列 -->
-            <template #column-value="slotProps">
-                <Tag severity="secondary" :value="slotProps.data.value"></Tag>
-            </template>
-            <!-- 排序列 -->
-            <template #column-sort="slotProps">
-                <span class="text-center">{{ slotProps.data.sort }}</span>
-            </template>
-            <!-- 状态列 -->
-            <template #column-status="slotProps">
-                <span :class="['status-badge', slotProps.data.status ? 'status-active' : 'status-inactive']">
-                    {{ slotProps.data.status ? '启用' : '停用' }}
-                </span>
-            </template>
-            <!-- 默认值列 -->
-            <template #column-isDefault="slotProps">
-                <span :class="['default-badge', slotProps.data.isDefault ? 'default-yes' : 'default-no']">
-                    {{ slotProps.data.isDefault ? '是' : '否' }}
-                </span>
-            </template>
-            <!-- 操作列 -->
-            <template #column-actions="slotProps">
-                <div class="flex items-center justify-center gap-1">
-                    <Button icon="pi pi-pen-to-square" label="编辑" variant="text" size="small" @click="editDictItem(slotProps.data)" />
-                    <Button icon="pi pi-ellipsis-v" label="更多" variant="text" size="small" @click="(event) => openRowMenu(event, slotProps.data.id)" />
-                    <!-- 每行一个 Menu -->
-                    <Menu :ref="(el) => setMenuRef(el, slotProps.data.id)" :model="getItemMoreActions(slotProps.data)" popup />
+    <div class="flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <!-- 头部 -->
+        <div class="px-6 py-4 relative z-10 bg-white dark:bg-gray-800 rounded-t-xl"
+            style="box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.1);">
+            <div v-if="selectedDictType">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                            <i class="pi pi-database text-primary-600 dark:text-primary-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white m-0">{{ selectedDictType.dictName }}</h3>
+                    </div>
                 </div>
-            </template>
-        </CustomTable>
-        <!-- 字典项对话框 -->
-        <DictItemDialog v-model:visible="dictItemDialog" :dict-type-id="dictTypeId" :edit-item="currentEditItem" :existing-items="dictItems" @save="handleDictItemSave" />
-
-        <!-- 批量添加字典项对话框 -->
-        <BatchAddDialog v-model:visible="batchAddDialog" :dict-type-id="dictTypeId" :existing-items="dictItems" @save="handleBatchSave" />
-    </PageContainer>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <Tag :value="formatterDictType(selectedDictType.systemFlag)"
+                            :severity="selectedDictType.systemFlag === 'SYSTEM' ? 'danger' : 'info'"
+                            class="!text-xs" />
+                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ selectedDictType.dictCode }}</span>
+                    </div>
+                    <Button icon="pi pi-plus" label="新增字典项" size="small" @click="openDictItemDialog()" />
+                </div>
+            </div>
+            <div v-else class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <i class="pi pi-info-circle"></i>
+                <span>请选择字典类型</span>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6 py-4">
+            <div v-if="!selectedDictType" class="flex flex-col items-center justify-center h-full">
+                <div
+                    class="w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center mb-4">
+                    <i class="pi pi-arrow-left text-4xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-base font-medium">请从左侧选择一个字典类型</p>
+                <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">选择后即可查看和管理字典项</p>
+            </div>
+            <div v-else>
+                <!-- 字典项表格 -->
+                <CustomTable :value="dictItems" :columns="itemTableColumns" data-key="id" :loading="itemsLoading"
+                    :search-params="itemSearchParams"
+                    @update:columns="handleItemColumnsChange" @page="handleItemPageChange"
+                    @filter-change="handleItemFilterChange" @refresh="refreshDictItems">
+                    <!-- 字典标签列 -->
+                    <template #column-dictLabel="slotProps">
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium">{{ slotProps.data.dictLabel }}</span>
+                            <i v-if="slotProps.data.isDefault == 1" v-tooltip.top="'默认值'"
+                                class="pi pi-star-fill text-yellow-500 text-xs"></i>
+                        </div>
+                    </template>
+                    <!-- 字典值列 -->
+                    <template #column-dictValue="slotProps">
+                        <Tag severity="secondary" :value="slotProps.data.dictValue" class="font-mono"></Tag>
+                    </template>
+                    <!-- 排序列 -->
+                    <template #column-dictSort="slotProps">
+                        <span class="text-center">{{ slotProps.data.dictSort }}</span>
+                    </template>
+                    <!-- 状态列 -->
+                    <template #column-status="slotProps">
+                        <Tag :value="slotProps.data.status == 1 ? '启用' : '停用'"
+                            :severity="slotProps.data.status == 1 ? 'success' : 'danger'" rounded
+                            class="!text-xs !px-2"></Tag>
+                    </template>
+                    <!-- 操作列 -->
+                    <template #column-actions="slotProps">
+                        <div class="flex items-center justify-center gap-1">
+                            <Button v-tooltip.bottom="'编辑'" icon="pi pi-pencil" text size="small"
+                                @click="openDictItemDialog(slotProps.data)" />
+                            <Button v-tooltip.bottom="'删除'" icon="pi pi-trash" text size="small" severity="danger"
+                                @click="handleDeleteDictItem(slotProps.data)" />
+                        </div>
+                    </template>
+                </CustomTable>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
-/* 表头样式 */
-:deep(.p-datatable-header-cell) {
-    --p-datatable-header-cell-padding: 1rem;
-}
+// 自定义滚动条样式
+:deep(.overflow-y-auto),
+.overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
 
-:deep(.p-datatable .p-datatable-thead > tr > th) {
-    background-color: #f8fafc;
-    color: #374151;
-    font-weight: 600;
-}
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
 
-:deep(.p-datatable .p-datatable-thead > tr > th:hover) {
-    background-color: #f1f5f9;
-}
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(156, 163, 175, 0.3);
+        border-radius: 6px;
 
-.status-active {
-    background-color: #e3f8e5;
-    color: #22c55e;
-}
-
-.status-inactive {
-    background-color: #fee4e2;
-    color: #ef4444;
-}
-
-.default-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.default-yes {
-    background-color: #eff6ff;
-    color: #3b82f6;
-}
-
-.default-no {
-    background-color: #f3f4f6;
-    color: #6b7280;
+        &:hover {
+            background-color: rgba(156, 163, 175, 0.5);
+        }
+    }
 }
 </style>

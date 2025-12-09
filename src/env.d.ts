@@ -1,6 +1,6 @@
 /// <reference types="@rsbuild/core/types" />
 
-export {};
+export { };
 
 declare module 'vue/types/vue' {
     interface Vue {

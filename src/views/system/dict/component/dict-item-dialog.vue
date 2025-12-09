@@ -1,23 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useToast } from 'primevue/usetoast';
 import { SmartFormField } from '@/components';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
+import type { IDictData } from '@/services/types/dict';
 import { Form } from '@primevue/forms';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
+import { useToast } from 'primevue/usetoast';
+import { computed, ref, watch, type PropType } from 'vue';
 import { z } from 'zod';
-
-// 定义字典项接口
-interface DictItem {
-    id: number;
-    dictTypeId: number;
-    label: string;
-    value: string;
-    sort: number;
-    status: boolean;
-    isDefault: boolean;
-    remark: string;
-    createTime: string;
-}
 
 // 定义组件属性
 const props = defineProps({
@@ -26,15 +14,15 @@ const props = defineProps({
         default: false
     },
     dictTypeId: {
-        type: Number,
-        required: true
+        type: [Number, String] as PropType<number | string | undefined>,
+        default: undefined
     },
     editItem: {
-        type: Object as () => Partial<DictItem> | null,
+        type: Object as () => Partial<IDictData> | null,
         default: null
     },
     existingItems: {
-        type: Array as () => DictItem[],
+        type: Array as () => IDictData[],
         default: () => []
     }
 });
@@ -55,31 +43,31 @@ const toast = useToast();
 const getInitialValues = () => ({
     id: props.editItem?.id,
     dictTypeId: props.editItem?.dictTypeId || props.dictTypeId,
-    label: props.editItem?.label || '',
-    value: props.editItem?.value || '',
-    sort: props.editItem?.sort || props.existingItems.length + 1,
-    status: props.editItem?.status !== undefined ? props.editItem.status : true,
+    dictLabel: props.editItem?.dictLabel || '',
+    dictValue: props.editItem?.dictValue || '',
+    dictSort: props.editItem?.dictSort || props.existingItems.length + 1,
+    status: props.editItem?.status !== undefined ? props.editItem.status : 1,
     isDefault: props.editItem?.isDefault !== undefined ? props.editItem.isDefault : false,
-    remark: props.editItem?.remark || ''
+    dictRemark: props.editItem?.dictRemark || ''
 });
 
 // 表单验证 - 使用 Zod
 const dictItemSchema = z.object({
-    label: z.string().min(1, { message: '字典标签不能为空' }),
-    value: z.string().min(1, { message: '字典值不能为空' }),
-    sort: z.number().min(0).max(999).optional(),
-    status: z.boolean(),
+    dictLabel: z.string().min(1, { message: '字典标签不能为空' }),
+    dictValue: z.string().min(1, { message: '字典值不能为空' }),
+    dictSort: z.number().min(0).max(999).optional(),
+    status: z.number(),
     isDefault: z.boolean(),
-    remark: z.string().optional()
+    dictRemark: z.string().optional()
 });
 
 // 表单验证状态
-const invalid = ref(false);
+const formInvalid = ref(false);
 
 // 状态选项
 const statusOptions = ref([
-    { label: '启用', value: true },
-    { label: '停用', value: false }
+    { label: '启用', value: 1 },
+    { label: '停用', value: 0 }
 ]);
 
 // Form 组件引用
@@ -87,7 +75,7 @@ const formRef = ref<any>(null);
 
 // 监听表单验证状态
 const handleFormValidation = (event: any) => {
-    invalid.value = !event.valid;
+    formInvalid.value = !event.valid;
 };
 
 // 监听属性变化，更新表单值
@@ -98,12 +86,12 @@ watch(
             const newValues = {
                 id: newVal?.id,
                 dictTypeId: newVal?.dictTypeId || props.dictTypeId,
-                label: newVal?.label || '',
-                value: newVal?.value || '',
-                sort: newVal?.sort || props.existingItems.length + 1,
-                status: newVal?.status !== undefined ? newVal.status : true,
+                dictLabel: newVal?.dictLabel || '',
+                dictValue: newVal?.dictValue || '',
+                dictSort: newVal?.dictSort || props.existingItems.length + 1,
+                status: newVal?.status !== undefined ? newVal.status : 1,
                 isDefault: newVal?.isDefault !== undefined ? newVal.isDefault : false,
-                remark: newVal?.remark || ''
+                dictRemark: newVal?.dictRemark || ''
             };
             formRef.value?.setValues?.(newValues);
         }
@@ -121,15 +109,15 @@ const onFormSubmit = ({ valid, values }: { valid: boolean; values: any }) => {
     if (valid) {
         if (values.id) {
             // 更新现有字典项
-            const updatedItem: DictItem = {
+            const updatedItem: IDictData = {
                 id: values.id,
                 dictTypeId: values.dictTypeId || props.dictTypeId,
-                label: values.label,
-                value: values.value,
-                sort: values.sort || 0,
+                dictLabel: values.dictLabel,
+                dictValue: values.dictValue,
+                dictSort: values.dictSort || 0,
                 status: values.status,
                 isDefault: values.isDefault,
-                remark: values.remark || '',
+                dictRemark: values.dictRemark || '',
                 createTime: props.editItem?.createTime || ''
             };
 
@@ -137,17 +125,17 @@ const onFormSubmit = ({ valid, values }: { valid: boolean; values: any }) => {
             toast.add({ severity: 'success', summary: '成功', detail: '字典项已更新', life: 3000 });
         } else {
             // 创建新字典项
-            const newId = Math.max(0, ...props.existingItems.map((i) => i.id)) + 1;
+            // const newId = Math.max(0, ...props.existingItems.map((i) => Number(i.id) || 0)) + 1;
             const now = new Date().toLocaleString();
-            const newItem: DictItem = {
-                id: newId,
+            const newItem: IDictData = {
+                // id: newId, // 让后端生成 ID
                 dictTypeId: values.dictTypeId || props.dictTypeId,
-                label: values.label,
-                value: values.value,
-                sort: values.sort || 0,
+                dictLabel: values.dictLabel,
+                dictValue: values.dictValue,
+                dictSort: values.dictSort || 0,
                 status: values.status,
                 isDefault: values.isDefault,
-                remark: values.remark || '',
+                dictRemark: values.dictRemark || '',
                 createTime: now
             };
 
@@ -166,13 +154,6 @@ const onFormSubmit = ({ valid, values }: { valid: boolean; values: any }) => {
     }
 };
 
-// 重置表单
-const resetForm = () => {
-    if (formRef.value) {
-        formRef.value?.reset?.();
-    }
-};
-
 // 监听对话框打开，重置表单
 watch(
     () => props.visible,
@@ -186,70 +167,61 @@ watch(
 </script>
 
 <template>
-    <Dialog v-model:visible="dialogVisible" :style="{ width: '500px' }" :header="props.editItem?.id ? '编辑字典项' : '新建字典项'" :modal="true" class="p-fluid dialog-form">
-        <Form ref="formRef" :initial-values="getInitialValues()" :resolver="zodResolver(dictItemSchema)" :validate-on-value-update="false" :validate-on-blur="true" class="form-grid" @submit="onFormSubmit" @validate="handleFormValidation">
+    <Dialog v-model:visible="dialogVisible" :style="{ width: '500px' }" :header="props.editItem?.id ? '编辑字典项' : '新建字典项'"
+        :modal="true" class="p-fluid">
+        <Form ref="formRef" :initial-values="getInitialValues()" :resolver="zodResolver(dictItemSchema)"
+            :validate-on-value-update="false" :validate-on-blur="true" class="flex flex-col gap-4 mt-2"
+            @submit="onFormSubmit" @validate="handleFormValidation">
             <!-- 字典标签字段 -->
-            <SmartFormField name="label" label="字典标签" required class="mb-4">
+            <SmartFormField name="dictLabel" label="字典标签" required>
                 <template #default="{ value, onInput, onBlur, invalid }">
-                    <InputText id="label" :model-value="value" placeholder="请输入字典标签" autofocus class="w-full" :class="{ 'p-invalid': invalid }" @update:model-value="(val) => onInput({ target: { value: val } })" @blur="onBlur" />
+                    <InputText id="dictLabel" :model-value="value" placeholder="请输入字典标签" autofocus class="w-full"
+                        :class="{ 'p-invalid': invalid }"
+                        @update:model-value="(val) => onInput({ target: { value: val } })" @blur="onBlur" />
                 </template>
             </SmartFormField>
 
             <!-- 字典值字段 -->
-            <SmartFormField name="value" label="字典值" required class="mb-4">
+            <SmartFormField name="dictValue" label="字典值" required>
                 <template #default="{ value, onInput, onBlur, invalid }">
-                    <InputText id="value" :model-value="value" placeholder="请输入字典值" class="w-full" :class="{ 'p-invalid': invalid }" @update:model-value="(val) => onInput({ target: { value: val } })" @blur="onBlur" />
+                    <InputText id="dictValue" :model-value="value" placeholder="请输入字典值" class="w-full"
+                        :class="{ 'p-invalid': invalid }"
+                        @update:model-value="(val) => onInput({ target: { value: val } })" @blur="onBlur" />
                 </template>
             </SmartFormField>
 
             <!-- 排序字段 -->
-            <SmartFormField name="sort" label="排序" class="mb-4">
+            <SmartFormField name="dictSort" label="排序">
                 <template #default="{ value, onInput, invalid }">
-                    <InputNumber id="sort" :model-value="value" :min="0" :max="999" class="w-full" placeholder="请输入排序值" :class="{ 'p-invalid': invalid }" @update:model-value="(val) => onInput({ target: { value: val } })" />
+                    <InputNumber id="dictSort" :model-value="value" :min="0" :max="999" class="w-full"
+                        placeholder="请输入排序值" :class="{ 'p-invalid': invalid }"
+                        @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
             </SmartFormField>
 
             <!-- 状态字段 -->
-            <SmartFormField name="status" label="状态" class="mb-4">
+            <SmartFormField name="status" label="状态">
                 <template #default="{ value, onInput, invalid }">
-                    <Select
-                        id="status"
-                        :model-value="value"
-                        :options="statusOptions"
-                        option-label="label"
-                        option-value="value"
-                        placeholder="选择状态"
-                        class="w-full"
-                        :class="{ 'p-invalid': invalid }"
-                        @update:model-value="(val) => onInput({ target: { value: val } })"
-                    />
+                    <Select id="status" :model-value="value" :options="statusOptions" option-label="label"
+                        option-value="value" placeholder="选择状态" class="w-full" :class="{ 'p-invalid': invalid }"
+                        @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
             </SmartFormField>
 
             <!-- 描述字段 -->
-            <SmartFormField name="remark" label="描述" class="mb-4">
+            <SmartFormField name="dictRemark" label="描述">
                 <template #default="{ value, onInput, invalid }">
-                    <Textarea id="remark" :model-value="value" rows="3" :auto-resize="true" class="w-full" placeholder="请输入字典项描述" :class="{ 'p-invalid': invalid }" @update:model-value="(val) => onInput({ target: { value: val } })" />
+                    <Textarea id="dictRemark" :model-value="value" rows="3" :auto-resize="true" class="w-full"
+                        placeholder="请输入字典项描述" :class="{ 'p-invalid': invalid }"
+                        @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
             </SmartFormField>
 
             <!-- 按钮组 -->
-            <div class="flex justify-end gap-2">
-                <Button type="button" label="重置" icon="pi pi-refresh" severity="secondary" outlined @click="resetForm" />
-                <Button type="submit" :label="props.editItem?.id ? '保存' : '创建'" icon="pi pi-check" :disabled="invalid" />
+            <div class="flex justify-end gap-3 mt-4">
+                <Button type="button" label="取消" severity="secondary" outlined @click="closeDialog" />
+                <Button type="submit" :label="props.editItem?.id ? '保存' : '创建'" :disabled="formInvalid" />
             </div>
         </Form>
     </Dialog>
 </template>
-
-<style scoped>
-.dialog-form {
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.form-grid {
-    display: flex;
-    flex-direction: column;
-}
-</style>

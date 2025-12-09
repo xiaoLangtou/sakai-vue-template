@@ -4,7 +4,7 @@
         // 使用 ESNext 来支持现代 JavaScript 特性
         "module": "ESNext",
         // 动态导入 (import()) 需要 ESNext
-        "moduleResolution": "bundler",
+        "moduleResolution": "Bundler",
         // 让 TypeScript 使用 Vite 的解析方式
         "strict": true,
         // 启用严格模式，帮助发现潜在问题
@@ -35,17 +35,16 @@
             // 支持 DOM 元素的迭代
         ],
         "skipLibCheck": true,
-        // 跳过库文件检查，提高编译性能
-        "types": ["vite/client", "node"],
         // 添加 Vite 和 Node 类型支持
         "allowJs": false,
 
         // 生成声明文件的映射，方便调试
         "incremental": true,
         // 启用增量编译，提升开发体验
-        "noEmit": false,
+        "noEmit": true,
         // 隐式any
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "preserveSymlinks": false
     },
     "include": [
         "src/**/*",
@@ -59,10 +58,10 @@
         "src/types/*.d.ts",
         // 包括自定义类型声明
         "src/types/global.d.ts",
-        "src/env.d.ts"
+        "src/env.d.ts",
     ],
     "exclude": [
-        "node_modules"
+//        "node_modules"
         // 排除第三方依赖
     ],
     "extends": "@vue/tsconfig/tsconfig.dom.json"

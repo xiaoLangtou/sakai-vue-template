@@ -2,20 +2,22 @@ import type { TableColumns } from '@/composables';
 import { dictDataService } from '@/services/modules/dict-data';
 import { dictTypeService } from '@/services/modules/dict-type';
 
+import { usePrimeConfirm } from '@/composables/usePrimeConfirm.ts';
 import type { IDictData, IDictDataQuery, IDictType } from '@/services/types/dict';
 import type { IPageResult } from '@/services/types/types';
-import type { SearchParams } from '@/types/search';
+import type { FilterConfig, SearchParams } from '@/types/search';
+import type { TTableConfig } from '@/types/table.ts';
 import { to } from '@/utils/result-handler';
 import { useQuery } from '@tanstack/vue-query';
-import type { TTableConfig } from '@/types/table.ts';
 import Button from 'primevue/button';
 import Menu from 'primevue/menu';
 import type { MenuItem } from 'primevue/menuitem';
-import { usePrimeConfirm } from '@/composables/usePrimeConfirm.ts';
+import { useToast } from 'primevue/usetoast';
 import { computed, type ComputedRef, h, ref, watch } from 'vue';
 
 export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined>) => {
     const { confirmDelete } = usePrimeConfirm();
+    const toast = useToast();
     const enabled = ref(false);
 
     watch(
@@ -29,21 +31,21 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
     // 表格列配置
     const tableColumns = ref<TableColumns<IDictData>>([
         {
-            key: 'label',
-            field: 'label',
+            key: 'dictLabel',
+            field: 'dictLabel',
             header: '字典标签',
             frozen: true,
             alignFrozen: 'left',
             minWidth: 120
         },
         {
-            key: 'value',
-            field: 'value',
+            key: 'dictValue',
+            field: 'dictValue',
             header: '字典值'
         },
         {
-            key: 'sort',
-            field: 'sort',
+            key: 'dictSort',
+            field: 'dictSort',
             header: '排序'
         },
         {
@@ -57,8 +59,8 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
             header: '默认值'
         },
         {
-            key: 'remark',
-            field: 'remark',
+            key: 'dictRemark',
+            field: 'dictRemark',
             header: '备注'
         },
         {
@@ -67,8 +69,6 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
             header: '创建时间'
         }
     ]);
-
-    // 搜索和过滤配置
 
     const searchParams = ref<SearchParams<IDictDataQuery>>({
         keyword: '',
@@ -145,6 +145,15 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
         };
         await refetch();
     };
+
+    const deleteDictItem = async (data: IDictData) => {
+        const res = await to(dictDataService.removeDictData(data.id as string));
+        if (res.ok) {
+            toast.add({ severity: 'success', summary: '成功', detail: '删除成功', life: 3000 });
+            await refetch();
+        }
+    };
+
     /**
      * 获取更多操作菜单项
      * @param data - 字典类型数据
@@ -163,9 +172,9 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
                 disabled: data.systemFlag === 'SYSTEM',
                 command: () => {
                     confirmDelete({
-                        message: `确定要删除字典类型 "${data.dictName}(${data.dictCode})" 吗？`,
+                        message: `确定要删除字典项 "${data.dictLabel}" 吗？`,
                         header: '确认删除',
-                        accept: () => deleteDictType(data)
+                        accept: () => deleteDictItem(data)
                     });
                 }
             }
@@ -211,6 +220,7 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
             tableSettings: {
                 showGridlines: false
             },
+            filterConfigs:[],
             actions: {
                 frozen: true,
                 alignFrozen: 'right',
@@ -251,8 +261,15 @@ export const useDictItems = (dictTypeId: ComputedRef<string | number | undefined
 
     return {
         tableConfig,
+        tableData,
+        dictDetail,
+        isLoading,
+        searchParams,
+        tableColumns,
+        handleColumnsChange,
         handlePageChange,
         handleFilterChange,
-        handleRefresh
+        handleRefresh,
+        deleteDictItem
     };
 };

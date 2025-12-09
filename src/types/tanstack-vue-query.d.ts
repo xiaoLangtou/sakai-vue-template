@@ -34,5 +34,37 @@ declare module '@tanstack/vue-query' {
 
     export function useQuery<TData = unknown, TError = unknown>(options: UseQueryOptions<TData, TError>): UseQueryResult<TData, TError>;
 
+    // Infinite Query types
+    export interface UseInfiniteQueryOptions<TData = unknown, TError = unknown, TPageParam = unknown> {
+        queryKey: any[];
+        queryFn: (context: { pageParam: TPageParam }) => Promise<TData>;
+        getNextPageParam?: (lastPage: TData, allPages: TData[]) => TPageParam | undefined;
+        getPreviousPageParam?: (firstPage: TData, allPages: TData[]) => TPageParam | undefined;
+        initialPageParam: TPageParam;
+        enabled?: boolean | Ref<boolean> | (() => boolean);
+        staleTime?: number;
+        cacheTime?: number;
+        refetchOnWindowFocus?: boolean;
+        retry?: boolean | number;
+    }
+
+    export interface UseInfiniteQueryResult<TData = unknown, TError = unknown> {
+        data: Ref<{ pages: TData[]; pageParams: unknown[] } | undefined>;
+        isLoading: Ref<boolean>;
+        isError: Ref<boolean>;
+        error: Ref<TError | null>;
+        isFetchingNextPage: Ref<boolean>;
+        isFetchingPreviousPage: Ref<boolean>;
+        hasNextPage: Ref<boolean>;
+        hasPreviousPage: Ref<boolean>;
+        fetchNextPage: () => Promise<any>;
+        fetchPreviousPage: () => Promise<any>;
+        refetch: () => Promise<any>;
+    }
+
+    export function useInfiniteQuery<TData = unknown, TError = unknown, TPageParam = unknown>(
+        options: UseInfiniteQueryOptions<TData, TError, TPageParam>
+    ): UseInfiniteQueryResult<TData, TError>;
+
     export * from '@tanstack/query-core';
 }

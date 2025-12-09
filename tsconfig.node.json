@@ -9,5 +9,11 @@
         "resolveJsonModule": true,
         "esModuleInterop": true
     },
-    "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "nightwatch.conf.*", "playwright.config.*", "rsbuild.config.*", "config/**/*"]
+    "include": [
+        "cypress.config.*",
+        "nightwatch.conf.*",
+        "playwright.config.*",
+        "rsbuild.config.*",
+        "config/**/*"
+    ]
 }

@@ -128,10 +128,10 @@ const onFormSubmit = async (event: { valid: boolean; values: any; errors: any })
         const typeResult = await to(
             initialDictTypeValue.value.id
                 ? dictTypeService.updateDictType({
-                      ...values,
-                      dictDataList,
-                      id: initialDictTypeValue.value.id
-                  })
+                    ...values,
+                    dictDataList,
+                    id: initialDictTypeValue.value.id
+                })
                 : dictTypeService.addDictType({ ...values, dictDataList })
         );
         if (!typeResult.ok) {
@@ -230,150 +230,139 @@ const openNewDictItem = () => {
 </script>
 
 <template>
-    <CustomDrawer v-model:visible="drawerVisible" :show-default-footer="true" class="!w-[800px]" header="新建字典" width-type="extra-large">
+    <CustomDrawer v-model:visible="drawerVisible" :show-default-footer="true" class="!w-[800px]" header="新建字典"
+        width-type="extra-large">
         <!--子标题-->
-        <div class="section-title">
-            <LibraryIcon :size="16" />
-            <span class="section-title-text">基本信息</span>
-            <div class="section-title-line"></div>
+        <div class="flex items-center mb-4 mt-2">
+            <div class="bg-primary/10 p-1.5 rounded-md mr-3 text-primary flex items-center justify-center">
+                <LibraryIcon :size="18" />
+            </div>
+            <span class="font-bold text-lg text-gray-800 dark:text-gray-100">基本信息</span>
+            <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700 ml-4"></div>
         </div>
-        <Form
-            ref="formRef"
-            :initial-values="initialDictTypeValue"
-            :resolver="zodResolver(dictTypeSchema)"
-            :validate-on-blur="false"
-            :validate-on-mount="false"
-            :validate-on-value-update="false"
-            class="form-grid"
-            @submit="onFormSubmit"
-            @validate="handleFormValidation"
-            @keydown.enter.prevent
-        >
-            <SmartFormField class="mb-4" label="字典名称" name="dictName" required>
-                <template #default="{ value, onInput, invalid }">
-                    <InputText id="dictName" :class="{ 'p-invalid': invalid }" :model-value="value" autofocus class="w-full" placeholder="请输入字典名称，如：用户状态" @update:model-value="(val) => onInput({ target: { value: val } })" />
-                </template>
-            </SmartFormField>
-            <!-- 字典编码字段 -->
-            <SmartFormField class="mb-4" label="字典编码" name="dictCode" required>
-                <template #default="{ value, onInput, invalid }">
-                    <InputText id="dictCode" :class="{ 'p-invalid': invalid }" :model-value="value" class="w-full" placeholder="请输入字典编码，如：user_status" @update:model-value="(val) => onInput({ target: { value: val } })" />
-                </template>
-            </SmartFormField>
-            <!-- 字典类型字段 -->
-            <SmartFormField class="mb-4" label="字典类型" name="systemFlag" required>
-                <template #default="{ value, onInput, invalid }">
-                    <Select
-                        id="systemFlag"
-                        :class="{ 'p-invalid': invalid }"
-                        :model-value="value"
-                        :options="[
+
+        <Form ref="formRef" :initial-values="initialDictTypeValue" :resolver="zodResolver(dictTypeSchema)"
+            :validate-on-blur="false" :validate-on-mount="false" :validate-on-value-update="false"
+            class="form-grid px-1" @submit="onFormSubmit" @validate="handleFormValidation" @keydown.enter.prevent>
+            <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                <SmartFormField label="字典名称" name="dictName" required>
+                    <template #default="{ value, onInput, invalid }">
+                        <InputText id="dictName" :class="{ 'p-invalid': invalid }" :model-value="value" autofocus
+                            class="w-full" placeholder="请输入字典名称"
+                            @update:model-value="(val) => onInput({ target: { value: val } })" />
+                    </template>
+                </SmartFormField>
+                <!-- 字典编码字段 -->
+                <SmartFormField label="字典编码" name="dictCode" required>
+                    <template #default="{ value, onInput, invalid }">
+                        <InputText id="dictCode" :class="{ 'p-invalid': invalid }" :model-value="value" class="w-full"
+                            placeholder="请输入字典编码" @update:model-value="(val) => onInput({ target: { value: val } })" />
+                    </template>
+                </SmartFormField>
+                <!-- 字典类型字段 -->
+                <SmartFormField label="字典类型" name="systemFlag" required>
+                    <template #default="{ value, onInput, invalid }">
+                        <Select id="systemFlag" :class="{ 'p-invalid': invalid }" :model-value="value" :options="[
                             { label: '业务字典', value: 'BUSINESS' },
                             { label: '系统字典', value: 'SYSTEM' }
-                        ]"
-                        class="w-full"
-                        option-label="label"
-                        option-value="value"
-                        placeholder="选择字典类型"
-                        @update:model-value="(val) => onInput({ target: { value: val } })"
-                    />
-                </template>
-            </SmartFormField>
+                        ]" class="w-full" option-label="label" option-value="value" placeholder="选择字典类型"
+                            @update:model-value="(val) => onInput({ target: { value: val } })" />
+                    </template>
+                </SmartFormField>
 
-            <!-- 状态字段 -->
-            <SmartFormField class="mb-4" label="状态" name="status">
-                <template #default="{ value, onInput, invalid }">
-                    <Select
-                        id="status"
-                        :class="{ 'p-invalid': invalid }"
-                        :model-value="value"
-                        :options="statusOptions"
-                        class="w-full"
-                        option-label="label"
-                        option-value="value"
-                        placeholder="选择状态"
-                        @update:model-value="(val) => onInput({ target: { value: val } })"
-                    />
-                </template>
-            </SmartFormField>
+                <!-- 状态字段 -->
+                <SmartFormField label="状态" name="status">
+                    <template #default="{ value, onInput, invalid }">
+                        <Select id="status" :class="{ 'p-invalid': invalid }" :model-value="value"
+                            :options="statusOptions" class="w-full" option-label="label" option-value="value"
+                            placeholder="选择状态" @update:model-value="(val) => onInput({ target: { value: val } })" />
+                    </template>
+                </SmartFormField>
+            </div>
 
             <!-- 描述字段 -->
-            <SmartFormField class="mb-4" label="描述" name="dictDesc">
+            <SmartFormField class="mt-4" label="描述" name="dictDesc">
                 <template #default="{ value, onInput, invalid }">
-                    <Textarea
-                        id="dictDesc"
-                        :auto-resize="true"
-                        :class="{ 'p-invalid': invalid }"
-                        :model-value="value"
-                        class="w-full"
-                        cols="30"
-                        placeholder="请输入字典描述"
-                        rows="5"
-                        @update:model-value="(val) => onInput({ target: { value: val } })"
-                    />
+                    <Textarea id="dictDesc" :auto-resize="true" :class="{ 'p-invalid': invalid }" :model-value="value"
+                        class="w-full" cols="30" placeholder="请输入字典描述" rows="3"
+                        @update:model-value="(val) => onInput({ target: { value: val } })" />
                 </template>
             </SmartFormField>
         </Form>
 
         <!--子标题-->
-        <div class="section-title">
-            <List :size="16" />
-            <span class="section-title-text">字典项管理</span>
-            <div class="section-title-line"></div>
+        <div class="flex items-center mb-4 mt-8">
+            <div class="bg-primary/10 p-1.5 rounded-md mr-3 text-primary flex items-center justify-center">
+                <List :size="18" />
+            </div>
+            <span class="font-bold text-lg text-gray-800 dark:text-gray-100">字典项配置</span>
+            <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700 ml-4"></div>
         </div>
 
         <!-- 字典项管理区域 -->
-        <DataTable v-model:editing-rows="dictItemsEditRows" :value="dictItems" class="custom-table__border" data-key="id" edit-mode="row" style="--p-datatable-footer-border-width: 0" @row-edit-save="onRowEditSave" @row-edit-cancel="onRowEditCancel">
-            <Column field="dictLabel" header="字典名称" style="width: 25%; min-width: 25%; max-width: 25%">
+        <DataTable v-model:editing-rows="dictItemsEditRows" :value="dictItems"
+            class="custom-table__border rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+            data-key="id" edit-mode="row" style="--p-datatable-footer-border-width: 0" @row-edit-save="onRowEditSave"
+            @row-edit-cancel="onRowEditCancel">
+            <Column field="dictLabel" header="字典名称" style="width: 25%">
                 <template #editor="{ data, field }">
-                    <InputText v-model="data[field]" fluid placeholder="请输入字典名称" />
+                    <InputText v-model="data[field]" fluid placeholder="输入名称" />
                 </template>
             </Column>
-            <Column field="dictValue" header="字典值" style="width: 25%; min-width: 25%; max-width: 25%">
+            <Column field="dictValue" header="字典值" style="width: 25%">
                 <template #editor="{ data, field }">
-                    <InputText v-model="data[field]" fluid placeholder="请输入字典值" />
+                    <InputText v-model="data[field]" fluid placeholder="输入值" />
                 </template>
             </Column>
-            <Column field="dictRemark" header="字典描述" style="width: 25%; min-width: 25%; max-width: 25%">
+            <Column field="dictRemark" header="字典描述" style="width: 30%">
                 <template #editor="{ data, field }">
-                    <InputText v-model="data[field]" fluid placeholder="请输入描述" />
+                    <InputText v-model="data[field]" fluid placeholder="输入描述" />
                 </template>
             </Column>
-            <Column :row-editor="true" body-style="text-align:center" style="width: 15%; min-width: 8rem; max-width: 15%">
+            <Column :row-editor="true" body-style="text-align:center" header="操作" style="width: 20%">
                 <template #editor="{ data, field, editorSaveCallback, editorCancelCallback }">
-                    <div class="flex items-center justify-center gap-2">
-                        <Button v-tooltip.bottom="'保存'" icon="pi pi-check" severity="primary" variant="text" @click="editorSaveCallback(data)" />
-                        <Button v-tooltip.bottom="'取消'" icon="pi pi-times" severity="primary" variant="text" @click="editorCancelCallback" />
+                    <div class="flex items-center justify-center gap-1">
+                        <Button v-tooltip.bottom="'保存'" icon="pi pi-check" severity="success" text rounded size="small"
+                            @click="editorSaveCallback(data)" />
+                        <Button v-tooltip.bottom="'取消'" icon="pi pi-times" severity="secondary" text rounded
+                            size="small" @click="editorCancelCallback" />
                     </div>
                 </template>
                 <template #body="{ data, field, editorInitCallback }">
-                    <div class="flex items-center justify-center gap-2">
-                        <Button v-tooltip.bottom="'编辑'" icon="pi pi-pencil" severity="primary" variant="text" @click="editorInitCallback" />
-                        <Button v-tooltip.bottom="'删除'" icon="pi pi-trash" severity="danger" variant="text" @click="editorInitCallback" />
+                    <div class="flex items-center justify-center gap-1">
+                        <Button v-tooltip.bottom="'编辑'" icon="pi pi-pencil" text rounded severity="primary" size="small"
+                            @click="editorInitCallback" />
+                        <Button v-tooltip.bottom="'删除'" icon="pi pi-trash" text rounded severity="danger" size="small"
+                            @click="editorInitCallback" />
                     </div>
                 </template>
             </Column>
             <template #empty>
-                <div class="empty-state">
-                    <div class="empty-content">
-                        <div class="empty-title flex items-center justify-center gap-2">
-                            <InboxIcon :size="16" />
-                            暂无字典项
-                        </div>
-                        <div class="empty-description">点击添加按钮创建新的字典项</div>
+                <div
+                    class="flex flex-col items-center justify-center p-8 text-center bg-gray-50 dark:bg-gray-800/50 rounded-b-lg">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-full mb-3">
+                        <InboxIcon class="text-gray-400 dark:text-gray-500" :size="32" />
                     </div>
+                    <h3 class="text-gray-600 dark:text-gray-300 font-medium mb-1">暂无字典项</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">点击下方按钮添加新的字典项</p>
                 </div>
             </template>
             <template #footer>
-                <Button icon="pi pi-plus" label="添加字典项" outlined style="width: 100%" @click="openNewDictItem" />
+                <Button icon="pi pi-plus" label="添加字典项" text
+                    class="w-full border-dashed border-2 border-primary/20 hover:bg-primary/5 hover:border-primary/40 py-3"
+                    @click="openNewDictItem" />
             </template>
         </DataTable>
         <!-- 按钮组 -->
         <template #footer>
-            <div class="flex justify-between items-center">
-                <div class="text-sm text-gray-500">请确保信息填写完整</div>
+            <div class="flex justify-between items-center w-full">
+                <div class="text-sm text-gray-500 flex items-center gap-2">
+                    <i class="pi pi-info-circle text-blue-500"></i>
+                    <span>请确保所有必填项已填写完整</span>
+                </div>
                 <div class="flex gap-3">
-                    <Button icon="pi pi-refresh" label="重置" outlined severity="secondary" type="button" @click="resetForm" />
+                    <Button icon="pi pi-refresh" label="重置" outlined severity="secondary" type="button"
+                        @click="resetForm" />
                     <Button :disabled="invalid" icon="pi pi-check" label="创建" type="button" @click="handleSubmit" />
                 </div>
             </div>
@@ -382,50 +371,6 @@ const openNewDictItem = () => {
 </template>
 
 <style scoped>
-.form-grid {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-}
-
-/* 子标题样式 */
-.section-title {
-    display: flex;
-    align-items: center;
-    margin: 1.5rem 0 1rem 0;
-    position: relative;
-}
-
-.section-title-icon {
-    color: var(--p-primary-color);
-    font-size: 1.1rem;
-    margin-right: 0.75rem;
-    flex-shrink: 0;
-}
-
-.section-title-text {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--p-text-color);
-    white-space: nowrap;
-    margin-right: 1rem;
-    letter-spacing: 0.025em;
-}
-
-.section-title-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, var(--p-surface-300), transparent);
-    opacity: 0.6;
-}
-
-/* 暗色主题适配 */
-:root.dark .section-title-line {
-    background: linear-gradient(to right, var(--p-surface-600), transparent);
-}
-
-/* 字典项管理区域样式 */
-
 /* 空状态样式 */
 .empty-state {
     @apply flex flex-col items-center justify-center p-4 text-center;
